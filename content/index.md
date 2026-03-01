@@ -3,7 +3,7 @@ title: index
 draft: false
 tags: 
 ---
-Привет мир!
+Привет мир!  
 Начало дня
 
 [[intro]]

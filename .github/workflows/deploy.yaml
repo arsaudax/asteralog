@@ -23,11 +23,18 @@ jobs:
           fetch-depth: 0 # Fetch all history for git info
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: latest
       - name: Install Dependencies
         run: npm ci
+      - name: Prepare Environment Secrets
+        env:
+          GOATCOUNTER_CODE: ${{ secrets.GOATCOUNTER_CODE }}
+        run: |
+          sed -i "s/GOATCOUNTER_CODE_PLACEHOLDER/${GOATCOUNTER_CODE}/g" quartz.config.ts
       - name: Build Quartz
         run: npx quartz build
+      - name: check broken inner link
+        run: node ./scripts/check-broken-links.js
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -40,6 +47,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Prepare deployment
+        env:
+          GISCUS_CATEGORY_ID: ${{ secrets.GISCUS_CATEGORY_ID }}
+          GISCUS_REPO_ID: ${{ secrets.GISCUS_REPO_ID }}
+          GOATCOUNTER_CODE: ${{ secrets.GOATCOUNTER_CODE }}
+        run: | 
+          echo "My secrets: GISCUS_REPO_ID, GISCUS_CATEGORY_ID"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

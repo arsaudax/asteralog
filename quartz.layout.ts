@@ -1,6 +1,41 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 
+const tagsToExclude = [
+  "graph-exclude", 
+  "explorer-exclude", 
+  "backlinks-exclude", 
+  "recents-exclude", 
+  "search-exclude"
+]
+
+const graphConfig = {
+  localGraph: {
+    showTags: false,
+    excludeTags: tagsToExclude
+  },
+  globalGraph: {
+    showTags: false,
+    excludeTags: [...tagsToExclude, "slurp"]
+  }
+}
+
+const backlinksConfig = {
+  excludeTags: tagsToExclude,
+  hideWhenEmpty: true
+}
+
+const explorerConfig = {
+  filterFn: (node) => {
+    const hasExcludedTag = node.file?.frontmatter?.tags?.includes("explorer-exclude") === true
+    return node.name !== "tags" && !hasExcludedTag
+  }
+}
+
+const breadcrumbsConfig = {
+  rootName: "🏡"
+}
+
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
@@ -8,8 +43,9 @@ export const sharedPageComponents: SharedLayout = {
   afterBody: [],
   footer: Component.Footer({
     links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax"
     },
   }),
 }
@@ -18,7 +54,7 @@ export const sharedPageComponents: SharedLayout = {
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ConditionalRender({
-      component: Component.Breadcrumbs(),
+      component: Component.Breadcrumbs(breadcrumbsConfig),
       condition: (page) => page.fileData.slug !== "index",
     }),
     Component.ArticleTitle(),
@@ -26,57 +62,22 @@ export const defaultContentPageLayout: PageLayout = {
     Component.TagList(),
   ],
   left: [
-   Component.MobileOnly(Component.OverlayExplorer(oldexplorerConfig)),
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
-    Component.Row([
-      Component.Map(),
-      Component.Darkmode(),
-      Component.Search(),
-    ]),
-    // Component.DesktopOnly(Component.OnlyFor({titles: [homepageTitle, mapTitle]}, Component.ExplorerOld(explorerConfig))),
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.DesktopOnly(Component.OnlyFor({titles: [homepageTitle, mapTitle]}, Component.Explorer(explorerConfig))),
-    Component.FloatingButtons({position: 'right'}),
-    // Component.DesktopOnly(Component.PageTitle()),
-    // Component.DesktopOnly(
-    //   Component.Row([
-    //     Component.Map(),
-    //     Component.Darkmode(),
-    //     Component.Search(),
-    //   ])),
-    // Component.DesktopOnly(Component.TableOfContents()),
-    // Component.OnlyFor({titles: [homepageTitle, mapTitle]}, Component.Explorer(explorerConfig)),
-    // Component.FloatingButtons({position: 'right'}),
-    
-    // Component.MobileOnly(
-    //   Component.Flex({
-    //     components: [
-    //       {Component: Component.PageTitle(),
-    //         justify: "around",
-    //       },
-    //       // {Component: Component.Spacer()},
-    //       {Component: Component.Row([
-    //         Component.Map(),
-    //         Component.Darkmode(),
-    //         Component.Search(),
-    //         ]),
-    //         justify: "around",
-    //       },
-    //     ]}
-    //   )
-    // ),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig))
+  
   ],
   right: [
-    Component.Graph(),
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(),
+    Component.Graph(graphConfig),
+    Component.Backlinks(backlinksConfig),
   ],
 }
 
 // components for pages that display lists of pages  (e.g. tags or folders)
 export const defaultListPageLayout: PageLayout = {
-  beforeBody: [Component.Breadcrumbs(), Component.ArticleTitle(), Component.ContentMeta()],
+  beforeBody: [Component.Breadcrumbs(breadcrumbsConfig), Component.ArticleTitle(), Component.ContentMeta()],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
@@ -89,9 +90,7 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer(explorerConfig),
   ],
-  right: [
-    Component.HiddenGlobalGraph(graphConfig),
-  ]
+  right: [],
 }

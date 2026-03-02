@@ -26,6 +26,8 @@ jobs:
           node-version: latest
       - name: Install Dependencies
         run: npm ci
+      - name: Install cheerio for link checking
+        run: npm install cheerio
       - name: Prepare Environment Secrets
         env:
           GOATCOUNTER_CODE: ${{ secrets.GOATCOUNTER_CODE }}

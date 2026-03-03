@@ -1,5 +1,5 @@
 ---
-title: index
+title: Главная
 draft: false
 tags: 
 ---

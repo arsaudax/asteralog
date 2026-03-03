@@ -1,7 +1,9 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { FileTrieNode } from "./quartz/components/scripts/spa"
+import { SimpleSlug } from "./quartz/util/path"
 
-const tagsToExclude = [
+const tagsToRemove = [
   "graph-exclude", 
   "explorer-exclude", 
   "backlinks-exclude", 
@@ -12,24 +14,37 @@ const tagsToExclude = [
 const graphConfig = {
   localGraph: {
     showTags: false,
-    excludeTags: tagsToExclude
+    excludeTags: tagsToRemove
   },
   globalGraph: {
     showTags: false,
-    excludeTags: [...tagsToExclude, "slurp"]
+    excludeTags: [...tagsToRemove, "slurp"]
   }
 }
 
 const backlinksConfig = {
-  excludeTags: tagsToExclude,
+  excludeTags: tagsToRemove,
   hideWhenEmpty: true
 }
 
+const tagListConfig = { 
+  excludeTags: tagsToRemove
+}
+
 const explorerConfig = {
-  filterFn: (node) => {
-    const hasExcludedTag = node.file?.frontmatter?.tags?.includes("explorer-exclude") === true
-    return node.name !== "tags" && !hasExcludedTag
-  }
+  filterFn: (node: FileTrieNode) => {
+    const omit = new Set(["tags"]);
+    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true;
+    const isOmitted = omit.has(node.displayName?.toLowerCase());
+    return !hasExcludedTag && !isOmitted;
+  },
+  mapFn: (node: FileTrieNode) => {
+    // dont change name of root node
+    if (!node.isFolder) {
+      // set emoji for file/folder      
+        node.displayName = "⊹ " + node.displayName
+    }
+  },
 }
 
 const breadcrumbsConfig = {
@@ -44,7 +59,7 @@ export const sharedPageComponents: SharedLayout = {
   footer: Component.Footer({
     links: {
       Telegram: "https://t.me/asteralog",
-      Instagram: "https://www.instagram.com/al.bogat",
+      Asteragram: "https://www.instagram.com/al.bogat",
       Behance: "https://www.behance.net/arsaudax"
     },
   }),
@@ -53,23 +68,19 @@ export const sharedPageComponents: SharedLayout = {
 // components for pages that display a single page (e.g. a single note)
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.ConditionalRender({
-      component: Component.Breadcrumbs(breadcrumbsConfig),
-      condition: (page) => page.fileData.slug !== "index",
-    }),
+    Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
-    Component.ContentMeta(),
-    Component.TagList(),
+    Component.ContentMeta({showReadingTime: true}),
+    Component.TagList(tagListConfig),
   ],
   left: [
     Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig))
-  
+    Component.Explorer(explorerConfig)
   ],
   right: [
+    Component.DesktopOnly(Component.TableOfContents()),
     Component.Graph(graphConfig),
     Component.Backlinks(backlinksConfig),
   ],
@@ -77,19 +88,18 @@ export const defaultContentPageLayout: PageLayout = {
 
 // components for pages that display lists of pages  (e.g. tags or folders)
 export const defaultListPageLayout: PageLayout = {
-  beforeBody: [Component.Breadcrumbs(breadcrumbsConfig), Component.ArticleTitle(), Component.ContentMeta()],
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig), 
+    Component.ArticleTitle(), 
+    Component.ContentMeta({showReadingTime: true})
+  ],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
-    Component.Flex({
-      components: [
-        {
-          Component: Component.Search(),
-          grow: true,
-        },
-        { Component: Component.Darkmode() },
-      ],
-    }),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.ReaderMode(),
+    Component.Spacer(),
     Component.Explorer(explorerConfig),
   ],
   right: [],

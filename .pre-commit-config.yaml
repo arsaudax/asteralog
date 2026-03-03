@@ -1,9 +1,1 @@
-repos:
-  - repo: local
-    hooks:
-      - id: convert-image-links
-        name: Convert image links to CDN
-        entry: python scripts/convert_image_links.py
-        language: python
-        files: '^content/.*\.md$'
-        stages: [pre-commit]
+

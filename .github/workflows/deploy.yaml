@@ -27,7 +27,7 @@ jobs:
       - name: Sync content to submodules
         run: npm run sync-content
 
-            - name: Commit and push submodule updates
+      - name: Commit and push submodule updates
         run: |
           # Настроим git
           git config --global user.name "github-actions[bot]"

@@ -64,7 +64,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-      Plugin.ExplicitPublish({ field: "garden" })
+     Plugin.ExplicitPublish({ field: "garden" })
     ],
     emitters: [
       Plugin.AliasRedirects(),

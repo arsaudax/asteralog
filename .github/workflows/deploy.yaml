@@ -28,7 +28,7 @@ jobs:
       - name: Deploy to garden subdomain
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
           publish_dir: ./public
           external_repository: arsaudax/garden.asteralog.ru
           publish_branch: main

@@ -64,8 +64,20 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-     Plugin.ExplicitPublish({ field: "garden" })
-    ],
+  (page) => {
+    // Принудительно выводим в лог информацию о каждом файле
+    console.log("\n=== CHECKING FILE ===");
+    console.log("Path:", page.file?.path);
+    console.log("Frontmatter:", JSON.stringify(page.frontmatter, null, 2));
+    console.log("Has garden field:", page.frontmatter?.garden !== undefined);
+    console.log("garden value:", page.frontmatter?.garden);
+    console.log("garden type:", typeof page.frontmatter?.garden);
+    console.log("=====================\n");
+    
+    // ВРЕМЕННО: публикуем всё для проверки
+    return true;
+  }
+],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

@@ -9,20 +9,23 @@ jobs:
   deploy-garden:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: latest
       
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
       
       - name: Build Garden site
+        env:
+          BASE_URL: "garden.asteralog.ru"
         run: |
-          cp quartz.config.garden.ts quartz.config.ts
           npx quartz build
       
       - name: Deploy to garden subdomain
@@ -37,20 +40,23 @@ jobs:
   deploy-blog:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: latest
       
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
       
       - name: Build Blog site
+        env:
+          BASE_URL: "blog.asteralog.ru"
         run: |
-          cp quartz.config.blog.ts quartz.config.ts
           npx quartz build
       
       - name: Deploy to blog subdomain

@@ -27,7 +27,7 @@ jobs:
       - name: Sync content to submodules
         run: npm run sync-content
 
-      - name: Commit and push submodule updates
+            - name: Commit and push submodule updates
         run: |
           # Настроим git
           git config --global user.name "github-actions[bot]"
@@ -55,14 +55,9 @@ jobs:
           fi
           cd ..
           
-          # Обновим ссылки на подмодули в основном репозитории
-          git add content-garden content-blog
-          if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "Update submodule references"
-            git push
-          else
-            echo "No changes in submodule references"
-          fi
+          # Проверяем статус - без git add, чтобы избежать ошибки
+          echo "Current git status:"
+          git status
 
   deploy-garden:
     needs: sync-content

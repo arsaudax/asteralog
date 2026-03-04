@@ -1,6 +1,5 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
-import { FilterPages } from "./quartz/plugins/filters"
 
 const config: QuartzConfig = {
   configuration: {
@@ -65,8 +64,8 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-  (page) => page.frontmatter?.feed === true
-],
+      Plugin.RemoveDrafts() // Временная заглушка
+    ],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

@@ -1,5 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
+import { blogFilter } from "./quartz-custom/utils/filter"
 
 const config: QuartzConfig = {
   configuration: {
@@ -64,12 +65,8 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-  // Фильтр для блога: публикуем только заметки с тегом "blog"
-  (file) => {
-    const tags = file.data?.frontmatter?.tags;
-    return Array.isArray(tags) && tags.includes('blog');
-  }
-],
+     blogFilter
+     ],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

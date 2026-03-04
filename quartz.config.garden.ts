@@ -1,5 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
+import { gardenFilter } from "./quartz-custom/utils/filter"
 
 const config: QuartzConfig = {
   configuration: {
@@ -64,13 +65,8 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-  // Фильтр для сада: публикуем только заметки с тегом "garden"
-  (file) => {
-    const tags = file.data?.frontmatter?.tags;
-    // Проверяем, что tags существует, это массив и содержит "garden"
-    return Array.isArray(tags) && tags.includes('garden');
-  }
-],
+        gardenFilter
+    ],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

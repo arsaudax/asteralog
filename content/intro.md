@@ -1,5 +1,5 @@
 ---
-title: Ввеление
+title: Вместо эпиграфа
 created: 2026-03-04
 garden: true
 feed: true
@@ -15,5 +15,3 @@ tags:
 В речном потоке — глубина.<br>
 *Velut Asteraceae: mors et lux,*<br>
 *Fragilis splendor — sed non flux.*<br>
-
-Так начнём же

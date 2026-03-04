@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.ASTERALOG_DEPLOY }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: latest
 
@@ -27,13 +27,13 @@ jobs:
         run: npm run sync-content
 
       - name: Upload garden content artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: garden-content
           path: content-garden
 
       - name: Upload blog content artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: blog-content
           path: content-blog
@@ -43,19 +43,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download garden content
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: garden-content
           path: content
 
       - name: Checkout Quartz
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: jackyzha0/quartz
           path: quartz
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: latest
 
@@ -83,19 +83,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download blog content
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: blog-content
           path: content
 
       - name: Checkout Quartz
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: jackyzha0/quartz
           path: quartz
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: latest
 

@@ -33,7 +33,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Обновим garden-content
+          # Обновляем garden-content (это отдельный репозиторий)
           cd content-garden
           git add .
           if ! git diff --quiet || ! git diff --staged --quiet; then
@@ -44,7 +44,7 @@ jobs:
           fi
           cd ..
           
-          # Обновим blog-content
+          # Обновляем blog-content (это отдельный репозиторий)
           cd content-blog
           git add .
           if ! git diff --quiet || ! git diff --staged --quiet; then
@@ -55,8 +55,8 @@ jobs:
           fi
           cd ..
           
-          # Проверяем статус - без git add, чтобы избежать ошибки
-          echo "Current git status:"
+          # Возвращаемся в корень и просто выводим статус
+          echo "Current git status in main repository:"
           git status
 
   deploy-garden:

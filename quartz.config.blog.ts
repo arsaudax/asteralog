@@ -65,7 +65,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-     blogFilter
+     TagFilter("blog")
      ],
     emitters: [
       Plugin.AliasRedirects(),

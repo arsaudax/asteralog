@@ -65,7 +65,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-        gardenFilter
+     TagFilter("garden")
     ],
     emitters: [
       Plugin.AliasRedirects(),

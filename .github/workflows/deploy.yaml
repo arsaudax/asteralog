@@ -9,11 +9,10 @@ jobs:
   sync-content:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository with submodules
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: recursive
           token: ${{ secrets.ASTERALOG_DEPLOY }}
 
       - name: Setup Node.js
@@ -24,64 +23,48 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync content to submodules
+      - name: Sync content
         run: npm run sync-content
 
-      - name: Commit and push submodule updates
-        run: |
-          # Настроим git
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Обновляем garden-content (это отдельный репозиторий)
-          cd content-garden
-          git add .
-          if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "Update garden content from sync"
-            git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git HEAD:main
-          else
-            echo "No changes in garden-content"
-          fi
-          cd ..
-          
-          # Обновляем blog-content (это отдельный репозиторий)
-          cd content-blog
-          git add .
-          if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "Update blog content from sync"
-            git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git HEAD:main
-          else
-            echo "No changes in blog-content"
-          fi
-          cd ..
-          
-          # Возвращаемся в корень и просто выводим статус
-          echo "Current git status in main repository:"
-          git status
+      - name: Upload garden content artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: garden-content
+          path: content-garden
+
+      - name: Upload blog content artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-content
+          path: content-blog
 
   deploy-garden:
     needs: sync-content
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Download garden content
+        uses: actions/download-artifact@v4
+        with:
+          name: garden-content
+          path: content
+
+      - name: Checkout Quartz
         uses: actions/checkout@v4
         with:
-          submodules: recursive
-          token: ${{ secrets.ASTERALOG_DEPLOY }}
+          repository: jackyzha0/quartz
+          path: quartz
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: latest
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Build Garden site
+        working-directory: ./quartz
         run: |
-          # Используем content-garden как источник
-          rm -rf content
-          ln -s content-garden content
+          npm ci
+          cp ../quartz.config.garden.ts quartz.config.ts
+          cp -r ../content content
           npx quartz build
         env:
           BASE_URL: "garden.asteralog.ru"
@@ -90,7 +73,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
-          publish_dir: ./public
+          publish_dir: ./quartz/public
           external_repository: arsaudax/garden.asteralog.ru
           publish_branch: main
           cname: garden.asteralog.ru
@@ -99,25 +82,29 @@ jobs:
     needs: sync-content
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Download blog content
+        uses: actions/download-artifact@v4
+        with:
+          name: blog-content
+          path: content
+
+      - name: Checkout Quartz
         uses: actions/checkout@v4
         with:
-          submodules: recursive
-          token: ${{ secrets.ASTERALOG_DEPLOY }}
+          repository: jackyzha0/quartz
+          path: quartz
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: latest
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Build Blog site
+        working-directory: ./quartz
         run: |
-          # Используем content-blog как источник
-          rm -rf content
-          ln -s content-blog content
+          npm ci
+          cp ../quartz.config.blog.ts quartz.config.ts
+          cp -r ../content content
           npx quartz build
         env:
           BASE_URL: "blog.asteralog.ru"
@@ -126,7 +113,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
-          publish_dir: ./public
+          publish_dir: ./quartz/public
           external_repository: arsaudax/blog.asteralog.ru
           publish_branch: main
           cname: blog.asteralog.ru

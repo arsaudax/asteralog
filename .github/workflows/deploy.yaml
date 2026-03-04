@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  sync-and-deploy:
+  sync-content:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository with submodules
@@ -65,7 +65,7 @@ jobs:
           fi
 
   deploy-garden:
-    needs: sync-and-deploy
+    needs: sync-content
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -101,7 +101,7 @@ jobs:
           cname: garden.asteralog.ru
 
   deploy-blog:
-    needs: sync-and-deploy
+    needs: sync-content
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

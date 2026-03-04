@@ -64,8 +64,9 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-  ({ frontmatter }) => frontmatter?.feed === true
-],
+      // Единственный рабочий вариант для вашей версии
+      Plugin.RemoveDrafts()
+    ],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

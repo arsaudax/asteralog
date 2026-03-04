@@ -64,9 +64,9 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-  // Новый синтаксис для обновлённого Quartz
-  ({ frontmatter }) => frontmatter?.garden === true
-],
+      // Единственный рабочий вариант для вашей версии
+      Plugin.RemoveDrafts()
+    ],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

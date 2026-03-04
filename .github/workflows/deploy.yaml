@@ -63,8 +63,8 @@ jobs:
         working-directory: ./quartz
         run: |
           npm ci
-          cp ../quartz.config.garden.ts quartz.config.ts
-          cp -r ../content content
+          cp ${{ github.workspace }}/quartz.config.ts quartz.config.ts
+          cp -r ${{ github.workspace }}/content content
           npx quartz build
         env:
           BASE_URL: "garden.asteralog.ru"
@@ -103,8 +103,8 @@ jobs:
         working-directory: ./quartz
         run: |
           npm ci
-          cp ../quartz.config.blog.ts quartz.config.ts
-          cp -r ../content content
+          cp ${{ github.workspace }}/quartz.config.ts quartz.config.ts
+          cp -r ${{ github.workspace }}/content content
           npx quartz build
         env:
           BASE_URL: "blog.asteralog.ru"

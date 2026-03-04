@@ -1,6 +1,7 @@
 ---
 title: Asteralog Garden
-garden: true
+tags:
+  - garden
 ---
 
 # Добро пожаловать в мой цифровой сад

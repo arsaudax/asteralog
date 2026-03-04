@@ -64,9 +64,13 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-      // Единственный рабочий вариант для вашей версии
-      Plugin.RemoveDrafts()
-    ],
+  // Фильтр для сада: публикуем только заметки с тегом "garden"
+  (file) => {
+    const tags = file.data?.frontmatter?.tags;
+    // Проверяем, что tags существует, это массив и содержит "garden"
+    return Array.isArray(tags) && tags.includes('garden');
+  }
+],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

@@ -64,9 +64,12 @@ const config: QuartzConfig = {
       Plugin.Description(),
     ],
     filters: [
-      // Единственный рабочий вариант для вашей версии
-      Plugin.RemoveDrafts()
-    ],
+  // Фильтр для блога: публикуем только заметки с тегом "blog"
+  (file) => {
+    const tags = file.data?.frontmatter?.tags;
+    return Array.isArray(tags) && tags.includes('blog');
+  }
+],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

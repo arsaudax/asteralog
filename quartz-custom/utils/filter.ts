@@ -12,21 +12,10 @@ export const blogFilter = (file: QuartzPluginData) => {
   return Array.isArray(tags) && tags.includes('blog');
 };
 
-// Для отладки (временно):
+// Для отладки (можно добавить при необходимости)
 export const gardenFilterDebug = (file: QuartzPluginData) => {
   const tags = file.frontmatter?.tags;
   const result = Array.isArray(tags) && tags.includes('garden');
-  console.log(`📄 File: ${file.filePath}`);
-  console.log(`   Tags:`, tags);
-  console.log(`   Include in garden: ${result}`);
-  return result;
-};
-
-export const blogFilterDebug = (file: QuartzPluginData) => {
-  const tags = file.frontmatter?.tags;
-  const result = Array.isArray(tags) && tags.includes('blog');
-  console.log(`📄 File: ${file.filePath}`);
-  console.log(`   Tags:`, tags);
-  console.log(`   Include in blog: ${result}`);
+  console.log(`📄 File: ${file.filePath}, tags:`, tags, `include: ${result}`);
   return result;
 };

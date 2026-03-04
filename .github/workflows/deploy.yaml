@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-          token: ${{ secrets.ASTERALOG_DEPLOY }}  # важно для подмодулей
+          token: ${{ secrets.ASTERALOG_DEPLOY }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,31 +36,53 @@ jobs:
           # Обновим garden-content
           cd content-garden
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update garden content from sync"
-          git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git HEAD:main
+          if ! git diff --quiet || ! git diff --staged --quiet; then
+            git commit -m "Update garden content from sync"
+            git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git HEAD:main
+          else
+            echo "No changes in garden-content"
+          fi
           cd ..
           
           # Обновим blog-content
           cd content-blog
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update blog content from sync"
-          git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git HEAD:main
+          if ! git diff --quiet || ! git diff --staged --quiet; then
+            git commit -m "Update blog content from sync"
+            git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git HEAD:main
+          else
+            echo "No changes in blog-content"
+          fi
           cd ..
           
           # Обновим ссылки на подмодули в основном репозитории
           git add content-garden content-blog
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update submodule references"
-          git push
+          if ! git diff --quiet || ! git diff --staged --quiet; then
+            git commit -m "Update submodule references"
+            git push
+          else
+            echo "No changes in submodule references"
+          fi
 
   deploy-garden:
     needs: sync-and-deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: actions/setup-node@v4
-      - name: Build Garden
+          token: ${{ secrets.ASTERALOG_DEPLOY }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Garden site
         run: |
           # Используем content-garden как источник
           rm -rf content
@@ -68,7 +90,8 @@ jobs:
           npx quartz build
         env:
           BASE_URL: "garden.asteralog.ru"
-      - name: Deploy to garden
+
+      - name: Deploy to garden subdomain
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
@@ -81,11 +104,21 @@ jobs:
     needs: sync-and-deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: actions/setup-node@v4
-      - name: Build Blog
+          token: ${{ secrets.ASTERALOG_DEPLOY }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Blog site
         run: |
           # Используем content-blog как источник
           rm -rf content
@@ -93,7 +126,8 @@ jobs:
           npx quartz build
         env:
           BASE_URL: "blog.asteralog.ru"
-      - name: Deploy to blog
+
+      - name: Deploy to blog subdomain
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}

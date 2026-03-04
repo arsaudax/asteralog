@@ -6,29 +6,69 @@ on:
       - main
 
 jobs:
-  deploy-garden:
+  sync-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with submodules
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+          submodules: recursive
+          token: ${{ secrets.ASTERALOG_DEPLOY }}  # важно для подмодулей
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: latest
-      
+
       - name: Install dependencies
         run: npm ci
-      
-      - name: Build Garden site
+
+      - name: Sync content to submodules
+        run: npm run sync-content
+
+      - name: Commit and push submodule updates
+        run: |
+          # Настроим git
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Обновим garden-content
+          cd content-garden
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update garden content from sync"
+          git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git HEAD:main
+          cd ..
+          
+          # Обновим blog-content
+          cd content-blog
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update blog content from sync"
+          git push https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git HEAD:main
+          cd ..
+          
+          # Обновим ссылки на подмодули в основном репозитории
+          git add content-garden content-blog
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update submodule references"
+          git push
+
+  deploy-garden:
+    needs: sync-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+      - name: Build Garden
+        run: |
+          # Используем content-garden как источник
+          rm -rf content
+          ln -s content-garden content
+          npx quartz build
         env:
           BASE_URL: "garden.asteralog.ru"
-        run: |
-          npx quartz build
-      
-      - name: Deploy to garden subdomain
+      - name: Deploy to garden
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
@@ -38,28 +78,22 @@ jobs:
           cname: garden.asteralog.ru
 
   deploy-blog:
+    needs: sync-and-deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: latest
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Build Blog site
+          submodules: recursive
+      - uses: actions/setup-node@v4
+      - name: Build Blog
+        run: |
+          # Используем content-blog как источник
+          rm -rf content
+          ln -s content-blog content
+          npx quartz build
         env:
           BASE_URL: "blog.asteralog.ru"
-        run: |
-          npx quartz build
-      
-      - name: Deploy to blog subdomain
+      - name: Deploy to blog
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}

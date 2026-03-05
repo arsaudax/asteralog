@@ -71,7 +71,7 @@ jobs:
           cd ..
 
       - name: Build Garden
-        run: npx quartz build
+        run: npx quartz build --directory content-garden --output public
         env:
           BASE_URL: garden.asteralog.ru
 
@@ -85,7 +85,7 @@ jobs:
           destination_dir: ./
 
       - name: Build Blog
-        run: npx quartz build
+        run: npx quartz build --directory content-blog --output public
         env:
           BASE_URL: blog.asteralog.ru
 

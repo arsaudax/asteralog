@@ -1,1 +1,5 @@
  
+[submodule "content-blog"]
+	path = content-blog
+	url = https://github.com/arsaudax/blog-content.git
+	branch = main

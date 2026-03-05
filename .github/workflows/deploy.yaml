@@ -1,119 +1,72 @@
-name: Deploy Quartz sites
+name: Deploy Asteralog Sites
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  sync-content:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
+          submodules: recursive
           fetch-depth: 0
           token: ${{ secrets.ASTERALOG_DEPLOY }}
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Sync content
-        run: npm run sync-content
+        run: node utils/content-sync/index.js
 
-      - name: Upload garden content artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: garden-content
-          path: content-garden
-
-      - name: Upload blog content artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: blog-content
-          path: content-blog
-
-  deploy-garden:
-    needs: sync-content
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download garden content
-        uses: actions/download-artifact@v4
-        with:
-          name: garden-content
-          path: content
-
-      - name: Checkout Quartz
-        uses: actions/checkout@v4
-        with:
-          repository: jackyzha0/quartz
-          path: quartz
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: latest
-
-      - name: Build Garden site
-        working-directory: ./quartz
+      - name: Update content submodules
         run: |
-          npm ci
-          cp ${{ github.workspace }}/quartz.config.ts quartz.config.ts
-          cp -r ${{ github.workspace }}/content content
-          npx quartz build
-        env:
-          BASE_URL: "garden.asteralog.ru"
+          cd content-garden
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: update garden content [skip ci]"
+          git push origin main
+          cd ../content-blog
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: update blog content [skip ci]"
+          git push origin main
 
-      - name: Deploy to garden subdomain
+      - name: Build Garden
+        run: npx quartz build
+        env:
+          BASE_URL: garden.asteralog.ru
+
+      - name: Deploy Garden
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
-          publish_dir: ./quartz/public
           external_repository: arsaudax/garden.asteralog.ru
-          publish_branch: main
-          cname: garden.asteralog.ru
+          publish_dir: ./public
+          publish_branch: gh-pages
+          destination_dir: ./
 
-  deploy-blog:
-    needs: sync-content
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download blog content
-        uses: actions/download-artifact@v4
-        with:
-          name: blog-content
-          path: content
-
-      - name: Checkout Quartz
-        uses: actions/checkout@v4
-        with:
-          repository: jackyzha0/quartz
-          path: quartz
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: latest
-
-      - name: Build Blog site
-        working-directory: ./quartz
-        run: |
-          npm ci
-          cp ${{ github.workspace }}/quartz.config.ts quartz.config.ts
-          cp -r ${{ github.workspace }}/content content
-          npx quartz build
+      - name: Build Blog
+        run: npx quartz build
         env:
-          BASE_URL: "blog.asteralog.ru"
+          BASE_URL: blog.asteralog.ru
 
-      - name: Deploy to blog subdomain
+      - name: Deploy Blog
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
-          publish_dir: ./quartz/public
           external_repository: arsaudax/blog.asteralog.ru
-          publish_branch: main
-          cname: blog.asteralog.ru
+          publish_dir: ./public
+          publish_branch: gh-pages
+          destination_dir: ./

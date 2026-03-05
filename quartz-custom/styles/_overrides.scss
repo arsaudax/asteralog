@@ -1,0 +1,145 @@
+// Quartz Component Overrides for Asteralog Theme
+
+// Callout/Admonition color overrides
+.callout {
+  &[data-callout="note"],
+  &[data-callout="info"] {
+    --callout-color: var(--asteralog-accent);
+  }
+
+  &[data-callout="tip"],
+  &[data-callout="success"] {
+    --callout-color: var(--asteralog-accent-alt);
+  }
+
+  border-left-color: var(--callout-color);
+
+  .callout-title {
+    color: var(--callout-color);
+  }
+}
+
+// Search component styling
+#search-container {
+  input {
+    border-color: var(--gray);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: var(--asteralog-accent);
+      box-shadow: 0 0 0 2px rgba(171, 125, 76, 0.2);
+      outline: none;
+    }
+  }
+
+  .search-result {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: var(--highlight);
+    }
+  }
+}
+
+// Graph component colors
+#graph-container {
+  .node {
+    fill: var(--asteralog-accent);
+    transition: fill 0.2s ease;
+
+    &:hover {
+      fill: var(--asteralog-accent-alt);
+    }
+  }
+
+  .link {
+    stroke: var(--gray);
+    transition: stroke 0.2s ease;
+
+    &:hover {
+      stroke: var(--asteralog-accent);
+    }
+  }
+}
+
+// Explorer component
+.explorer {
+  .folder-button {
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background: var(--highlight);
+      color: var(--asteralog-accent);
+    }
+  }
+
+  .folder-title,
+  .explorer-link {
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--asteralog-accent-alt);
+    }
+  }
+
+  .explorer-link.active {
+    color: var(--asteralog-accent);
+    font-weight: 600;
+  }
+}
+
+// Breadcrumbs enhancement
+.breadcrumb-container {
+  a {
+    color: var(--secondary);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--asteralog-accent-alt);
+    }
+  }
+
+  .breadcrumb-separator {
+    color: var(--gray);
+    margin: 0 0.5rem;
+  }
+}
+
+// Table of Contents styling
+.toc {
+  a {
+    transition: color 0.2s ease, background-color 0.2s ease;
+
+    &.active {
+      color: var(--asteralog-accent);
+      background: var(--highlight);
+      border-left: 3px solid var(--asteralog-accent);
+      padding-left: 0.75rem;
+    }
+
+    &:hover {
+      color: var(--asteralog-accent-alt);
+    }
+  }
+}
+
+// Dark mode toggle button
+.darkmode {
+  button {
+    background: var(--lightgray);
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--highlight);
+      border-color: var(--asteralog-accent);
+      transform: scale(1.05);
+    }
+
+    svg {
+      color: var(--asteralog-accent);
+    }
+  }
+}

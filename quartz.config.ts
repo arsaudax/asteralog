@@ -1,53 +1,50 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
+import * as CustomPlugins from "./quartz-custom/plugins"
 
-/**
- * Quartz 4 Configuration
- *
- * See https://quartz.jzhao.xyz/configuration for more information.
- */
 const config: QuartzConfig = {
   configuration: {
     pageTitle: "Asteralog",
-    pageTitleSuffix: "",
-    enableSPA: true,
+    pageTitleSuffix: " | Asteralog",
+    enableSPA: false,
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
     locale: "ru-RU",
+    // baseUrl НЕТ! Задаётся через переменную окружения
     ignorePatterns: ["private", "templates", ".obsidian"],
-    defaultDateType: "modified",
+    defaultDateType: "created",
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Schibsted Grotesk",
-        body: "Source Sans Pro",
-        code: "IBM Plex Mono",
+        header: "Inter",
+        body: "Inter",
+        code: "JetBrains Mono",
       },
       colors: {
         lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#a2845e",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#fff23688",
+          light: "#f9f7f4",      // основной фон сайта
+          lightgray: "#e5e5e5",   // второстепенный фон
+          gray: "#b8b8b8",        // границы
+          darkgray: "#4a4a49",    // второстепенный текст
+          dark: "#2b2b2b",        // основной текст
+          secondary: "#ab7d4c",   // акцентный цвет
+          tertiary: "#7c5736",    // дополнительный акцент
+          highlight: "rgba(162, 132, 94, 0.15)", // подсветка фона
+          textHighlight: "#fff23688", // выделение текста
         },
         darkMode: {
-          light: "#161618",
-          lightgray: "#393639",
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#a2845e",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#b3aa0288",
+          light: "#343434",       // основной фон сайта (тёмный)
+          lightgray: "#393639",    // второстепенный фон
+          gray: "#575756",         // границы
+          darkgray: "#ededed",     // второстепенный текст
+          dark: "#ffffff",         // основной текст
+          secondary: "#ab7d4c",    // акцентный цвет (тот же)
+          tertiary: "#7c5736",     // дополнительный акцент
+          highlight: "rgba(162, 132, 94, 0.15)", // подсветка фона
+          textHighlight: "#b3aa0288", // выделение текста
         },
       },
     },
@@ -56,7 +53,7 @@ const config: QuartzConfig = {
     transformers: [
       Plugin.FrontMatter(),
       Plugin.CreatedModifiedDate({
-        priority: ["frontmatter", "git", "filesystem"],
+        priority: ["frontmatter", "filesystem"],
       }),
       Plugin.SyntaxHighlighting({
         theme: {
@@ -68,9 +65,14 @@ const config: QuartzConfig = {
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
       Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
-      Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
+      Plugin.CrawlLinks({
+        markdownLinkResolution: "shortest",
+        openLinksInNewTab: true,
+      }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
+      CustomPlugins.RemoveTags({ tags: ["garden", "blog"] }), // Удаляем служебные теги
+      // CustomPlugins.Img(), // Раскомментировать, если нужен zoom изображений
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [
@@ -82,10 +84,13 @@ const config: QuartzConfig = {
       Plugin.ContentIndex({
         enableSiteMap: true,
         enableRSS: true,
+        rssFullHtml: false,
+        includeEmptyFiles: false,
       }),
       Plugin.Assets(),
       Plugin.Static(),
-      Plugin.Favicon(),
+      CustomPlugins.Static(),
+      CustomPlugins.CustomStyles(),
       Plugin.NotFoundPage(),
     ],
   },

@@ -1,68 +1,121 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
+import * as CustomComponent from "./quartz-custom/components"
+import { FileTrieNode } from "./quartz/components/scripts/spa"
 
-// components shared across all pages
+// Конфигурация проводника с эмодзи
+const explorerConfig = {
+  filterFn: (node: FileTrieNode) => {
+    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true
+    return !hasExcludedTag
+  },
+  mapFn: (node: FileTrieNode) => {
+    if (!node.isFolder) {
+      node.displayName = "⊹ " + node.displayName
+    }
+  },
+}
+
+// Конфигурация графа
+const graphConfig = {
+  localGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"]
+  },
+  globalGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"]
+  }
+}
+
+// Конфигурация обратных ссылок
+const backlinksConfig = {
+  hideWhenEmpty: true
+}
+
+// Конфигурация хлебных крошек
+const breadcrumbsConfig = {
+  rootName: "🏡"
+}
+
+// Общие компоненты для всех страниц
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
   afterBody: [],
-  footer: Component.Footer({
+  footer: CustomComponent.Footer({
     links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax"
     },
   }),
 }
 
-// components for pages that display a single page (e.g. a single note)
-export const defaultContentPageLayout: PageLayout = {
+// Макет для сада (garden.asteralog.ru)
+export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.ConditionalRender({
-      component: Component.Breadcrumbs(),
-      condition: (page) => page.fileData.slug !== "index",
-    }),
+    Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
-    Component.ContentMeta(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
-    Component.Flex({
-      components: [
-        {
-          Component: Component.Search(),
-          grow: true,
-        },
-        { Component: Component.Darkmode() },
-        { Component: Component.ReaderMode() },
-      ],
-    }),
-    Component.Explorer(),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [
-    Component.Graph(),
+    Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(),
+    Component.Backlinks(backlinksConfig),
+    Component.RecentNotes({ 
+      limit: 5, 
+      showTags: false, 
+      filter: gardenFilter 
+    }),
   ],
 }
 
-// components for pages that display lists of pages  (e.g. tags or folders)
+// Макет для блога (blog.asteralog.ru)
+export const blogContentPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
+  ],
+  left: [], // Нет левой колонки
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    Component.RecentNotes({ 
+      limit: 5, 
+      showTags: false, 
+      filter: blogFilter 
+    }),
+    Component.Backlinks(backlinksConfig),
+  ],
+}
+
+// Макет для страниц-списков (теги, папки)
 export const defaultListPageLayout: PageLayout = {
-  beforeBody: [Component.Breadcrumbs(), Component.ArticleTitle(), Component.ContentMeta()],
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+  ],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
-    Component.Flex({
-      components: [
-        {
-          Component: Component.Search(),
-          grow: true,
-        },
-        { Component: Component.Darkmode() },
-      ],
-    }),
-    Component.Explorer(),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [],
 }
+
+// Экспорт по умолчанию для обратной совместимости
+export const defaultContentPageLayout = gardenContentPageLayout

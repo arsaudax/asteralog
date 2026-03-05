@@ -3,3 +3,6 @@
 	path = content-blog
 	url = https://github.com/arsaudax/blog-content.git
 	branch = main
+[submodule "content-garden"]
+	path = content-garden
+	url = https://github.com/arsaudax/garden-content.git

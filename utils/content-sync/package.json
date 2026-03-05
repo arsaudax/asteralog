@@ -1,0 +1,21 @@
+{
+  "name": "asteralog-content-sync",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Sync content from Obsidian to Asteralog sites",
+  "main": "index.js",
+  "scripts": {
+    "sync": "node index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "remark": "^15.0.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "transliteration": "^2.6.1",
+    "unified": "^11.0.4",
+    "unist-util-visit": "^5.0.0",
+    "yaml": "^2.3.4"
+  }
+}

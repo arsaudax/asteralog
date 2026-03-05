@@ -1,0 +1,1 @@
+export { RemoveTags } from "./removeTags"

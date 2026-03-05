@@ -1,0 +1,101 @@
+// Asteralog Theme Enhancements
+// Custom styling для цифрового сада и блога
+
+// Import variables
+@use "./variables";
+
+// Enhanced code blocks
+pre {
+  background: var(--asteralog-bg-dark) !important;
+  border: 1px solid var(--asteralog-selection-dark);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+
+  :root[saved-theme="light"] & {
+    background: var(--asteralog-bg-light-alt) !important;
+    border-color: var(--asteralog-selection-light);
+  }
+}
+
+// Inline code styling
+code:not(pre code) {
+  background: var(--asteralog-selection-dark);
+  color: var(--asteralog-accent);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+
+  :root[saved-theme="light"] & {
+    background: var(--asteralog-selection-light);
+    color: var(--asteralog-accent-alt);
+  }
+}
+
+// Tag styling
+.tag,
+.tags a {
+  background: transparent;
+  color: var(--asteralog-accent);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s ease;
+  font-size: 0.9em;
+
+  &:hover {
+    background: transparent;
+    color: var(--asteralog-accent-alt);
+    transform: translateY(-1px);
+  }
+}
+
+// Enhanced link hover states
+a {
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: var(--asteralog-accent-alt);
+  }
+
+  &.internal {
+    background-color: transparent !important;
+  }
+}
+
+// Better selection highlighting
+::selection {
+  background: var(--highlight);
+  color: var(--darkgray);
+}
+
+// Smooth theme transitions
+body,
+pre,
+code {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+// Enhanced blockquote styling
+blockquote {
+  border-left: 4px solid var(--asteralog-accent);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--gray);
+  font-style: italic;
+}
+
+// Horizontal rule styling
+hr {
+  border: none;
+  border-top: 2px solid var(--asteralog-selection-dark);
+  margin: 2rem 0;
+
+  :root[saved-theme="light"] & {
+    border-top-color: var(--asteralog-selection-light);
+  }
+}
+
+// Import component overrides
+@import "./overrides";

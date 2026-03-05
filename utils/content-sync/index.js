@@ -1,121 +1,284 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { fileURLToPath } from 'url';
+import { promises as fs } from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkStringify from 'remark-stringify'
+import remarkFrontmatter from 'remark-frontmatter'
+import { visit } from 'unist-util-visit'
+import YAML from 'yaml'
+import chalk from 'chalk'
+import { slugify } from 'transliteration'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-// Настройки путей
-const SOURCE_DIR = path.join(__dirname, '../../content');
-const GARDEN_DIR = path.join(__dirname, '../../content-garden');
-const BLOG_DIR = path.join(__dirname, '../../content-blog');
+// Конфигурация
+const config = {
+    sourceDir: path.join(__dirname, '../../content'),
+    gardenDir: path.join(__dirname, '../../content-garden'),
+    blogDir: path.join(__dirname, '../../content-blog'),
+    gardenTag: 'garden',
+    blogTag: 'blog'
+}
 
-// Создаём папки, если их нет
-[GARDEN_DIR, BLOG_DIR].forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-});
-
-// Получение всех .md файлов рекурсивно
-function getAllMarkdownFiles(dir) {
-  const files = [];
-  const items = fs.readdirSync(dir, { withFileTypes: true });
-  
-  for (const item of items) {
-    const fullPath = path.join(dir, item.name);
-    if (item.isDirectory()) {
-      files.push(...getAllMarkdownFiles(fullPath));
-    } else if (item.name.endsWith('.md')) {
-      files.push(fullPath);
+class AsteralogSync {
+    constructor(config) {
+        this.config = config
+        this.processedFiles = new Set()
+        this.stats = {
+            garden: 0,
+            blog: 0,
+            both: 0,
+            none: 0
+        }
+        
+        this.processor = unified()
+            .use(remarkParse)
+            .use(remarkFrontmatter, ['yaml'])
+            .use(remarkStringify)
     }
-  }
-  return files;
-}
 
-// Очистка целевой папки
-function cleanDirectory(dir) {
-  if (fs.existsSync(dir)) {
-    fs.rmSync(dir, { recursive: true, force: true });
-  }
-  fs.mkdirSync(dir, { recursive: true });
-}
-
-// Копирование файла с сохранением структуры папок
-function copyFileWithStructure(sourceFile, targetDir, sourceBase) {
-  const relativePath = path.relative(sourceBase, sourceFile);
-  const targetPath = path.join(targetDir, relativePath);
-  const targetFileDir = path.dirname(targetPath);
-  
-  fs.mkdirSync(targetFileDir, { recursive: true });
-  fs.copyFileSync(sourceFile, targetPath);
-  console.log(`  📄 ${relativePath}`);
-}
-
-// Основная функция
-function syncContent() {
-  console.log('🔄 Starting content sync...\n');
-  
-  // Получаем все markdown файлы
-  const files = getAllMarkdownFiles(SOURCE_DIR);
-  console.log(`Found ${files.length} markdown files\n`);
-  
-  // Очищаем целевые папки
-  console.log('Cleaning target directories...');
-  cleanDirectory(GARDEN_DIR);
-  cleanDirectory(BLOG_DIR);
-  console.log('  ✓ Garden directory cleaned');
-  console.log('  ✓ Blog directory cleaned\n');
-  
-  // Счётчики
-  let gardenCount = 0;
-  let blogCount = 0;
-  let bothCount = 0;
-  let noneCount = 0;
-  
-  // Обрабатываем каждый файл
-  files.forEach(file => {
-    try {
-      const content = fs.readFileSync(file, 'utf8');
-      const { data: frontmatter } = matter(content);
-      const tags = frontmatter.tags || [];
-      
-      const hasGarden = tags.includes('garden');
-      const hasBlog = tags.includes('blog');
-      
-      if (hasGarden || hasBlog) {
-        console.log(`\n📄 Processing: ${path.relative(SOURCE_DIR, file)}`);
-        console.log(`   Tags:`, tags);
-      }
-      
-      if (hasGarden) {
-        copyFileWithStructure(file, GARDEN_DIR, SOURCE_DIR);
-        gardenCount++;
-      }
-      
-      if (hasBlog) {
-        copyFileWithStructure(file, BLOG_DIR, SOURCE_DIR);
-        blogCount++;
-      }
-      
-      if (hasGarden && hasBlog) {
-        bothCount++;
-      } else if (!hasGarden && !hasBlog) {
-        noneCount++;
-      }
-      
-    } catch (error) {
-      console.error(`   ❌ Error processing ${file}:`, error.message);
+    /**
+     * Транслитерация строки (русские символы -> латиница)
+     */
+    transliteratePath(input) {
+        if (!input) return input
+        
+        // Сначала транслитерируем
+        let result = slugify(input, {
+            lowercase: true,
+            separator: '-',
+            allowedChars: 'a-zA-Z0-9\\-\\.'
+        })
+        
+        // Убираем множественные дефисы
+        result = result.replace(/-+/g, '-')
+        // Убираем дефисы в начале и конце
+        result = result.replace(/^-|-$/g, '')
+        
+        return result
     }
-  });
-  
-  console.log(`\n✅ Sync complete!`);
-  console.log(`   Garden: ${gardenCount} files`);
-  console.log(`   Blog: ${blogCount} files`);
-  console.log(`   Both: ${bothCount} files`);
-  console.log(`   Private (no tags): ${noneCount} files`);
+
+    /**
+     * Извлечение и парсинг YAML frontmatter
+     */
+    extractFrontmatter(tree) {
+        let frontmatterNode = null
+        visit(tree, 'yaml', (node) => {
+            frontmatterNode = node
+            return false
+        })
+
+        if (!frontmatterNode) return null
+        return YAML.parse(frontmatterNode.value)
+    }
+
+    /**
+     * Получение тегов из frontmatter
+     */
+    async getTags(filePath) {
+        try {
+            const content = await fs.readFile(filePath, 'utf-8')
+            const tree = this.processor.parse(content)
+            const frontmatter = this.extractFrontmatter(tree)
+
+            if (!frontmatter?.tags) return []
+            
+            return Array.isArray(frontmatter.tags) 
+                ? frontmatter.tags 
+                : frontmatter.tags.split(',').map(tag => tag.trim())
+        } catch (error) {
+            console.error(chalk.red(`Error reading tags from ${filePath}:`), error.message)
+            return []
+        }
+    }
+
+    /**
+     * Получение всех markdown файлов рекурсивно
+     */
+    async getMarkdownFiles(dir) {
+        const files = []
+
+        async function scan(directory) {
+            const entries = await fs.readdir(directory, { withFileTypes: true })
+
+            for (const entry of entries) {
+                const fullPath = path.join(directory, entry.name)
+
+                if (entry.isDirectory()) {
+                    await scan(fullPath)
+                } else if (entry.name.endsWith('.md')) {
+                    files.push(fullPath)
+                }
+            }
+        }
+
+        await scan(dir)
+        return files
+    }
+
+    /**
+     * Очистка директории кроме .git
+     */
+    async clearDirectory(dir) {
+        try {
+            const items = await fs.readdir(dir, { withFileTypes: true })
+            
+            for (const item of items) {
+                if (item.name !== '.git') {
+                    const itemPath = path.join(dir, item.name)
+                    await fs.rm(itemPath, { recursive: true, force: true })
+                }
+            }
+        } catch (error) {
+            // Directory might not exist yet
+            await fs.mkdir(dir, { recursive: true })
+        }
+    }
+
+    /**
+     * Копирование файла с сохранением структуры (с транслитерацией)
+     */
+    async copyFileWithStructure(sourceFile, targetDir, sourceBase) {
+        const relativePath = path.relative(sourceBase, sourceFile)
+        
+        // Разбиваем путь на компоненты и транслитерируем каждый
+        const pathComponents = relativePath.split(path.sep)
+        const transliteratedComponents = pathComponents.map(comp => {
+            // Если это файл .md, обрабатываем отдельно
+            if (comp.endsWith('.md')) {
+                const fileName = comp.slice(0, -3)
+                const transliterated = this.transliteratePath(fileName)
+                return transliterated + '.md'
+            }
+            // Для папок просто транслитерируем
+            return this.transliteratePath(comp)
+        })
+        
+        // Собираем новый путь
+        const newRelativePath = transliteratedComponents.join(path.sep)
+        const targetPath = path.join(targetDir, newRelativePath)
+        const targetFileDir = path.dirname(targetPath)
+
+        console.log(chalk.gray(`      Оригинал: ${relativePath}`))
+        console.log(chalk.gray(`      Транслит: ${newRelativePath}`))
+        
+        await fs.mkdir(targetFileDir, { recursive: true })
+        await fs.copyFile(sourceFile, targetPath)
+        
+        return newRelativePath
+    }
+
+    /**
+     * Копирование ассетов для файла
+     */
+    async copyAssets(sourceFilePath, targetFilePath) {
+        const sourceDir = path.dirname(sourceFilePath)
+        const targetDir = path.dirname(targetFilePath)
+        const assetsDir = path.join(sourceDir, 'assets')
+
+        try {
+            await fs.access(assetsDir)
+        } catch {
+            return // No assets directory
+        }
+
+        const targetAssetsDir = path.join(targetDir, 'assets')
+        await fs.mkdir(targetAssetsDir, { recursive: true })
+
+        const assetFiles = await fs.readdir(assetsDir, { withFileTypes: true })
+        
+        for (const file of assetFiles) {
+            if (file.isFile()) {
+                const sourcePath = path.join(assetsDir, file.name)
+                // Транслитерируем имена файлов ассетов
+                const fileName = file.name
+                const ext = path.extname(fileName)
+                const baseName = path.basename(fileName, ext)
+                const transliteratedName = this.transliteratePath(baseName) + ext
+                
+                const destPath = path.join(targetAssetsDir, transliteratedName)
+                await fs.copyFile(sourcePath, destPath)
+                console.log(chalk.gray(`      📎 asset: ${fileName} -> ${transliteratedName}`))
+            }
+        }
+    }
+
+    /**
+     * Обработка файла для целевого сайта
+     */
+    async processFileForTarget(file, targetDir, targetTag, sourceBase) {
+        const tags = await this.getTags(file)
+        
+        if (tags.includes(targetTag)) {
+            const relativePath = await this.copyFileWithStructure(file, targetDir, sourceBase)
+            await this.copyAssets(file, path.join(targetDir, relativePath))
+            
+            console.log(chalk.green(`  ✓ → ${targetTag}: ${relativePath}`))
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Основная функция синхронизации
+     */
+    async sync() {
+        console.log(chalk.blue('\n🔄 Запуск синхронизации Asteralog...\n'))
+
+        // Очистка целевых директорий
+        console.log(chalk.blue('Очистка целевых директорий...'))
+        await this.clearDirectory(this.config.gardenDir)
+        await this.clearDirectory(this.config.blogDir)
+        console.log(chalk.green('  ✓ Директория сада очищена'))
+        console.log(chalk.green('  ✓ Директория блога очищена\n'))
+
+        // Получение всех исходных файлов
+        const files = await this.getMarkdownFiles(this.config.sourceDir)
+        console.log(chalk.blue(`Найдено ${files.length} markdown файлов в источнике\n`))
+
+        // Обработка каждого файла
+        for (const file of files) {
+            const relativePath = path.relative(this.config.sourceDir, file)
+            console.log(chalk.cyan(`\n📄 Обработка: ${relativePath}`))
+
+            const tags = await this.getTags(file)
+            console.log(chalk.gray(`   Теги: ${tags.join(', ')}`))
+
+            const isGarden = tags.includes(this.config.gardenTag)
+            const isBlog = tags.includes(this.config.blogTag)
+
+            if (isGarden) {
+                await this.processFileForTarget(file, this.config.gardenDir, this.config.gardenTag, this.config.sourceDir)
+                this.stats.garden++
+            }
+
+            if (isBlog) {
+                await this.processFileForTarget(file, this.config.blogDir, this.config.blogTag, this.config.sourceDir)
+                this.stats.blog++
+            }
+
+            if (isGarden && isBlog) {
+                this.stats.both++
+            } else if (!isGarden && !isBlog) {
+                this.stats.none++
+                console.log(chalk.gray(`  - приватно (нет тегов)`))
+            }
+        }
+
+        // Итоги
+        console.log(chalk.green('\n✅ Синхронизация завершена!'))
+        console.log(chalk.blue(`   Сад: ${this.stats.garden} файлов`))
+        console.log(chalk.blue(`   Блог: ${this.stats.blog} файлов`))
+        console.log(chalk.blue(`   Везде: ${this.stats.both} файлов`))
+        console.log(chalk.gray(`   Приватно: ${this.stats.none} файлов\n`))
+    }
 }
 
-// Запускаем
-syncContent();
+// Запуск синхронизации
+const syncer = new AsteralogSync(config)
+syncer.sync().catch(error => {
+    console.error(chalk.red('\n❌ Синхронизация не удалась:'), error)
+    process.exit(1)
+})

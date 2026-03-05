@@ -1,7 +1,7 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
-import * as CustomComponent from "./quartz-custom/components"
+import { Footer, ContentMeta } from "./quartz-custom/components"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Конфигурация проводника с эмодзи

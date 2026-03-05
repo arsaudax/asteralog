@@ -6,4 +6,4 @@
 [submodule "content-garden"]
 	path = content-garden
 	url = https://github.com/arsaudax/garden-content.git
-        branch = main
+	branch = main

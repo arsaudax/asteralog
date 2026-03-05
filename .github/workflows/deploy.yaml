@@ -37,6 +37,8 @@ jobs:
           # Garden content
           cd content-garden
           git fetch origin
+          # Сохраняем локальные изменения, если они есть
+          git stash push --include-untracked || true
           git checkout main
           git pull origin main
           git config user.name "github-actions[bot]"
@@ -46,11 +48,15 @@ jobs:
             git commit -m "chore: update garden content [skip ci]"
             git push origin main
           fi
+          # Восстанавливаем изменения из stash, если они были
+          git stash pop || true
           cd ..
 
           # Blog content
           cd content-blog
           git fetch origin
+          # Сохраняем локальные изменения, если они есть
+          git stash push --include-untracked || true
           git checkout main
           git pull origin main
           git config user.name "github-actions[bot]"
@@ -60,6 +66,8 @@ jobs:
             git commit -m "chore: update blog content [skip ci]"
             git push origin main
           fi
+          # Восстанавливаем изменения из stash, если они были
+          git stash pop || true
           cd ..
 
       - name: Build Garden

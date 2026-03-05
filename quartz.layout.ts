@@ -1,7 +1,7 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
-import { Footer, ContentMeta } from "./quartz-custom/components"
+import * as CustomComponent from "./quartz-custom/components"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Конфигурация проводника с эмодзи
@@ -88,7 +88,7 @@ export const blogContentPageLayout: PageLayout = {
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
-  left: [], // Нет левой колонки
+  left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.RecentNotes({ 

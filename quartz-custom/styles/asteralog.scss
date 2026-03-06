@@ -3,6 +3,7 @@
 
 // Import variables
 @use "./variables";
+@use "./overrides";
 
 // Enhanced code blocks
 pre {
@@ -96,6 +97,3 @@ hr {
     border-top-color: var(--asteralog-selection-light);
   }
 }
-
-// Import component overrides
-@use "./overrides";

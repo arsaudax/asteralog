@@ -3,6 +3,7 @@ import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
+import BlogIndex from "./quartz-custom/components/BlogIndex" // ← Добавляем импорт
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Конфигурация проводника с эмодзи
@@ -60,7 +61,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(), // Это теги в начале статьи
+    Component.TagList(),
   ],
   left: [
     Component.PageTitle(),
@@ -78,28 +79,38 @@ export const gardenContentPageLayout: PageLayout = {
       showTags: false, 
       filter: gardenFilter 
     }),
-    TagList(), // ← ИСПРАВЛЕНО: было TagCloud()
+    TagList(),
   ],
 }
 
-// Макет для блога (blog.asteralog.ru)
-export const blogContentPageLayout: PageLayout = {
+// Макет для страниц блога (кроме главной)
+export const blogPostPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(), // Это теги в начале статьи
+    Component.TagList(),
   ],
   left: [], // Левая колонка отсутствует
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.RecentNotes({ 
-      title: "Последние записи",
-      limit: 8,
-      showTags: true,
-      filter: blogFilter 
-    }),
-    TagList(), // ← ИСПРАВЛЕНО: было TagCloud()
+    TagList(),
+    Component.Backlinks(backlinksConfig),
+  ],
+}
+
+// Макет для главной страницы блога с лентой постов
+export const blogIndexPageLayout: PageLayout = {
+  beforeBody: [
+    // Вместо стандартных компонентов показываем кастомную ленту
+    (props) => {
+      return <BlogIndex {...props} />
+    },
+  ],
+  left: [], // Левая колонка отсутствует
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    TagList(),
     Component.Backlinks(backlinksConfig),
   ],
 }
@@ -121,8 +132,24 @@ export const defaultListPageLayout: PageLayout = {
   right: [],
 }
 
-// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта
+// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта и страницы
 export const defaultContentPageLayout = (() => {
   const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
-  return baseUrl?.includes('blog') ? blogContentPageLayout : gardenContentPageLayout
+  const isBlog = baseUrl?.includes('blog')
+  
+  // Возвращаем функцию, которая будет вызвана для каждой страницы
+  return (props: any) => {
+    // Для блога используем разную логику в зависимости от страницы
+    if (isBlog) {
+      // Для главной страницы блога используем специальный макет
+      if (props.fileData.slug === 'index') {
+        return blogIndexPageLayout
+      }
+      // Для остальных страниц блога используем обычный макет
+      return blogPostPageLayout
+    }
+    
+    // Для сада используем обычный макет
+    return gardenContentPageLayout
+  }
 })()

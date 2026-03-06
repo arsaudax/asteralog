@@ -2,6 +2,7 @@ import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
+import TagCloud from "./quartz-custom/components/TagCloud"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Конфигурация проводника с эмодзи
@@ -77,10 +78,11 @@ export const gardenContentPageLayout: PageLayout = {
       showTags: false, 
       filter: gardenFilter 
     }),
+    TagCloud(), // Добавляем облако тегов и в сад для единообразия
   ],
 }
 
-// Макет для блога (blog.asteralog.ru)
+// Макет для блога (blog.asteralog.ru) — УЛУЧШЕННАЯ ВЕРСИЯ
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -88,14 +90,16 @@ export const blogContentPageLayout: PageLayout = {
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
-  left: [],
+  left: [], // Левая колонка отсутствует — фокус на контенте
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.RecentNotes({ 
-      limit: 5, 
-      showTags: false, 
+      title: "📝 Последние записи", // Добавляем заголовок
+      limit: 8, // Больше записей для блога
+      showTags: true, // Показываем теги в списке
       filter: blogFilter 
     }),
+    TagCloud(), // Облако тегов после последних записей
     Component.Backlinks(backlinksConfig),
   ],
 }
@@ -117,5 +121,12 @@ export const defaultListPageLayout: PageLayout = {
   right: [],
 }
 
-// Экспорт по умолчанию для обратной совместимости
-export const defaultContentPageLayout = gardenContentPageLayout
+// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта
+export const defaultContentPageLayout = (() => {
+  // Определяем, какой сайт собирается по переменной окружения
+  // В GitHub Actions эта переменная установлена как BASE_URL
+  const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
+  
+  // Для блога используем blogContentPageLayout, для сада — gardenContentPageLayout
+  return baseUrl?.includes('blog') ? blogContentPageLayout : gardenContentPageLayout
+})()

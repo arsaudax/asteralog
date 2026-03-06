@@ -2,13 +2,19 @@ import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as CustomPlugins from "./quartz-custom/plugins"
 
-// Определяем, какой сайт собирается
-const isBlog = process.env.BASE_URL?.includes('blog') || false
+// Определяем, какой сайт собирается с поддержкой SITE_TYPE и отладкой
+const siteType = process.env.SITE_TYPE || 
+                 (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
+
+// Добавляем отладочный вывод (будет видно в логах GitHub Actions)
+console.log(`\n🔧 Quartz Config: Building for ${siteType} site`)
+console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
+console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
 
 // Базовая конфигурация (общая для обоих сайтов)
 const baseConfig = {
   pageTitle: "Asteralog",
-  pageTitleSuffix: " | Asteralog",
+  pageTitleSuffix: siteType === 'blog' ? " | Блог" : " | Цифровой сад",
   enableSPA: false,
   enablePopovers: true,
   analytics: {
@@ -71,8 +77,8 @@ const blogColors = {
   },
 }
 
-// Выбираем нужные цвета
-const colors = isBlog ? blogColors : gardenColors
+// Выбираем нужные цвета на основе siteType
+const colors = siteType === 'blog' ? blogColors : gardenColors
 
 const config: QuartzConfig = {
   configuration: {

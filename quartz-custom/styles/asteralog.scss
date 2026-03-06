@@ -2,8 +2,8 @@
 // Custom styling для цифрового сада и блога
 
 // Import variables
-@use "./variables";
-@use "./overrides";
+@import "./variables";
+@import "./overrides";
 
 // Enhanced code blocks
 pre {

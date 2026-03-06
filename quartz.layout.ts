@@ -3,7 +3,7 @@ import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
-import BlogIndex from "./quartz-custom/components/BlogIndex" // ← Добавляем импорт
+import BlogIndex from "./quartz-custom/components/BlogIndex"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Конфигурация проводника с эмодзи
@@ -91,7 +91,7 @@ export const blogPostPageLayout: PageLayout = {
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
-  left: [], // Левая колонка отсутствует
+  left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     TagList(),
@@ -102,12 +102,10 @@ export const blogPostPageLayout: PageLayout = {
 // Макет для главной страницы блога с лентой постов
 export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
-    // Вместо стандартных компонентов показываем кастомную ленту
-    (props) => {
-      return <BlogIndex {...props} />
-    },
+    // Исправленный синтаксис - передаём компонент напрямую
+    BlogIndex,
   ],
-  left: [], // Левая колонка отсутствует
+  left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     TagList(),

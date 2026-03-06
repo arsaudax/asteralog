@@ -1,6 +1,6 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { classNames } from "../../quartz/util/lang"
-import style from "./styles/tagList.scss"
+import style from "./styles/TagList.scss"
 
 interface TagCount {
   tag: string

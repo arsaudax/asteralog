@@ -69,7 +69,7 @@ jobs:
         env:
           BASE_URL: garden.asteralog.ru
 
-      - name: Debug build output  ←─── ВОТ СЮДА
+      - name: Debug build output
         run: |
           echo "=== Current directory ==="
           pwd
@@ -89,14 +89,20 @@ jobs:
 
       - name: Deploy Garden
         uses: peaceiris/actions-gh-pages@v4
-        ...
+        with:
+          personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
+          external_repository: arsaudax/garden.asteralog.ru
+          publish_dir: ./public
+          publish_branch: gh-pages
+          force_orphan: true
+          destination_dir: ./
 
       - name: Build Blog
         run: npx quartz build --directory content-blog --output public
         env:
           BASE_URL: blog.asteralog.ru
 
-      - name: Debug blog output  ←─── И СЮДА
+      - name: Debug blog output
         run: |
           echo "=== Blog build debug ==="
           ls -la public/

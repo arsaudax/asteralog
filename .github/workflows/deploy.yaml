@@ -34,39 +34,39 @@ jobs:
 
       - name: Update and commit blog content
         run: |
-         cd content-blog
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git stash push --include-untracked || true
-        git checkout main
-        git pull origin main
-        git stash pop || true
-        git add -A
-        if ! git diff --quiet --cached || ! git diff --quiet; then
-         git commit -m "chore: sync blog content [skip ci]"
-         git push origin main
-        else
-         echo "No changes in blog content"
-        fi
-        cd ..
+          cd content-blog
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push --include-untracked || true
+          git checkout main
+          git pull origin main
+          git stash pop || true
+          git add -A
+          if ! git diff --quiet --cached || ! git diff --quiet; then
+            git commit -m "chore: sync blog content [skip ci]"
+            git push origin main
+          else
+            echo "No changes in blog content"
+          fi
+          cd ..
 
       - name: Update and commit garden content
         run: |
-         cd content-garden
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git stash push --include-untracked || true
-        git checkout main
-        git pull origin main
-        git stash pop || true
-        git add -A
-        if ! git diff --quiet --cached || ! git diff --quiet; then
-         git commit -m "chore: sync garden content [skip ci]"
-         git push origin main
-        else
-         echo "No changes in garden content"
-        fi
-        cd ..
+          cd content-garden
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push --include-untracked || true
+          git checkout main
+          git pull origin main
+          git stash pop || true
+          git add -A
+          if ! git diff --quiet --cached || ! git diff --quiet; then
+            git commit -m "chore: sync garden content [skip ci]"
+            git push origin main
+          else
+            echo "No changes in garden content"
+          fi
+          cd ..
 
       - name: Build Garden
         run: npx quartz build --directory content-garden --output public

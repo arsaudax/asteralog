@@ -2,7 +2,7 @@ import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
-import TagCloud from "./quartz-custom/components/TagCloud"
+import TagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Конфигурация проводника с эмодзи
@@ -60,7 +60,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
+    Component.TagList(), // Это теги в начале статьи
   ],
   left: [
     Component.PageTitle(),
@@ -78,28 +78,28 @@ export const gardenContentPageLayout: PageLayout = {
       showTags: false, 
       filter: gardenFilter 
     }),
-    TagCloud(), // Добавляем облако тегов и в сад для единообразия
+    TagList(), // ← ИСПРАВЛЕНО: было TagCloud()
   ],
 }
 
-// Макет для блога (blog.asteralog.ru) — УЛУЧШЕННАЯ ВЕРСИЯ
+// Макет для блога (blog.asteralog.ru)
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
+    Component.TagList(), // Это теги в начале статьи
   ],
-  left: [], // Левая колонка отсутствует — фокус на контенте
+  left: [], // Левая колонка отсутствует
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.RecentNotes({ 
-      title: "📝 Последние записи", // Добавляем заголовок
-      limit: 8, // Больше записей для блога
-      showTags: true, // Показываем теги в списке
+      title: "📝 Последние записи",
+      limit: 8,
+      showTags: true,
       filter: blogFilter 
     }),
-    TagCloud(), // Облако тегов после последних записей
+    TagList(), // ← ИСПРАВЛЕНО: было TagCloud()
     Component.Backlinks(backlinksConfig),
   ],
 }
@@ -123,10 +123,6 @@ export const defaultListPageLayout: PageLayout = {
 
 // УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта
 export const defaultContentPageLayout = (() => {
-  // Определяем, какой сайт собирается по переменной окружения
-  // В GitHub Actions эта переменная установлена как BASE_URL
   const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
-  
-  // Для блога используем blogContentPageLayout, для сада — gardenContentPageLayout
   return baseUrl?.includes('blog') ? blogContentPageLayout : gardenContentPageLayout
 })()

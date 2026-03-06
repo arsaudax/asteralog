@@ -37,8 +37,10 @@ jobs:
           cd content-garden
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout main
+          git pull origin main
           git add -A
-          if ! git diff --quiet --cached; then
+          if ! git diff --quiet --cached || ! git diff --quiet; then
             git commit -m "chore: sync garden content [skip ci]"
             git push origin main
           else
@@ -51,8 +53,10 @@ jobs:
           cd content-blog
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout main
+          git pull origin main
           git add -A
-          if ! git diff --quiet --cached; then
+          if ! git diff --quiet --cached || ! git diff --quiet; then
             git commit -m "chore: sync blog content [skip ci]"
             git push origin main
           else

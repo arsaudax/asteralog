@@ -72,11 +72,13 @@ jobs:
         run: npx quartz build --directory content-garden --output public
         env:
           BASE_URL: garden.asteralog.ru
+          SITE_TYPE: garden
 
       - name: Debug build output
         run: |
-          echo "=== Current directory ==="
-          pwd
+          echo "=== Garden build debug ==="
+          echo "SITE_TYPE: $SITE_TYPE"
+          echo "BASE_URL: $BASE_URL"
           echo "=== Content of public directory ==="
           ls -la public/
           echo "=== First 20 lines of index.html ==="
@@ -90,6 +92,14 @@ jobs:
             echo "✅ index.html looks good"
           fi
         working-directory: ${{ github.workspace }}
+        env:
+          SITE_TYPE: garden
+          BASE_URL: garden.asteralog.ru
+
+      - name: Add CNAME for garden
+        run: echo "garden.asteralog.ru" > public/CNAME
+        working-directory: ${{ github.workspace }}
+        if: success()
 
       - name: Deploy Garden
         uses: peaceiris/actions-gh-pages@v4
@@ -105,13 +115,24 @@ jobs:
         run: npx quartz build --directory content-blog --output public
         env:
           BASE_URL: blog.asteralog.ru
+          SITE_TYPE: blog
 
       - name: Debug blog output
         run: |
           echo "=== Blog build debug ==="
+          echo "SITE_TYPE: $SITE_TYPE"
+          echo "BASE_URL: $BASE_URL"
           ls -la public/
           cat public/index.html | head -20
         working-directory: ${{ github.workspace }}
+        env:
+          SITE_TYPE: blog
+          BASE_URL: blog.asteralog.ru
+
+      - name: Add CNAME for blog
+        run: echo "blog.asteralog.ru" > public/CNAME
+        working-directory: ${{ github.workspace }}
+        if: success()
 
       - name: Deploy Blog
         uses: peaceiris/actions-gh-pages@v4

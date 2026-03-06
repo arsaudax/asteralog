@@ -138,7 +138,7 @@ class AsteralogSync {
     }
 
     /**
-     * Копирование файла с сохранением структуры (с транслитерацией)
+     * Копирование файла с сохранением структуры (с транслитерацией и UTF-8)
      */
     async copyFileWithStructure(sourceFile, targetDir, sourceBase) {
         const relativePath = path.relative(sourceBase, sourceFile)
@@ -165,7 +165,10 @@ class AsteralogSync {
         console.log(chalk.gray(`      Транслит: ${newRelativePath}`))
         
         await fs.mkdir(targetFileDir, { recursive: true })
-        await fs.copyFile(sourceFile, targetPath)
+        
+        // ВАЖНО: читаем с UTF-8 и пишем с UTF-8
+        const content = await fs.readFile(sourceFile, 'utf8')
+        await fs.writeFile(targetPath, content, 'utf8')
         
         return newRelativePath
     }
@@ -199,6 +202,7 @@ class AsteralogSync {
                 const transliteratedName = this.transliteratePath(baseName) + ext
                 
                 const destPath = path.join(targetAssetsDir, transliteratedName)
+                // Для ассетов используем copyFile (они бинарные)
                 await fs.copyFile(sourcePath, destPath)
                 console.log(chalk.gray(`      📎 asset: ${fileName} -> ${transliteratedName}`))
             }

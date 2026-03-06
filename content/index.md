@@ -1,15 +1,12 @@
 ---
-title: Carduus camporum
+title: Astera mea in verborum cavillatio habitat
 tags:
   - garden
-  - blog
 ---
 
-# Вход в сад
+# Carduus camporum
 
-Есть решения!
-Определённо! Всегда!
-Но это не точно!
+Эта страница — вход в сад, в котором растут мои мысли о ремесле, искусстве и внутренней эмиграции.
 
-Свои мысли о ремесле, искусстве и внутренней эмиграции наблюдает и опубликует если сделает этот сайт @arsaudax
+[@asteralog](https://t.me/asteralog)
 

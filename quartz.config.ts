@@ -30,7 +30,7 @@ const gardenColors = {
   lightMode: {   // Светлая тема для сада (по умолчанию)
     light: "#f9f7f4",
     lightgray: "#e5e5e5",
-    gray: "#b8b8b8",
+    gray: "#9a9a9a",
     darkgray: "#4a4a49",
     dark: "#2b2b2b",
     secondary: "#ab7d4c",
@@ -41,7 +41,7 @@ const gardenColors = {
   darkMode: {    // Тёмная тема для сада (переключаемая)
     light: "#343434",
     lightgray: "#393639",
-    gray: "#575756",
+    gray: "#aaaaaa",
     darkgray: "#ededed",
     dark: "#ffffff",
     secondary: "#ab7d4c",
@@ -56,7 +56,7 @@ const blogColors = {
   lightMode: {   // Светлая тема для блога (переключаемая)
     light: "#ffffff",
     lightgray: "#f0f0f0",
-    gray: "#dddddd",
+    gray: "#9a9a9a",
     darkgray: "#666666",
     dark: "#333333",
     secondary: "#ab7d4c",
@@ -67,7 +67,7 @@ const blogColors = {
   darkMode: {    // Тёмная тема для блога (по умолчанию)
     light: "#343434",
     lightgray: "#393639",
-    gray: "#575756",
+    gray: "#aaaaaa",
     darkgray: "#ededed",
     dark: "#ffffff",
     secondary: "#ab7d4c",

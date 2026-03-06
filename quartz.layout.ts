@@ -94,7 +94,7 @@ export const blogContentPageLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.RecentNotes({ 
-      title: "📝 Последние записи",
+      title: "Последние записи",
       limit: 8,
       showTags: true,
       filter: blogFilter 

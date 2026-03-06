@@ -1,5 +1,5 @@
 import ContentMeta from "./ContentMeta"
 import Footer from "./Footer"
-import TagCloud from "./TagCloud"
+import TagList from "./TagList"
 
-export { ContentMeta, Footer, TagCloud }
+export { ContentMeta, Footer, TagList }

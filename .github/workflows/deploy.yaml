@@ -82,6 +82,7 @@ jobs:
           external_repository: arsaudax/garden.asteralog.ru
           publish_dir: ./public
           publish_branch: gh-pages
+          force_orphan: true
           destination_dir: ./
 
       - name: Build Blog
@@ -96,4 +97,5 @@ jobs:
           external_repository: arsaudax/blog.asteralog.ru
           publish_dir: ./public
           publish_branch: gh-pages
+          force_orphan: true
           destination_dir: ./

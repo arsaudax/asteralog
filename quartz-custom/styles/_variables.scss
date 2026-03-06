@@ -1,41 +1,22 @@
-// Asteralog Color Variables
-// Основано на предоставленной цветовой схеме
+/* Asteralog Color Variables */
+/* Чистый CSS без Sass-переменных */
 
-// Dark Mode Colors
-$asteralog-bg-dark: #343434;
-$asteralog-bg-dark-alt: #393639;
-$asteralog-fg-dark: #ffffff;
-$asteralog-comment-dark: #ededed;
-$asteralog-selection-dark: #575756;
-
-// Light Mode Colors
-$asteralog-bg-light: #f9f7f4;
-$asteralog-bg-light-alt: #e5e5e5;
-$asteralog-fg-light: #2b2b2b;
-$asteralog-comment-light: #4a4a49;
-$asteralog-selection-light: #b8b8b8;
-
-// Accent Colors (universal)
-$asteralog-accent: #ab7d4c;
-$asteralog-accent-alt: #7c5736;
-
-// Export as CSS variables for runtime use
 :root {
-  // Dark mode colors
-  --asteralog-bg-dark: #{$asteralog-bg-dark};
-  --asteralog-bg-dark-alt: #{$asteralog-bg-dark-alt};
-  --asteralog-fg-dark: #{$asteralog-fg-dark};
-  --asteralog-comment-dark: #{$asteralog-comment-dark};
-  --asteralog-selection-dark: #{$asteralog-selection-dark};
+  /* Dark mode colors */
+  --asteralog-bg-dark: #343434;
+  --asteralog-bg-dark-alt: #393639;
+  --asteralog-fg-dark: #ffffff;
+  --asteralog-comment-dark: #ededed;
+  --asteralog-selection-dark: #575756;
 
-  // Light mode colors
-  --asteralog-bg-light: #{$asteralog-bg-light};
-  --asteralog-bg-light-alt: #{$asteralog-bg-light-alt};
-  --asteralog-fg-light: #{$asteralog-fg-light};
-  --asteralog-comment-light: #{$asteralog-comment-light};
-  --asteralog-selection-light: #{$asteralog-selection-light};
+  /* Light mode colors */
+  --asteralog-bg-light: #f9f7f4;
+  --asteralog-bg-light-alt: #e5e5e5;
+  --asteralog-fg-light: #2b2b2b;
+  --asteralog-comment-light: #4a4a49;
+  --asteralog-selection-light: #b8b8b8;
 
-  // Accent colors
-  --asteralog-accent: #{$asteralog-accent};
-  --asteralog-accent-alt: #{$asteralog-accent-alt};
+  /* Accent colors */
+  --asteralog-accent: #ab7d4c;
+  --asteralog-accent-alt: #7c5736;
 }

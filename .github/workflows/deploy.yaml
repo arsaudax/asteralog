@@ -69,20 +69,39 @@ jobs:
         env:
           BASE_URL: garden.asteralog.ru
 
+      - name: Debug build output  ←─── ВОТ СЮДА
+        run: |
+          echo "=== Current directory ==="
+          pwd
+          echo "=== Content of public directory ==="
+          ls -la public/
+          echo "=== First 20 lines of index.html ==="
+          cat public/index.html | head -20
+          echo "=== Checking for 404 ==="
+          if grep -q "404" public/index.html; then
+            echo "❌ index.html is 404 page!"
+            echo "=== Looking for any index.md in source ==="
+            find content-garden -name "index.md" | xargs cat | head -10
+          else
+            echo "✅ index.html looks good"
+          fi
+        working-directory: ${{ github.workspace }}
+
       - name: Deploy Garden
         uses: peaceiris/actions-gh-pages@v4
-        with:
-          personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
-          external_repository: arsaudax/garden.asteralog.ru
-          publish_dir: ./public
-          publish_branch: gh-pages
-          force_orphan: true
-          destination_dir: ./
+        ...
 
       - name: Build Blog
         run: npx quartz build --directory content-blog --output public
         env:
           BASE_URL: blog.asteralog.ru
+
+      - name: Debug blog output  ←─── И СЮДА
+        run: |
+          echo "=== Blog build debug ==="
+          ls -la public/
+          cat public/index.html | head -20
+        working-directory: ${{ github.workspace }}
 
       - name: Deploy Blog
         uses: peaceiris/actions-gh-pages@v4

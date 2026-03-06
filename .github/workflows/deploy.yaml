@@ -32,42 +32,32 @@ jobs:
       - name: Sync content
         run: node utils/content-sync/index.js
 
-      - name: Update content submodules
+      - name: Update and commit garden content
         run: |
-          # Garden content
           cd content-garden
-          git fetch origin
-          # Сохраняем локальные изменения, если они есть
-          git stash push --include-untracked || true
-          git checkout main
-          git pull origin main
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "chore: update garden content [skip ci]"
+          git add -A
+          if ! git diff --quiet --cached; then
+            git commit -m "chore: sync garden content [skip ci]"
             git push origin main
+          else
+            echo "No changes in garden content"
           fi
-          # Восстанавливаем изменения из stash, если они были
-          git stash pop || true
           cd ..
 
-          # Blog content
+      - name: Update and commit blog content
+        run: |
           cd content-blog
-          git fetch origin
-          # Сохраняем локальные изменения, если они есть
-          git stash push --include-untracked || true
-          git checkout main
-          git pull origin main
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "chore: update blog content [skip ci]"
+          git add -A
+          if ! git diff --quiet --cached; then
+            git commit -m "chore: sync blog content [skip ci]"
             git push origin main
+          else
+            echo "No changes in blog content"
           fi
-          # Восстанавливаем изменения из stash, если они были
-          git stash pop || true
           cd ..
 
       - name: Build Garden

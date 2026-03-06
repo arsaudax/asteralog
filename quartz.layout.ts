@@ -102,8 +102,7 @@ export const blogPostPageLayout: PageLayout = {
 // Макет для главной страницы блога с лентой постов
 export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
-    // Исправленный синтаксис - передаём компонент напрямую
-    BlogIndex,
+    BlogIndex, // ← ВАЖНО: просто компонент, без JSX
   ],
   left: [],
   right: [

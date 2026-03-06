@@ -226,6 +226,36 @@ class AsteralogSync {
     }
 
     /**
+     * Специальная обработка для blog-index.md
+     */
+    async processBlogIndex(file) {
+        const fileName = path.basename(file)
+        if (fileName !== 'blog-index.md') return false
+
+        const tags = await this.getTags(file)
+        if (!tags.includes(this.config.blogTag)) return false
+
+        // Копируем в блог как index.md
+        const targetPath = path.join(this.config.blogDir, 'index.md')
+        const targetFileDir = path.dirname(targetPath)
+
+        console.log(chalk.cyan(`\n📄 Специальная обработка: blog-index.md`))
+        console.log(chalk.gray(`   Теги: ${tags.join(', ')}`))
+        console.log(chalk.gray(`      Цель: блог → index.md`))
+
+        await fs.mkdir(targetFileDir, { recursive: true })
+        const content = await fs.readFile(file, 'utf8')
+        await fs.writeFile(targetPath, content, 'utf8')
+
+        // Копируем ассеты, если есть
+        await this.copyAssets(file, targetPath)
+
+        console.log(chalk.green(`  ✓ → blog: blog-index.md → index.md`))
+        this.stats.blog++
+        return true
+    }
+
+    /**
      * Основная функция синхронизации
      */
     async sync() {
@@ -242,8 +272,20 @@ class AsteralogSync {
         const files = await this.getMarkdownFiles(this.config.sourceDir)
         console.log(chalk.blue(`Найдено ${files.length} markdown файлов в источнике\n`))
 
-        // Обработка каждого файла
+        // Сначала обрабатываем blog-index.md специальным образом
         for (const file of files) {
+            const processed = await this.processBlogIndex(file)
+            if (processed) {
+                // Отмечаем файл как обработанный, чтобы не обрабатывать его повторно
+                this.processedFiles.add(file)
+            }
+        }
+
+        // Обработка остальных файлов
+        for (const file of files) {
+            // Пропускаем уже обработанные файлы
+            if (this.processedFiles.has(file)) continue
+
             const relativePath = path.relative(this.config.sourceDir, file)
             console.log(chalk.cyan(`\n📄 Обработка: ${relativePath}`))
 

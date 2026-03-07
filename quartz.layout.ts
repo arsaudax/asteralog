@@ -80,6 +80,13 @@ export const blogContentPageLayout: PageLayout = {
   left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
+    // Добавляем ленту постов
+    Component.RecentNotes({ 
+      title: "Последние записи",
+      limit: 20,
+      showTags: true,
+      filter: blogFilter 
+    }),
     TagList(),
     Component.Backlinks(backlinksConfig),
   ],

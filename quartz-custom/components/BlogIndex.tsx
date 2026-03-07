@@ -4,7 +4,7 @@ import { Date } from "../../quartz/components/Date"
 
 const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
   const { cfg, allFiles, displayClass } = props
-  
+
   const blogPosts = allFiles
     .filter(file => {
       const tags = file.frontmatter?.tags
@@ -22,9 +22,9 @@ const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
       <div class="blog-posts">
         {blogPosts.map(post => (
           <article class="blog-post" key={post.slug}>
-            <h2><a href={`/${post.slug}`}>{post.frontmatter?.title}</a></h2>
+            <h2><a href={`/${post.slug}`}>{post.frontmatter?.title || 'Без названия'}</a></h2>
             <div class="post-meta">
-              <Date date={post.dates?.created} locale={cfg.locale} />
+              {post.dates?.created && <Date date={post.dates.created} locale={cfg.locale} />}
               <div class="post-tags">
                 {post.frontmatter?.tags
                   ?.filter(t => !['garden', 'blog'].includes(t))

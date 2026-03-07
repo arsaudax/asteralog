@@ -69,9 +69,51 @@ export const gardenContentPageLayout: PageLayout = {
   ],
 }
 
-// Макет для блога
+// Макет для блога с отладкой фильтра
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
+    // Отладочный блок для проверки фильтра
+    (props) => {
+      const files = props.allFiles
+      const blogFiles = files.filter(f => {
+        const tags = f.frontmatter?.tags
+        return Array.isArray(tags) && tags.includes('blog')
+      })
+      const nonIndexFiles = blogFiles.filter(f => f.slug !== 'index')
+      
+      console.log('=== RecentNotes Debug ===')
+      console.log('Total files:', files.length)
+      console.log('Blog files:', blogFiles.length)
+      console.log('Non-index blog files:', nonIndexFiles.length)
+      console.log('Files:', nonIndexFiles.map(f => ({
+        slug: f.slug,
+        title: f.frontmatter?.title,
+        tags: f.frontmatter?.tags
+      })))
+      
+      return (
+        <div style={{
+          background: '#ff0',
+          padding: '1rem',
+          margin: '1rem 0',
+          border: '2px solid #f00'
+        }}>
+          <h3>🔍 Отладка RecentNotes</h3>
+          <p>Всего файлов: {files.length}</p>
+          <p>Файлов с тегом blog: {blogFiles.length}</p>
+          <p>Файлов для ленты (кроме index): {nonIndexFiles.length}</p>
+          <ul>
+            {nonIndexFiles.map(f => (
+              <li key={f.slug}>
+                <strong>{f.frontmatter?.title || 'Без названия'}</strong><br/>
+                Slug: {f.slug}<br/>
+                Теги: {f.frontmatter?.tags?.join(', ')}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    },
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
@@ -80,7 +122,6 @@ export const blogContentPageLayout: PageLayout = {
   left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Добавляем ленту постов
     Component.RecentNotes({ 
       title: "Последние записи",
       limit: 20,

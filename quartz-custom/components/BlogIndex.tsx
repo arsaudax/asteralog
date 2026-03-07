@@ -1,70 +1,52 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
-import { classNames } from "../../quartz/util/lang"
-import { Date } from "../../quartz/components/Date"
 
 const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
-  const { cfg, allFiles, displayClass } = props
+  const { allFiles, fileData } = props
 
-  // Фильтруем только файлы с тегом blog, исключая index
-  const blogPosts = allFiles
-    .filter(file => {
-      const tags = file.frontmatter?.tags
-      return Array.isArray(tags) && tags.includes('blog') && file.slug !== 'index'
-    })
-    .sort((a, b) => {
-      const dateA = a.dates?.created ? new Date(a.dates.created).getTime() : 0
-      const dateB = b.dates?.created ? new Date(b.dates.created).getTime() : 0
-      return dateB - dateA
-    })
+  // Считаем файлы с тегом blog
+  const blogFiles = allFiles.filter(file => {
+    const tags = file.frontmatter?.tags
+    return Array.isArray(tags) && tags.includes('blog')
+  })
+
+  const blogPosts = blogFiles.filter(file => file.slug !== 'index')
+  const indexFile = blogFiles.find(file => file.slug === 'index')
 
   return (
-    <div class={classNames(displayClass, "blog-index")}>
+    <div style={{ padding: '2rem' }}>
+      <div style={{ background: '#ff0', padding: '1rem', marginBottom: '2rem' }}>
+        <h2>🔍 Отладка BlogIndex</h2>
+        <p><strong>Текущая страница:</strong> {fileData.slug}</p>
+        <p><strong>Всего файлов:</strong> {allFiles.length}</p>
+        <p><strong>Файлов с тегом blog:</strong> {blogFiles.length}</p>
+        {indexFile && (
+          <p><strong>index.md:</strong> {indexFile.slug} - теги: {indexFile.frontmatter?.tags?.join(', ')}</p>
+        )}
+        <p><strong>Постов для ленты (кроме index):</strong> {blogPosts.length}</p>
+        <h3>Все файлы с тегом blog:</h3>
+        <ul>
+          {blogFiles.map(file => (
+            <li key={file.slug}>
+              <strong>{file.slug}</strong> - теги: {file.frontmatter?.tags?.join(', ')}
+            </li>
+          ))}
+        </ul>
+      </div>
+      
       <h1>Блог</h1>
       {blogPosts.length === 0 ? (
         <p>Пока нет записей</p>
       ) : (
-        <div class="blog-posts">
+        <ul>
           {blogPosts.map(post => (
-            <article class="blog-post" key={post.slug}>
-              <h2><a href={`/${post.slug}`}>{post.frontmatter?.title}</a></h2>
-              <div class="post-meta">
-                {post.dates?.created && <Date date={post.dates.created} locale={cfg.locale} />}
-              </div>
-              {post.frontmatter?.description && (
-                <p class="post-description">{post.frontmatter.description}</p>
-              )}
-            </article>
+            <li key={post.slug}>
+              <a href={`/${post.slug}`}>{post.frontmatter?.title || post.slug}</a>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   )
 }
-
-BlogIndex.css = `
-.blog-index {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-.blog-posts {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-.blog-post {
-  border-bottom: 1px solid var(--lightgray);
-  padding-bottom: 1.5rem;
-}
-.post-meta {
-  color: var(--gray);
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-.post-description {
-  color: var(--darkgray);
-  line-height: 1.6;
-}
-`
 
 export default (() => BlogIndex) satisfies QuartzComponentConstructor

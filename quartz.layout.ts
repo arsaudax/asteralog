@@ -6,7 +6,47 @@ import TagList from "./quartz-custom/components/TagList"
 import BlogIndex from "./quartz-custom/components/BlogIndex"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
-// ... все конфигурации остаются ...
+// Функция для определения типа сайта
+const getSiteType = () => {
+  if (typeof process === 'undefined') return 'garden'
+  const baseUrl = process.env?.BASE_URL || ''
+  return baseUrl.includes('blog') ? 'blog' : 'garden'
+}
+
+// Конфигурация проводника с эмодзи
+const explorerConfig = {
+  filterFn: (node: FileTrieNode) => {
+    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true
+    return !hasExcludedTag
+  },
+  mapFn: (node: FileTrieNode) => {
+    if (!node.isFolder) {
+      node.displayName = "⊹ " + node.displayName
+    }
+  },
+}
+
+// Конфигурация графа
+const graphConfig = {
+  localGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"]
+  },
+  globalGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"]
+  }
+}
+
+// Конфигурация обратных ссылок
+const backlinksConfig = {
+  hideWhenEmpty: true
+}
+
+// Конфигурация хлебных крошек
+const breadcrumbsConfig = {
+  rootName: "🏡"
+}
 
 // Общие компоненты для всех страниц
 export const sharedPageComponents: SharedLayout = {
@@ -23,20 +63,34 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // Макет для сада
-export const gardenContentPageLayout: PageLayout = { ... }
-
-// Макет для главной страницы блога
-export const blogIndexPageLayout: PageLayout = {
-  beforeBody: [BlogIndex],
-  left: [],
+export const gardenContentPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
+  ],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
   right: [
+    Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
-    TagList(),
     Component.Backlinks(backlinksConfig),
+    Component.RecentNotes({ 
+      limit: 5, 
+      showTags: false, 
+      filter: gardenFilter 
+    }),
+    TagList(),
   ],
 }
 
-// Макет для обычных страниц блога
+// Макет для обычных страниц блога (посты)
 export const blogPostPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -52,23 +106,35 @@ export const blogPostPageLayout: PageLayout = {
   ],
 }
 
-// Макет для страниц-списков
-export const defaultListPageLayout: PageLayout = { ... }
-
-// ===== ВАЖНО: Два отдельных экспорта для разных типов сайтов =====
-
-// Для сада - просто макет
-export const gardenLayout = gardenContentPageLayout
-
-// Для блога - функция выбора
-export const blogLayoutSelector = (props: any) => {
-  if (props.fileData.slug === 'index') {
-    return blogIndexPageLayout
-  }
-  return blogPostPageLayout
+// Макет для главной страницы блога (лента постов)
+export const blogIndexPageLayout: PageLayout = {
+  beforeBody: [BlogIndex],
+  left: [],
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    TagList(),
+    Component.Backlinks(backlinksConfig),
+  ],
 }
 
-// Основной экспорт - выбираем в зависимости от сайта
+// Макет для страниц-списков (теги, папки)
+export const defaultListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+  ],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [],
+}
+
+// УСЛОВНЫЙ ЭКСПОРТ
 export const defaultContentPageLayout = (() => {
   const siteType = getSiteType()
   
@@ -76,5 +142,11 @@ export const defaultContentPageLayout = (() => {
     return gardenContentPageLayout
   }
   
-  return blogLayoutSelector
+  // Для блога возвращаем функцию выбора
+  return (props: any) => {
+    if (props.fileData.slug === 'index') {
+      return blogIndexPageLayout
+    }
+    return blogPostPageLayout
+  }
 })()

@@ -81,14 +81,19 @@ export const blogContentPageLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.RecentNotes({ 
-      title: "Последние записи",
-      limit: 20,
-      showTags: true,
-      filter: (file) => {
-        const tags = file.frontmatter?.tags
-        return Array.isArray(tags) && tags.includes('blog') && file.slug !== 'index'
-      }
-    }),
+  title: "Последние записи",
+  limit: 20,
+  showTags: true,
+  filter: (file) => {
+    // Жёстко задаём slugs файлов, которые должны быть в ленте
+    const allowedSlugs = [
+      'intro', 
+      'kak-perestat-tyanut-sakralnoe-za-profannoe-i-ovladet-remeslom'
+    ]
+    console.log('Checking file:', file.slug)
+    return allowedSlugs.includes(file.slug)
+  }
+}),
     TagList(),
     Component.Backlinks(backlinksConfig),
   ],

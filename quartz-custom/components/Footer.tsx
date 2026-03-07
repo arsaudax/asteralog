@@ -8,19 +8,20 @@ interface Options {
 export default ((opts?: Options) => {
   const Footer: QuartzComponent = ({ displayClass }: QuartzComponentProps) => {
     const year = new Date().getFullYear()
-    const links = opts?.links ?? []
+    const links = opts?.links || {}
+    
     return (
       <footer class={`${displayClass ?? ""}`}>
-        <p>
-          🌱 Asteralog © {year}
-        </p>
-        <ul>
-          {Object.entries(links).map(([text, link]) => (
-            <li key={text}>
-              <a href={link}>{text}</a>
-            </li>
-          ))}
-        </ul>
+        <p>🌱 Asteralog © {year}</p>
+        {Object.keys(links).length > 0 && (
+          <ul>
+            {Object.entries(links).map(([text, link]) => (
+              <li key={text}>
+                <a href={link} target="_blank" rel="noopener noreferrer">{text}</a>
+              </li>
+            ))}
+          </ul>
+        )}
       </footer>
     )
   }

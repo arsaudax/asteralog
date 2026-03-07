@@ -1,6 +1,12 @@
 .content-meta {
   margin-top: 0;
+  margin-bottom: 1.5rem;
   color: var(--gray);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
 
   &[show-comma="true"] {
     > *:not(:last-child) {
@@ -9,6 +15,29 @@
       &::after {
         content: ",";
       }
+    }
+  }
+
+  // Адаптивность для мобильных
+  @media (max-width: 500px) {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  // Иконки и эмодзи
+  svg, img {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    margin-right: 0.25rem;
+  }
+
+  // Стиль для времени чтения
+  span:last-child {
+    &::before {
+      content: "·";
+      margin-right: 8px;
+      opacity: 0.5;
     }
   }
 }

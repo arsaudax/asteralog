@@ -28,30 +28,33 @@ function formatReadingTime(minutes: number) {
 
 export default ((opts?: Partial<ContentMetaOptions>) => {
   const options: ContentMetaOptions = { ...defaultOptions, ...opts }
+  
   function ContentMetadata({ cfg, fileData, displayClass }: QuartzComponentProps) {
     const text = fileData.text
-    if (text) {
-      const segments: (string | JSX.Element)[] = []
-
-      if (fileData.dates) {
-        segments.push(<Date date={getDate(cfg, fileData)!} locale={cfg.locale} />)
-      }
-
-      // Display reading time if enabled
-      if (options.showReadingTime) {
-        const { minutes } = readingTime(text)
-        const displayedTime = formatReadingTime(Math.ceil(minutes))
-        segments.push(<span>{displayedTime}</span>)
-      }
-
-      return (
-        <p show-comma={options.showComma} class={classNames(displayClass, "content-meta")}>
-          {segments}
-        </p>
-      )
-    } else {
+    
+    // Если нет текста, не показываем мета-информацию
+    if (!text) {
       return null
     }
+    
+    const segments: (string | JSX.Element)[] = []
+
+    if (fileData.dates) {
+      segments.push(<Date date={getDate(cfg, fileData)!} locale={cfg.locale} />)
+    }
+
+    // Display reading time if enabled
+    if (options.showReadingTime) {
+      const { minutes } = readingTime(text)
+      const displayedTime = formatReadingTime(Math.ceil(minutes))
+      segments.push(<span>{displayedTime}</span>)
+    }
+
+    return (
+      <p show-comma={options.showComma} class={classNames(displayClass, "content-meta")}>
+        {segments}
+      </p>
+    )
   }
 
   ContentMetadata.css = style

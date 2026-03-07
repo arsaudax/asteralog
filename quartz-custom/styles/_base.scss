@@ -1,0 +1,46 @@
+// Базовые стили для всего сайта
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "clig", "calt";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Улучшенная читаемость для длинных текстов
+article {
+  max-width: 70ch;
+  margin: 0 auto;
+}
+
+// Ссылки
+a {
+  text-decoration: none;
+  transition: color var(--transition-base);
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Код
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  background: var(--highlight);
+}
+
+pre code {
+  padding: 0;
+  background: none;
+}

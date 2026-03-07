@@ -2,11 +2,23 @@
   "name": "asteralog-content-sync",
   "version": "1.0.0",
   "type": "module",
-  "description": "Sync content from Obsidian to Asteralog sites",
+  "description": "Sync content from Obsidian to Asteralog sites (garden & blog)",
   "main": "index.js",
   "scripts": {
-    "sync": "node index.js"
+    "sync": "node index.js",
+    "sync:dev": "NODE_ENV=development node index.js",
+    "sync:clean": "rm -rf ../.sync-cache.json && node index.js",
+    "watch": "nodemon index.js"
   },
+  "keywords": [
+    "obsidian",
+    "quartz",
+    "digital-garden",
+    "blog",
+    "sync"
+  ],
+  "author": "Asteralog",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^5.3.0",
     "remark": "^15.0.1",
@@ -17,5 +29,15 @@
     "unified": "^11.0.4",
     "unist-util-visit": "^5.0.0",
     "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arsaudax/asteralog"
   }
 }

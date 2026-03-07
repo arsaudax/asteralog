@@ -1,11 +1,26 @@
-@import "./asteralog.scss";
-@import "./elements.scss";
+// Импорт переменных и базовых стилей
+@import "./variables";
+@import "./base";
+@import "./components";
+@import "./overrides";
 
+// Стили для шапки страницы
 .page-header {
   header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+// Адаптивность
+@media (max-width: 500px) {
+  .page-header {
+    header {
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
   }
 }

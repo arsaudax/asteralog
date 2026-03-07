@@ -7,6 +7,11 @@ on:
     types: [content-updated]
   workflow_dispatch:
 
+# Добавляем concurrency для отмены предыдущих запусков
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -26,43 +31,59 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Clone garden content
         run: |
-          git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git content-garden
-          cd content-garden
-          git log -1 --oneline
-          cd ..
+          npm ci
+          cd utils/content-sync && npm ci
 
-      - name: Clone blog content
+      - name: Clone or update garden content
         run: |
-          git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git content-blog
-          cd content-blog
-          git log -1 --oneline
-          cd ..
+          if [ -d "content-garden" ]; then
+            cd content-garden && git pull origin main && cd ..
+          else
+            git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git content-garden
+          fi
+          cd content-garden && git log -1 --oneline && cd ..
+
+      - name: Clone or update blog content
+        run: |
+          if [ -d "content-blog" ]; then
+            cd content-blog && git pull origin main && cd ..
+          else
+            git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git content-blog
+          fi
+          cd content-blog && git log -1 --oneline && cd ..
 
       - name: Sync content
         run: node utils/content-sync/index.js
+        env:
+          NODE_ENV: production
 
       - name: Build Garden
         run: npx quartz build --directory content-garden --output public
         env:
           BASE_URL: garden.asteralog.ru
           SITE_TYPE: garden
+          NODE_OPTIONS: --max-old-space-size=4096
 
-      - name: Debug build output
+      - name: Debug garden build
         run: |
-          echo "=== Garden build debug ==="
+          echo "### 🌱 Garden Build Debug ###"
           echo "SITE_TYPE: $SITE_TYPE"
           echo "BASE_URL: $BASE_URL"
+          echo ""
+          echo "📁 Files in public/:"
           ls -la public/
+          echo ""
+          echo "📄 First 20 lines of index.html:"
           cat public/index.html | head -20
-          echo "=== Checking for 404 ==="
+          echo ""
+          echo "🔍 Checking for 404 page..."
           if grep -q "404" public/index.html; then
-            echo "❌ index.html is 404 page!"
-            echo "=== Looking for any index.md in source ==="
-            find content-garden -name "index.md" | xargs cat | head -10
+            echo "❌ ERROR: index.html is a 404 page!"
+            echo ""
+            echo "=== Looking for index.md in source ==="
+            find content-garden -name "index.md" -exec cat {} \; | head -10
+            exit 1
           else
             echo "✅ index.html looks good"
           fi
@@ -81,20 +102,38 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
           force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
 
       - name: Build Blog
         run: npx quartz build --directory content-blog --output public
         env:
           BASE_URL: blog.asteralog.ru
           SITE_TYPE: blog
+          NODE_OPTIONS: --max-old-space-size=4096
 
-      - name: Debug blog output
+      - name: Debug blog build
         run: |
-          echo "=== Blog build debug ==="
+          echo "### 📝 Blog Build Debug ###"
           echo "SITE_TYPE: $SITE_TYPE"
           echo "BASE_URL: $BASE_URL"
+          echo ""
+          echo "📁 Files in public/:"
           ls -la public/
+          echo ""
+          echo "📄 First 20 lines of index.html:"
           cat public/index.html | head -20
+          echo ""
+          echo "🔍 Checking for 404 page..."
+          if grep -q "404" public/index.html; then
+            echo "❌ ERROR: index.html is a 404 page!"
+            echo ""
+            echo "=== Looking for index.md in source ==="
+            find content-blog -name "index.md" -exec cat {} \; | head -10
+            exit 1
+          else
+            echo "✅ index.html looks good"
+          fi
         env:
           SITE_TYPE: blog
           BASE_URL: blog.asteralog.ru
@@ -110,3 +149,5 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
           force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'

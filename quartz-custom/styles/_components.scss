@@ -1,0 +1,40 @@
+// Стили для кастомных компонентов
+
+// ContentMeta
+.content-meta {
+  font-size: 0.9rem;
+  color: var(--gray);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+// Footer
+footer {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--lightgray);
+  opacity: 0.7;
+  transition: opacity var(--transition-base);
+  
+  &:hover {
+    opacity: 1;
+  }
+  
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    list-style: none;
+    padding: 0;
+  }
+  
+  a {
+    color: var(--secondary);
+    
+    &:hover {
+      color: var(--tertiary);
+    }
+  }
+}

@@ -1,36 +1,64 @@
 import { FullSlug, joinSegments } from "../../../quartz/util/path"
 import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"
-import customStyles from "../../styles/custom.scss"
 import { BuildCtx } from "../../../quartz/util/ctx"
 import { Features, transform } from "lightningcss"
 import { write } from "../../../quartz/plugins/emitters/helpers"
+
+// Импортируем стили с обработкой ошибок
+let customStyles = ""
+try {
+  // Динамический импорт для избежания ошибок при отсутствии файла
+  customStyles = (await import("../../styles/custom.scss?raw")).default || ""
+} catch (error) {
+  console.warn("⚠️ Custom styles not found, using empty styles")
+  customStyles = "/* No custom styles */"
+}
 
 export const CustomStyles: QuartzEmitterPlugin = () => {
   return {
     name: "CustomStyles",
     async *emit(ctx: BuildCtx, _content, _resources) {
-      // Transform and minify the custom SCSS
-      const transformedStyles = transform({
-        filename: "custom.css",
-        code: Buffer.from(customStyles),
-        minify: true,
-        targets: {
-          safari: (15 << 16) | (6 << 8),
-          ios_saf: (15 << 16) | (6 << 8),
-          edge: 115 << 16,
-          firefox: 102 << 16,
-          chrome: 109 << 16,
-        },
-        include: Features.MediaQueries,
-      })
+      // Если нет стилей, ничего не эмитируем
+      if (!customStyles || customStyles === "/* No custom styles */") {
+        console.log("ℹ️ No custom styles to emit")
+        return
+      }
 
-      // Emit the custom stylesheet
-      yield write({
-        ctx,
-        slug: "custom" as FullSlug,
-        ext: ".css",
-        content: transformedStyles.code.toString(),
-      })
+      try {
+        // Transform and minify the custom SCSS
+        const transformedStyles = transform({
+          filename: "custom.css",
+          code: Buffer.from(customStyles),
+          minify: true,
+          targets: {
+            safari: (15 << 16) | (6 << 8), // 15.6
+            ios_saf: (15 << 16) | (6 << 8), // 15.6
+            edge: 115 << 16, // 115
+            firefox: 102 << 16, // 102
+            chrome: 109 << 16, // 109
+          },
+          include: Features.MediaQueries,
+        })
+
+        // Emit the custom stylesheet
+        yield write({
+          ctx,
+          slug: "custom" as FullSlug,
+          ext: ".css",
+          content: transformedStyles.code.toString(),
+        })
+        
+        console.log("✅ Custom styles emitted successfully")
+      } catch (error) {
+        console.error("❌ Error processing custom styles:", error)
+        // Эмитируем пустой CSS в случае ошибки
+        yield write({
+          ctx,
+          slug: "custom" as FullSlug,
+          ext: ".css",
+          content: "/* Error processing custom styles */",
+        })
+      }
     },
     async *partialEmit() {},
     externalResources: () => {

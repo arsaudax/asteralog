@@ -1,5 +1,10 @@
+// Экспорт всех кастомных компонентов Asteralog
 import ContentMeta from "./ContentMeta"
 import Footer from "./Footer"
 import TagList from "./TagList"
 
-export { ContentMeta, Footer, TagList }
+export { 
+  ContentMeta, 
+  Footer, 
+  TagList 
+}

@@ -69,10 +69,10 @@ export const gardenContentPageLayout: PageLayout = {
   ],
 }
 
-// Макет для блога с отладкой фильтра
+/// Макет для блога с отладкой фильтра
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
-    // Отладочный блок для проверки фильтра
+    // Отладочный блок (только один!)
     (props) => {
       const files = props.allFiles
       const blogFiles = files.filter(f => {
@@ -81,37 +81,28 @@ export const blogContentPageLayout: PageLayout = {
       })
       const nonIndexFiles = blogFiles.filter(f => f.slug !== 'index')
       
-      console.log('=== RecentNotes Debug ===')
-      console.log('Total files:', files.length)
-      console.log('Blog files:', blogFiles.length)
-      console.log('Non-index blog files:', nonIndexFiles.length)
-      console.log('Files:', nonIndexFiles.map(f => ({
-        slug: f.slug,
-        title: f.frontmatter?.title,
-        tags: f.frontmatter?.tags
-      })))
-      
-      return (
-        <div style={{
-          background: '#ff0',
-          padding: '1rem',
-          margin: '1rem 0',
-          border: '2px solid #f00'
-        }}>
-          <h3>🔍 Отладка RecentNotes</h3>
-          <p>Всего файлов: {files.length}</p>
-          <p>Файлов с тегом blog: {blogFiles.length}</p>
-          <p>Файлов для ленты (кроме index): {nonIndexFiles.length}</p>
-          <ul>
-            {nonIndexFiles.map(f => (
-              <li key={f.slug}>
-                <strong>{f.frontmatter?.title || 'Без названия'}</strong><br/>
-                Slug: {f.slug}<br/>
-                Теги: {f.frontmatter?.tags?.join(', ')}
-              </li>
-            ))}
-          </ul>
-        </div>
+      return React.createElement('div', { 
+        style: { 
+          background: '#ff0', 
+          padding: '1rem', 
+          margin: '1rem 0', 
+          border: '2px solid #f00' 
+        } 
+      },
+        React.createElement('h3', null, '🔍 Отладка блога'),
+        React.createElement('p', null, `Всего файлов с тегом blog: ${blogFiles.length}`),
+        React.createElement('p', null, `Файлов для ленты (исключая index): ${nonIndexFiles.length}`),
+        React.createElement('ul', null, 
+          nonIndexFiles.map(f => 
+            React.createElement('li', { key: f.slug },
+              React.createElement('strong', null, f.frontmatter?.title || 'Без названия'),
+              React.createElement('br'),
+              `Slug: ${f.slug}`,
+              React.createElement('br'),
+              `Теги: ${f.frontmatter?.tags?.join(', ')}`
+            )
+          )
+        )
       )
     },
     Component.Breadcrumbs(breadcrumbsConfig),

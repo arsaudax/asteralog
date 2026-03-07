@@ -1,25 +1,27 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 
 const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
+  const { fileData } = props
+  
+  // Проверяем, что мы на главной странице блога
+  const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
+  const isBlog = baseUrl?.includes('blog')
+  
+  // Рендерим только на главной странице блога
+  if (!isBlog || fileData.slug !== 'index') {
+    return null
+  }
+  
   return (
     <div style={{
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
       background: 'red',
       color: 'white',
-      padding: '40px',
-      fontSize: '32px',
-      zIndex: 9999,
+      padding: '20px',
+      fontSize: '24px',
       textAlign: 'center',
-      border: '10px solid yellow'
+      margin: '20px'
     }}>
-      🔴🔴🔴 BLOGINDEX WORKS! 🔴🔴🔴
-      <br/>
-      <span style={{fontSize: '18px'}}>
-        slug: {props.fileData.slug}
-      </span>
+      🔴 BlogIndex is rendering!
     </div>
   )
 }

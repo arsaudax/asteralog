@@ -3,7 +3,16 @@ import { classNames } from "../../quartz/util/lang"
 import { Date } from "../../quartz/components/Date"
 
 const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
-  const { cfg, allFiles, displayClass } = props
+  const { cfg, allFiles, displayClass, fileData } = props
+  
+  // Проверяем, нужно ли рендериться
+  const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
+  const isBlog = baseUrl?.includes('blog')
+  
+  // Рендерим только для главной страницы блога
+  if (!isBlog || fileData.slug !== 'index') {
+    return null
+  }
   
   // Фильтруем только файлы с тегом blog, исключая сам индекс
   const blogPosts = allFiles

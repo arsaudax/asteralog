@@ -110,18 +110,19 @@ export const defaultContentPageLayout = (() => {
 })()
 
 // Макет для страниц-списков (теги, папки)
-export const defaultListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-  ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
-  right: [],
-}
+export const defaultContentPageLayout = (() => {
+  const siteType = getSiteType()
+  
+  // Всегда возвращаем функцию, которая возвращает макет
+  return (props: any) => {
+    if (siteType === 'garden') {
+      return gardenContentPageLayout
+    }
+    
+    // Для блога
+    if (props.fileData.slug === 'index') {
+      return blogIndexPageLayout
+    }
+    return blogPostPageLayout
+  }
+})()

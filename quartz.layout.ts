@@ -3,6 +3,7 @@ import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
+import BlogIndex from "./quartz-custom/components/BlogIndex"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Функция для определения типа сайта
@@ -12,6 +13,7 @@ const getSiteType = () => {
   return baseUrl.includes('blog') ? 'blog' : 'garden'
 }
 
+// Конфигурация проводника с эмодзи
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
     const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true
@@ -24,14 +26,29 @@ const explorerConfig = {
   },
 }
 
+// Конфигурация графа
 const graphConfig = {
-  localGraph: { showTags: false, excludeTags: ["graph-exclude"] },
-  globalGraph: { showTags: false, excludeTags: ["graph-exclude"] }
+  localGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"]
+  },
+  globalGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"]
+  }
 }
 
-const backlinksConfig = { hideWhenEmpty: true }
-const breadcrumbsConfig = { rootName: "🏡" }
+// Конфигурация обратных ссылок
+const backlinksConfig = {
+  hideWhenEmpty: true
+}
 
+// Конфигурация хлебных крошек
+const breadcrumbsConfig = {
+  rootName: "🏡"
+}
+
+// Общие компоненты для всех страниц
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
@@ -64,27 +81,21 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    Component.RecentNotes({ limit: 5, showTags: false, filter: gardenFilter }),
+    Component.RecentNotes({ 
+      limit: 5, 
+      showTags: false, 
+      filter: gardenFilter 
+    }),
     TagList(),
   ],
 }
 
-// Макет для блога
-export const blogContentPageLayout: PageLayout = {
+// Макет для главной страницы блога
+export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
-    // Добавляем RecentNotes в центр страницы
-    Component.RecentNotes({ 
-      title: "Последние записи",
-      limit: 20,
-      showTags: true,
-      filter: blogFilter 
-    }),
+    BlogIndex,
   ],
-  left: [], // Левая колонка пустая
+  left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     TagList(),
@@ -92,18 +103,23 @@ export const blogContentPageLayout: PageLayout = {
   ],
 }
 
-// Условный макет (теперь blogContentPageLayout уже определён)
-export const defaultContentPageLayout: PageLayout = (() => {
-  const siteType = getSiteType()
-  
-  if (siteType === 'blog') {
-    return blogContentPageLayout
-  }
-  
-  return gardenContentPageLayout
-})()
+// Макет для обычных страниц блога (посты)
+export const blogPostPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
+  ],
+  left: [],
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    TagList(),
+    Component.Backlinks(backlinksConfig),
+  ],
+}
 
-// Макет для страниц-списков
+// Макет для страниц-списков (теги, папки)
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -119,3 +135,23 @@ export const defaultListPageLayout: PageLayout = {
   ],
   right: [],
 }
+
+// Условный экспорт — выбираем макет в зависимости от сайта и страницы
+export const defaultContentPageLayout = (() => {
+  const siteType = getSiteType()
+  
+  // Для блога используем функцию выбора
+  if (siteType === 'blog') {
+    return (props: any) => {
+      // На главной странице блога показываем ленту
+      if (props.fileData.slug === 'index') {
+        return blogIndexPageLayout
+      }
+      // На остальных страницах — обычный макет поста
+      return blogPostPageLayout
+    }
+  }
+  
+  // Для сада возвращаем просто макет
+  return gardenContentPageLayout
+})()

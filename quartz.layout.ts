@@ -6,14 +6,14 @@ import TagList from "./quartz-custom/components/TagList"
 import BlogIndex from "./quartz-custom/components/BlogIndex"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
-// Функция для определения типа сайта
+// Определяем тип сайта по BASE_URL
 const getSiteType = () => {
-  if (typeof process === 'undefined') return 'garden'
-  const baseUrl = process.env?.BASE_URL || ''
-  return baseUrl.includes('blog') ? 'blog' : 'garden'
+  if (typeof process === "undefined") return "garden"
+  const baseUrl = process.env?.BASE_URL || ""
+  return baseUrl.includes("blog") ? "blog" : "garden"
 }
 
-// Конфигурация проводника с эмодзи
+// Конфигурация проводника
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
     const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true
@@ -30,25 +30,25 @@ const explorerConfig = {
 const graphConfig = {
   localGraph: {
     showTags: false,
-    excludeTags: ["graph-exclude"]
+    excludeTags: ["graph-exclude"],
   },
   globalGraph: {
     showTags: false,
-    excludeTags: ["graph-exclude"]
-  }
+    excludeTags: ["graph-exclude"],
+  },
 }
 
 // Конфигурация обратных ссылок
 const backlinksConfig = {
-  hideWhenEmpty: true
+  hideWhenEmpty: true,
 }
 
 // Конфигурация хлебных крошек
 const breadcrumbsConfig = {
-  rootName: "🏡"
+  rootName: "🏡",
 }
 
-// Общие компоненты для всех страниц
+// Общие компоненты
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
@@ -57,15 +57,45 @@ export const sharedPageComponents: SharedLayout = {
     links: {
       Telegram: "https://t.me/asteralog",
       Instagram: "https://www.instagram.com/al.bogat",
-      Behance: "https://www.behance.net/arsaudax"
+      Behance: "https://www.behance.net/arsaudax",
     },
   }),
 }
 
-/// Макет для сада
-export const gardenContentPageLayout: PageLayout = { /* ... */ }
+// ==============================
+// МАКЕТ САДА
+// ==============================
 
-// Макет для обычных страниц блога (посты)
+export const gardenContentPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
+  ],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [
+    Component.DesktopOnly(Component.Graph(graphConfig)),
+    Component.DesktopOnly(Component.TableOfContents()),
+    Component.Backlinks(backlinksConfig),
+    Component.RecentNotes({
+      limit: 5,
+      showTags: false,
+      filter: gardenFilter,
+    }),
+  ],
+}
+
+// ==============================
+// МАКЕТ ПОСТА БЛОГА
+// ==============================
+
 export const blogPostPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -81,9 +111,14 @@ export const blogPostPageLayout: PageLayout = {
   ],
 }
 
-// Макет для главной страницы блога (лента постов)
+// ==============================
+// МАКЕТ ГЛАВНОЙ СТРАНИЦЫ БЛОГА
+// ==============================
+
 export const blogIndexPageLayout: PageLayout = {
-  beforeBody: [BlogIndex], // Просто компонент, без условий
+  beforeBody: [
+    BlogIndex,  // ← ИСПРАВЛЕНО: просто компонент, без вызова
+  ],
   left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
@@ -92,37 +127,22 @@ export const blogIndexPageLayout: PageLayout = {
   ],
 }
 
-// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта и страницы
-export const defaultContentPageLayout = (() => {
+// ==============================
+// ГЛАВНЫЙ ВЫБОР МАКЕТА
+// ==============================
+
+export const defaultContentPageLayout = ((props: any) => {
   const siteType = getSiteType()
-  
-  if (siteType === 'garden') {
+
+  // САД
+  if (siteType === "garden") {
     return gardenContentPageLayout
   }
-  
-  // Для блога возвращаем функцию, которая выберет макет
-  return (props: any) => {
-    if (props.fileData.slug === 'index') {
-      return blogIndexPageLayout
-    }
-    return blogPostPageLayout
-  }
-})()
 
-// Макет для страниц-списков (теги, папки)
-export const defaultContentPageLayout = (() => {
-  const siteType = getSiteType()
-  
-  // Всегда возвращаем функцию, которая возвращает макет
-  return (props: any) => {
-    if (siteType === 'garden') {
-      return gardenContentPageLayout
-    }
-    
-    // Для блога
-    if (props.fileData.slug === 'index') {
-      return blogIndexPageLayout
-    }
-    return blogPostPageLayout
+  // БЛОГ
+  if (props.fileData.slug === "index") {
+    return blogIndexPageLayout
   }
-})()
+
+  return blogPostPageLayout
+}) as unknown as PageLayout

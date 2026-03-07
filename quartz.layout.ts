@@ -65,19 +65,12 @@ const getSiteType = () => {
 // Единый макет для всех страниц
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
-    // Показываем BlogIndex только на главной странице блога
-    Component.ConditionalRender({
-      component: BlogIndex,
-      condition: (props) => {
-        const siteType = getSiteType()
-        return siteType === 'blog' && props.fileData.slug === 'index'
-      }
-    }),
-  ],
+  Component.Breadcrumbs(breadcrumbsConfig),
+  Component.ArticleTitle(),
+  CustomComponent.ContentMeta({ showReadingTime: true }),
+  Component.TagList(),
+  BlogIndex, // Просто добавляем компонент, он сам решит, рендериться или нет
+],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),

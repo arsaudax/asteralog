@@ -2,7 +2,9 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { classNames } from "../../quartz/util/lang"
 import { Date } from "../../quartz/components/Date"
 
-const BlogIndex: QuartzComponent = ({ cfg, fileData, allFiles, displayClass }: QuartzComponentProps) => {
+const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
+  const { cfg, allFiles, displayClass } = props
+  
   // Фильтруем только файлы с тегом blog, исключая сам индекс
   const blogPosts = allFiles
     .filter(file => {
@@ -19,7 +21,6 @@ const BlogIndex: QuartzComponent = ({ cfg, fileData, allFiles, displayClass }: Q
   
   return (
     <div class={classNames(displayClass, "blog-index")}>
-      {/* Информация об авторе */}
       <div class="blog-header">
         <h1>Блог Asteralog</h1>
         <div class="author-info">
@@ -85,7 +86,7 @@ const BlogIndex: QuartzComponent = ({ cfg, fileData, allFiles, displayClass }: Q
   )
 }
 
-// Добавляем стили
+// Добавляем стили как статическое свойство
 BlogIndex.css = `
 .blog-index {
   max-width: 800px;
@@ -93,7 +94,6 @@ BlogIndex.css = `
   padding: 1rem;
 }
 
-/* Стили для шапки блога */
 .blog-header {
   margin-bottom: 3rem;
   padding-bottom: 2rem;
@@ -163,7 +163,6 @@ BlogIndex.css = `
   border-color: var(--secondary);
 }
 
-/* Стили для ленты постов */
 .blog-posts {
   display: flex;
   flex-direction: column;
@@ -252,7 +251,6 @@ BlogIndex.css = `
   padding: 3rem 0;
 }
 
-/* Адаптация для мобильных */
 @media (max-width: 768px) {
   .blog-index {
     padding: 0.5rem;

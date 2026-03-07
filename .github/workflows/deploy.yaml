@@ -3,6 +3,8 @@ name: Deploy Asteralog Sites
 on:
   push:
     branches: [main]
+  repository_dispatch:
+    types: [content-updated]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
           token: ${{ secrets.ASTERALOG_DEPLOY }}
 
@@ -25,66 +26,24 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
+        run: npm ci
+
+      - name: Clone garden content
         run: |
-          npm ci
-          cd utils/content-sync && npm install
+          git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git content-garden
+          cd content-garden
+          git log -1 --oneline
+          cd ..
+
+      - name: Clone blog content
+        run: |
+          git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git content-blog
+          cd content-blog
+          git log -1 --oneline
+          cd ..
 
       - name: Sync content
         run: node utils/content-sync/index.js
-
-      - name: Update and commit blog content
-        run: |
-          cd content-blog
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Сохраняем изменения и синхронизируемся
-          git stash push --include-untracked || true
-          git checkout main
-          git pull origin main
-          git stash pop || true
-          
-          # Принудительно добавляем все изменения
-          git add -A --force
-          
-          # Всегда создаём коммит (пустой, если нет изменений)
-          if git diff --quiet --cached && git diff --quiet; then
-            echo "No changes detected, creating empty commit to force update"
-            git commit --allow-empty -m "chore: sync blog content [skip ci]"
-          else
-            git commit -m "chore: sync blog content [skip ci]"
-          fi
-          
-          # Принудительный пуш
-          git push origin main --force
-          cd ..
-
-      - name: Update and commit garden content
-        run: |
-          cd content-garden
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Сохраняем изменения и синхронизируемся
-          git stash push --include-untracked || true
-          git checkout main
-          git pull origin main
-          git stash pop || true
-          
-          # Принудительно добавляем все изменения
-          git add -A --force
-          
-          # Всегда создаём коммит (пустой, если нет изменений)
-          if git diff --quiet --cached && git diff --quiet; then
-            echo "No changes detected, creating empty commit to force update"
-            git commit --allow-empty -m "chore: sync garden content [skip ci]"
-          else
-            git commit -m "chore: sync garden content [skip ci]"
-          fi
-          
-          # Принудительный пуш
-          git push origin main --force
-          cd ..
 
       - name: Build Garden
         run: npx quartz build --directory content-garden --output public
@@ -97,9 +56,7 @@ jobs:
           echo "=== Garden build debug ==="
           echo "SITE_TYPE: $SITE_TYPE"
           echo "BASE_URL: $BASE_URL"
-          echo "=== Content of public directory ==="
           ls -la public/
-          echo "=== First 20 lines of index.html ==="
           cat public/index.html | head -20
           echo "=== Checking for 404 ==="
           if grep -q "404" public/index.html; then
@@ -109,15 +66,12 @@ jobs:
           else
             echo "✅ index.html looks good"
           fi
-        working-directory: ${{ github.workspace }}
         env:
           SITE_TYPE: garden
           BASE_URL: garden.asteralog.ru
 
       - name: Add CNAME for garden
         run: echo "garden.asteralog.ru" > public/CNAME
-        working-directory: ${{ github.workspace }}
-        if: success()
 
       - name: Deploy Garden
         uses: peaceiris/actions-gh-pages@v4
@@ -127,7 +81,6 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
           force_orphan: true
-          destination_dir: ./
 
       - name: Build Blog
         run: npx quartz build --directory content-blog --output public
@@ -142,15 +95,12 @@ jobs:
           echo "BASE_URL: $BASE_URL"
           ls -la public/
           cat public/index.html | head -20
-        working-directory: ${{ github.workspace }}
         env:
           SITE_TYPE: blog
           BASE_URL: blog.asteralog.ru
 
       - name: Add CNAME for blog
         run: echo "blog.asteralog.ru" > public/CNAME
-        working-directory: ${{ github.workspace }}
-        if: success()
 
       - name: Deploy Blog
         uses: peaceiris/actions-gh-pages@v4
@@ -160,4 +110,3 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
           force_orphan: true
-          destination_dir: ./

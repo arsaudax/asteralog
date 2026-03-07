@@ -1,6 +1,6 @@
-import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
+import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
 
-const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
+function BlogIndex() {
   return (
     <div style={{
       position: 'fixed',
@@ -18,5 +18,20 @@ const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
     </div>
   )
 }
+
+BlogIndex.css = `
+.test-block {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: red;
+  color: white;
+  padding: 20px;
+  font-size: 24px;
+  text-align: center;
+  z-index: 9999;
+}
+`
 
 export default (() => BlogIndex) satisfies QuartzComponentConstructor

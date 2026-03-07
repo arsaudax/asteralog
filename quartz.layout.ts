@@ -38,8 +38,8 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Макет для сада
-export const gardenContentPageLayout: PageLayout = {
+// ВРЕМЕННО: Один макет для всех страниц, пока не починим блог
+export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -62,43 +62,6 @@ export const gardenContentPageLayout: PageLayout = {
   ],
 }
 
-// Макет для обычных страниц блога
-export const blogPostPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
-  ],
-  left: [],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
-}
-
-// Макет для главной страницы блога с лентой постов
-export const blogIndexPageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  left: [],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    // Используем стандартный RecentNotes вместо кастомного BlogIndex
-    Component.RecentNotes({ 
-      title: "Последние записи",
-      limit: 20,
-      showTags: true,
-      filter: blogFilter 
-    }),
-    TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
-}
-
-// Макет для страниц-списков
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -114,18 +77,3 @@ export const defaultListPageLayout: PageLayout = {
   ],
   right: [],
 }
-
-// Условный экспорт
-export const defaultContentPageLayout = (() => {
-  const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
-  const isBlog = baseUrl?.includes('blog')
-  
-  return (props: any) => {
-    if (isBlog) {
-      return props.fileData.slug === 'index' 
-        ? blogIndexPageLayout 
-        : blogPostPageLayout
-    }
-    return gardenContentPageLayout
-  }
-})()

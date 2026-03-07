@@ -90,10 +90,13 @@ export const gardenContentPageLayout: PageLayout = {
   ],
 }
 
-// Макет для главной страницы блога
-export const blogIndexPageLayout: PageLayout = {
+// Макет для обычных страниц блога (посты)
+export const blogPostPageLayout: PageLayout = {
   beforeBody: [
-    BlogIndex,
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
   ],
   left: [],
   right: [
@@ -103,13 +106,10 @@ export const blogIndexPageLayout: PageLayout = {
   ],
 }
 
-// Макет для обычных страниц блога (посты)
-export const blogPostPageLayout: PageLayout = {
+// Макет для главной страницы блога (лента постов)
+export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
+    BlogIndex,
   ],
   left: [],
   right: [
@@ -136,11 +136,11 @@ export const defaultListPageLayout: PageLayout = {
   right: [],
 }
 
-// Условный экспорт — выбираем макет в зависимости от сайта и страницы
+// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта и страницы
 export const defaultContentPageLayout = (() => {
   const siteType = getSiteType()
   
-  // Для блога используем функцию выбора
+  // Для блога возвращаем функцию выбора
   if (siteType === 'blog') {
     return (props: any) => {
       // На главной странице блога показываем ленту

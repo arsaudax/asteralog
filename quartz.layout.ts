@@ -3,6 +3,7 @@ import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
+import BlogIndex from "./quartz-custom/components/BlogIndex"  // ← ДОБАВЛЕНО
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Конфигурация проводника с эмодзи

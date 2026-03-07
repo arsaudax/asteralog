@@ -62,47 +62,52 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Единый макет для всех страниц
-export const defaultContentPageLayout: PageLayout = {
+/// Макет для сада
+export const gardenContentPageLayout: PageLayout = { /* ... */ }
+
+// Макет для обычных страниц блога (посты)
+export const blogPostPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
-    BlogIndex, // Просто добавляем компонент, он сам решит
   ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-    // Показываем проводник только в саду
-    Component.ConditionalRender({
-      component: Component.DesktopOnly(Component.Explorer(explorerConfig)),
-      condition: () => getSiteType() === 'garden'
-    }),
-  ],
+  left: [],
   right: [
-    // Граф только в саду
-    Component.ConditionalRender({
-      component: Component.DesktopOnly(Component.Graph(graphConfig)),
-      condition: () => getSiteType() === 'garden'
-    }),
     Component.DesktopOnly(Component.TableOfContents()),
-    // Недавние заметки с разными фильтрами и настройками
-    Component.RecentNotes({ 
-      limit: (props) => getSiteType() === 'blog' ? 8 : 5,
-      showTags: (props) => getSiteType() === 'blog',
-      title: (props) => getSiteType() === 'blog' ? "Последние записи" : "Недавние заметки",
-      filter: (file) => {
-        const siteType = getSiteType()
-        return siteType === 'blog' ? blogFilter(file) : gardenFilter(file)
-      }
-    }),
     TagList(),
     Component.Backlinks(backlinksConfig),
   ],
 }
+
+// Макет для главной страницы блога (лента постов)
+export const blogIndexPageLayout: PageLayout = {
+  beforeBody: [BlogIndex], // Просто компонент, без условий
+  left: [],
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    TagList(),
+    Component.Backlinks(backlinksConfig),
+  ],
+}
+
+// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта и страницы
+export const defaultContentPageLayout = (() => {
+  const siteType = getSiteType()
+  
+  if (siteType === 'garden') {
+    return gardenContentPageLayout
+  }
+  
+  // Для блога возвращаем функцию, которая выберет макет
+  return (props: any) => {
+    if (props.fileData.slug === 'index') {
+      return blogIndexPageLayout
+    }
+    return blogPostPageLayout
+  }
+})()
 
 // Макет для страниц-списков (теги, папки)
 export const defaultListPageLayout: PageLayout = {

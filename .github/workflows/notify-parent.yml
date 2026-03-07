@@ -1,0 +1,27 @@
+name: Notify parent repository
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.ASTERALOG_DEPLOY }}
+          repository: arsaudax/asteralog
+          event-type: content-updated
+          client-payload: |
+            {
+              "source": "blog-content",
+              "commit": "${{ github.sha }}",
+              "message": "${{ github.event.head_commit.message }}"
+            }

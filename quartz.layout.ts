@@ -3,15 +3,12 @@ import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
-import BlogIndex from "./quartz-custom/components/BlogIndex"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
-// Определяем тип сайта по BASE_URL
-const getSiteType = () => {
-  if (typeof process === "undefined") return "garden"
-  const baseUrl = process.env?.BASE_URL || ""
-  return baseUrl.includes("blog") ? "blog" : "garden"
-}
+// Определяем тип сайта по BASE_URL (на уровне модуля!)
+const siteType = typeof process !== 'undefined' 
+  ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
+  : 'garden'
 
 // Конфигурация проводника
 const explorerConfig = {
@@ -65,7 +62,6 @@ export const sharedPageComponents: SharedLayout = {
 // ==============================
 // МАКЕТ САДА
 // ==============================
-
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -89,14 +85,14 @@ export const gardenContentPageLayout: PageLayout = {
       showTags: false,
       filter: gardenFilter,
     }),
+    TagList(),
   ],
 }
 
 // ==============================
-// МАКЕТ ПОСТА БЛОГА
+// МАКЕТ БЛОГА
 // ==============================
-
-export const blogPostPageLayout: PageLayout = {
+export const blogContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -112,12 +108,12 @@ export const blogPostPageLayout: PageLayout = {
 }
 
 // ==============================
-// МАКЕТ ГЛАВНОЙ СТРАНИЦЫ БЛОГА
+// МАКЕТ ГЛАВНОЙ СТРАНИЦЫ БЛОГА (СПИСОК ПОСТОВ)
 // ==============================
-
 export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
-    BlogIndex,  // ← ИСПРАВЛЕНО: просто компонент, без вызова
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
   ],
   left: [],
   right: [
@@ -125,24 +121,47 @@ export const blogIndexPageLayout: PageLayout = {
     TagList(),
     Component.Backlinks(backlinksConfig),
   ],
+  afterBody: [
+    Component.PageList({
+      limit: 100,
+      sort: "created",
+      reverse: true,
+      filter: blogFilter
+    })
+  ],
 }
 
 // ==============================
-// ГЛАВНЫЙ ВЫБОР МАКЕТА
+// ВЫБОР МАКЕТА ПО ТИПУ САЙТА И СТРАНИЦЕ
 // ==============================
-
-export const defaultContentPageLayout = ((props: any) => {
-  const siteType = getSiteType()
-
-  // САД
-  if (siteType === "garden") {
+export const defaultContentPageLayout = (() => {
+  // Для сада возвращаем просто макет
+  if (siteType === 'garden') {
     return gardenContentPageLayout
   }
-
-  // БЛОГ
-  if (props.fileData.slug === "index") {
-    return blogIndexPageLayout
+  
+  // Для блога возвращаем функцию, которая выберет макет по slug
+  return (props: any) => {
+    if (props.fileData.slug === 'index') {
+      return blogIndexPageLayout
+    }
+    return blogContentPageLayout
   }
+})()
 
-  return blogPostPageLayout
-}) as unknown as PageLayout
+// Макет для страниц-списков (теги, папки)
+export const defaultListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+  ],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [],
+}

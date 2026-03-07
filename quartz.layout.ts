@@ -1,17 +1,9 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
+import { gardenFilter, blogFilter, topicFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
-import BlogIndex from "./quartz-custom/components/BlogIndex"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
-
-// Функция для определения типа сайта
-const getSiteType = () => {
-  if (typeof process === 'undefined') return 'garden'
-  const baseUrl = process.env?.BASE_URL || ''
-  return baseUrl.includes('blog') ? 'blog' : 'garden'
-}
 
 // Конфигурация проводника с эмодзи
 const explorerConfig = {
@@ -62,58 +54,57 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Макет для сада
-export const gardenContentPageLayout: PageLayout = {
+// Функция для определения типа сайта
+const getSiteType = () => {
+  if (typeof process === 'undefined') return 'garden'
+  const baseUrl = process.env?.BASE_URL || ''
+  return baseUrl.includes('blog') ? 'blog' : 'garden'
+}
+
+// Единый макет для всех страниц
+export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
+    // Показываем BlogIndex только на главной странице блога
+    Component.ConditionalRender({
+      component: BlogIndex,
+      condition: (props) => {
+        const siteType = getSiteType()
+        return siteType === 'blog' && props.fileData.slug === 'index'
+      }
+    }),
   ],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
-  right: [
-    Component.DesktopOnly(Component.Graph(graphConfig)),
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(backlinksConfig),
-    Component.RecentNotes({ 
-      limit: 5, 
-      showTags: false, 
-      filter: gardenFilter 
+    // Показываем проводник только в саду
+    Component.ConditionalRender({
+      component: Component.DesktopOnly(Component.Explorer(explorerConfig)),
+      condition: () => getSiteType() === 'garden'
     }),
-    TagList(),
   ],
-}
-
-// Макет для обычных страниц блога (посты)
-export const blogPostPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
-  ],
-  left: [],
   right: [
+    // Граф только в саду
+    Component.ConditionalRender({
+      component: Component.DesktopOnly(Component.Graph(graphConfig)),
+      condition: () => getSiteType() === 'garden'
+    }),
     Component.DesktopOnly(Component.TableOfContents()),
-    TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
-}
-
-// Макет для главной страницы блога (лента постов)
-export const blogIndexPageLayout: PageLayout = {
-  beforeBody: [
-    BlogIndex,
-  ],
-  left: [],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
+    // Недавние заметки с разными фильтрами и настройками
+    Component.RecentNotes({ 
+      limit: (props) => getSiteType() === 'blog' ? 8 : 5,
+      showTags: (props) => getSiteType() === 'blog',
+      title: (props) => getSiteType() === 'blog' ? "Последние записи" : "Недавние заметки",
+      filter: (file) => {
+        const siteType = getSiteType()
+        return siteType === 'blog' ? blogFilter(file) : gardenFilter(file)
+      }
+    }),
     TagList(),
     Component.Backlinks(backlinksConfig),
   ],
@@ -135,21 +126,3 @@ export const defaultListPageLayout: PageLayout = {
   ],
   right: [],
 }
-
-// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта
-export const defaultContentPageLayout = (() => {
-  const siteType = getSiteType()
-  
-  // Для сада возвращаем просто макет
-  if (siteType === 'garden') {
-    return gardenContentPageLayout
-  }
-  
-  // Для блога возвращаем функцию выбора
-  return (props: any) => {
-    if (props.fileData.slug === 'index') {
-      return blogIndexPageLayout
-    }
-    return blogPostPageLayout
-  }
-})()

@@ -136,22 +136,22 @@ export const defaultListPageLayout: PageLayout = {
   right: [],
 }
 
-// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта и страницы
+// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта
 export const defaultContentPageLayout = (() => {
   const siteType = getSiteType()
   
-  // Для блога возвращаем функцию выбора
-  if (siteType === 'blog') {
-    return (props: any) => {
-      // На главной странице блога показываем ленту
-      if (props.fileData.slug === 'index') {
-        return blogIndexPageLayout
-      }
-      // На остальных страницах — обычный макет поста
-      return blogPostPageLayout
-    }
+  // Для сада возвращаем просто макет
+  if (siteType === 'garden') {
+    return gardenContentPageLayout
   }
   
-  // Для сада возвращаем просто макет
-  return gardenContentPageLayout
+  // Для блога возвращаем функцию, которая выберет макет на основе slug
+  return (props: any) => {
+    // На главной странице блога показываем ленту
+    if (props.fileData.slug === 'index') {
+      return blogIndexPageLayout
+    }
+    // На остальных страницах — обычный макет поста
+    return blogPostPageLayout
+  }
 })()

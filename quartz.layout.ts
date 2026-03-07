@@ -55,62 +55,57 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Макет для сада (garden.asteralog.ru)
-export const gardenContentPageLayout: PageLayout = {
+// Функция для определения типа сайта
+const getSiteType = () => {
+  if (typeof process === 'undefined') return 'garden'
+  const baseUrl = process.env?.BASE_URL || ''
+  return baseUrl.includes('blog') ? 'blog' : 'garden'
+}
+
+// Единый макет для всех страниц
+export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
+    // Показываем BlogIndex только на главной странице блога
+    Component.ConditionalRender({
+      component: BlogIndex,
+      condition: (props) => {
+        const siteType = getSiteType()
+        return siteType === 'blog' && props.fileData.slug === 'index'
+      }
+    }),
   ],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
-  right: [
-    Component.DesktopOnly(Component.Graph(graphConfig)),
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(backlinksConfig),
-    Component.RecentNotes({ 
-      limit: 5, 
-      showTags: false, 
-      filter: gardenFilter 
+    // Показываем проводник только в саду
+    Component.ConditionalRender({
+      component: Component.DesktopOnly(Component.Explorer(explorerConfig)),
+      condition: () => getSiteType() === 'garden'
     }),
-    TagList(),
   ],
-}
-
-// Макет для страниц блога (кроме главной)
-export const blogPostPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
-  ],
-  left: [],
   right: [
+    // Граф только в саду
+    Component.ConditionalRender({
+      component: Component.DesktopOnly(Component.Graph(graphConfig)),
+      condition: () => getSiteType() === 'garden'
+    }),
     Component.DesktopOnly(Component.TableOfContents()),
-    TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
-}
-
-// Макет для главной страницы блога с лентой постов
-export const blogIndexPageLayout: PageLayout = {
-  beforeBody: [
-    (props) => {
-      // Вызываем компонент как функцию с props
-      const BlogIndexComponent = BlogIndex as any
-      return BlogIndexComponent(props)
-    },
-  ],
-  left: [],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
+    // Недавние заметки с разными фильтрами и настройками
+    Component.RecentNotes({ 
+      limit: (props) => getSiteType() === 'blog' ? 8 : 5,
+      showTags: (props) => getSiteType() === 'blog',
+      title: (props) => getSiteType() === 'blog' ? "Последние записи" : "Недавние заметки",
+      filter: (file) => {
+        const siteType = getSiteType()
+        return siteType === 'blog' ? blogFilter(file) : gardenFilter(file)
+      }
+    }),
     TagList(),
     Component.Backlinks(backlinksConfig),
   ],
@@ -132,25 +127,3 @@ export const defaultListPageLayout: PageLayout = {
   ],
   right: [],
 }
-
-// УСЛОВНЫЙ ЭКСПОРТ — выбираем макет в зависимости от сайта и страницы
-export const defaultContentPageLayout = (() => {
-  const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
-  const isBlog = baseUrl?.includes('blog')
-  
-  // Возвращаем функцию, которая будет вызвана для каждой страницы
-  return (props: any) => {
-    // Для блога используем разную логику в зависимости от страницы
-    if (isBlog) {
-      // Для главной страницы блога используем специальный макет
-      if (props.fileData.slug === 'index') {
-        return blogIndexPageLayout
-      }
-      // Для остальных страниц блога используем обычный макет
-      return blogPostPageLayout
-    }
-    
-    // Для сада используем обычный макет
-    return gardenContentPageLayout
-  }
-})()

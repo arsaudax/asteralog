@@ -16,4 +16,4 @@ const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
   )
 }
 
-export default (() => BlogIndex) satisfies QuartzComponentConstructor
+export default BlogIndex

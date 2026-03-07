@@ -1,6 +1,6 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-import BlogIndex from "./quartz-custom/components/BlogIndex"
+import BlogIndex from "./quartz-custom/components/BlogIndex" // Прямой импорт
 
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
@@ -11,7 +11,7 @@ export const sharedPageComponents: SharedLayout = {
 
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
-    BlogIndex, // Только BlogIndex, ничего больше!
+    BlogIndex, // Используем прямой импорт
   ],
   left: [],
   right: [],

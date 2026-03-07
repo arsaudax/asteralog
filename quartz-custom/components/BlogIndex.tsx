@@ -5,9 +5,17 @@ import { Date } from "../../quartz/components/Date"
 const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
   const { cfg, allFiles, displayClass, fileData } = props
   
-  // Проверяем, нужно ли рендериться
+  console.log('=== BlogIndex Debug ===')
+  console.log('BASE_URL:', typeof process !== 'undefined' ? process.env?.BASE_URL : 'undefined')
+  console.log('SITE_TYPE:', typeof process !== 'undefined' ? process.env?.SITE_TYPE : 'undefined')
+  console.log('slug:', fileData.slug)
+  console.log('fileData frontmatter:', fileData.frontmatter)
+  
   const baseUrl = typeof process !== 'undefined' ? process.env?.BASE_URL : ''
   const isBlog = baseUrl?.includes('blog')
+  
+  console.log('isBlog:', isBlog)
+  console.log('should render:', isBlog && fileData.slug === 'index')
   
   // Рендерим только для главной страницы блога
   if (!isBlog || fileData.slug !== 'index') {

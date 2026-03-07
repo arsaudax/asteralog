@@ -5,6 +5,7 @@ import { Date } from "../../quartz/components/Date"
 const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
   const { cfg, allFiles, displayClass } = props
 
+  // Фильтруем только файлы с тегом blog, исключая index
   const blogPosts = allFiles
     .filter(file => {
       const tags = file.frontmatter?.tags
@@ -19,27 +20,23 @@ const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
   return (
     <div class={classNames(displayClass, "blog-index")}>
       <h1>Блог</h1>
-      <div class="blog-posts">
-        {blogPosts.map(post => (
-          <article class="blog-post" key={post.slug}>
-            <h2><a href={`/${post.slug}`}>{post.frontmatter?.title || 'Без названия'}</a></h2>
-            <div class="post-meta">
-              {post.dates?.created && <Date date={post.dates.created} locale={cfg.locale} />}
-              <div class="post-tags">
-                {post.frontmatter?.tags
-                  ?.filter(t => !['garden', 'blog'].includes(t))
-                  .map(tag => (
-                    <a href={`/tags/${tag}`} class="tag">{tag}</a>
-                  ))
-                }
+      {blogPosts.length === 0 ? (
+        <p>Пока нет записей</p>
+      ) : (
+        <div class="blog-posts">
+          {blogPosts.map(post => (
+            <article class="blog-post" key={post.slug}>
+              <h2><a href={`/${post.slug}`}>{post.frontmatter?.title}</a></h2>
+              <div class="post-meta">
+                {post.dates?.created && <Date date={post.dates.created} locale={cfg.locale} />}
               </div>
-            </div>
-            {post.frontmatter?.description && (
-              <p class="post-description">{post.frontmatter.description}</p>
-            )}
-          </article>
-        ))}
-      </div>
+              {post.frontmatter?.description && (
+                <p class="post-description">{post.frontmatter.description}</p>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -60,26 +57,13 @@ BlogIndex.css = `
   padding-bottom: 1.5rem;
 }
 .post-meta {
-  display: flex;
-  gap: 1rem;
   color: var(--gray);
   font-size: 0.9rem;
+  margin-bottom: 0.5rem;
 }
-.post-tags {
-  display: flex;
-  gap: 0.5rem;
-}
-.tag {
-  color: var(--secondary);
-  border: 1px solid var(--gray);
-  border-radius: 4px;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.8rem;
-  text-decoration: none;
-}
-.tag:hover {
-  background: var(--secondary);
-  color: var(--light);
+.post-description {
+  color: var(--darkgray);
+  line-height: 1.6;
 }
 `
 

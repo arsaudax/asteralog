@@ -102,7 +102,11 @@ export const blogPostPageLayout: PageLayout = {
 // Макет для главной страницы блога с лентой постов
 export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
-    BlogIndex, // ← ВАЖНО: просто компонент, без JSX
+    (props) => {
+      // Вызываем компонент как функцию с props
+      const BlogIndexComponent = BlogIndex as any
+      return BlogIndexComponent(props)
+    },
   ],
   left: [],
   right: [

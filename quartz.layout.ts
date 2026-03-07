@@ -69,42 +69,9 @@ export const gardenContentPageLayout: PageLayout = {
   ],
 }
 
-/// Макет для блога с отладкой фильтра
+// Макет для блога
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
-    // Отладочный блок (только один!)
-    (props) => {
-      const files = props.allFiles
-      const blogFiles = files.filter(f => {
-        const tags = f.frontmatter?.tags
-        return Array.isArray(tags) && tags.includes('blog')
-      })
-      const nonIndexFiles = blogFiles.filter(f => f.slug !== 'index')
-      
-      return React.createElement('div', { 
-        style: { 
-          background: '#ff0', 
-          padding: '1rem', 
-          margin: '1rem 0', 
-          border: '2px solid #f00' 
-        } 
-      },
-        React.createElement('h3', null, '🔍 Отладка блога'),
-        React.createElement('p', null, `Всего файлов с тегом blog: ${blogFiles.length}`),
-        React.createElement('p', null, `Файлов для ленты (исключая index): ${nonIndexFiles.length}`),
-        React.createElement('ul', null, 
-          nonIndexFiles.map(f => 
-            React.createElement('li', { key: f.slug },
-              React.createElement('strong', null, f.frontmatter?.title || 'Без названия'),
-              React.createElement('br'),
-              `Slug: ${f.slug}`,
-              React.createElement('br'),
-              `Теги: ${f.frontmatter?.tags?.join(', ')}`
-            )
-          )
-        )
-      )
-    },
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
@@ -117,7 +84,10 @@ export const blogContentPageLayout: PageLayout = {
       title: "Последние записи",
       limit: 20,
       showTags: true,
-      filter: blogFilter 
+      filter: (file) => {
+        const tags = file.frontmatter?.tags
+        return Array.isArray(tags) && tags.includes('blog') && file.slug !== 'index'
+      }
     }),
     TagList(),
     Component.Backlinks(backlinksConfig),

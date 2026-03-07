@@ -145,13 +145,28 @@ export const defaultContentPageLayout = (() => {
     return gardenContentPageLayout
   }
   
-  // Для блога возвращаем функцию, которая выберет макет на основе slug
-  return (props: any) => {
-    // На главной странице блога показываем ленту
-    if (props.fileData.slug === 'index') {
-      return blogIndexPageLayout
-    }
-    // На остальных страницах — обычный макет поста
-    return blogPostPageLayout
-  }
+  // Для блога возвращаем специальный макет, который сам решает, что показывать
+  return {
+    beforeBody: [
+      (props: any) => {
+        if (props.fileData.slug === 'index') {
+          return <BlogIndex {...props} />
+        }
+        return (
+          <>
+            <Component.Breadcrumbs breadcrumbsConfig {...props} />
+            <Component.ArticleTitle {...props} />
+            <CustomComponent.ContentMeta {...props} showReadingTime={true} />
+            <Component.TagList {...props} />
+          </>
+        )
+      },
+    ],
+    left: [],
+    right: [
+      Component.DesktopOnly(Component.TableOfContents()),
+      TagList(),
+      Component.Backlinks(backlinksConfig),
+    ],
+  } as PageLayout
 })()

@@ -37,17 +37,26 @@ jobs:
           cd content-blog
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Сохраняем изменения и синхронизируемся
           git stash push --include-untracked || true
           git checkout main
           git pull origin main
           git stash pop || true
-          git add -A
-          if ! git diff --quiet --cached || ! git diff --quiet; then
-            git commit -m "chore: sync blog content [skip ci]"
-            git push origin main
+          
+          # Принудительно добавляем все изменения
+          git add -A --force
+          
+          # Всегда создаём коммит (пустой, если нет изменений)
+          if git diff --quiet --cached && git diff --quiet; then
+            echo "No changes detected, creating empty commit to force update"
+            git commit --allow-empty -m "chore: sync blog content [skip ci]"
           else
-            echo "No changes in blog content"
+            git commit -m "chore: sync blog content [skip ci]"
           fi
+          
+          # Принудительный пуш
+          git push origin main --force
           cd ..
 
       - name: Update and commit garden content
@@ -55,17 +64,26 @@ jobs:
           cd content-garden
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Сохраняем изменения и синхронизируемся
           git stash push --include-untracked || true
           git checkout main
           git pull origin main
           git stash pop || true
-          git add -A
-          if ! git diff --quiet --cached || ! git diff --quiet; then
-            git commit -m "chore: sync garden content [skip ci]"
-            git push origin main
+          
+          # Принудительно добавляем все изменения
+          git add -A --force
+          
+          # Всегда создаём коммит (пустой, если нет изменений)
+          if git diff --quiet --cached && git diff --quiet; then
+            echo "No changes detected, creating empty commit to force update"
+            git commit --allow-empty -m "chore: sync garden content [skip ci]"
           else
-            echo "No changes in garden content"
+            git commit -m "chore: sync garden content [skip ci]"
           fi
+          
+          # Принудительный пуш
+          git push origin main --force
           cd ..
 
       - name: Build Garden

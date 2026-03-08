@@ -11,7 +11,7 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// Добавляем отладку (будет видно при сборке)
+// Добавляем отладку
 console.log(`\n🔧 Layout: Building for ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
 
 // Конфигурация проводника
@@ -151,12 +151,18 @@ export const blogIndexPageLayout: PageLayout = {
     Component.Backlinks(backlinksConfig),
   ],
   afterBody: [
-    Component.PageList({
+    // ИСПОЛЬЗУЕМ ContentIndex ВМЕСТО PageList
+    Component.ContentIndex({
+      enableSiteMap: true,
+      enableRSS: true,
+      showDate: true,
+      showDescription: true,
+      showTags: true,
       limit: 100,
       sort: "created",
       reverse: true,
-      filter: blogFilter,
-    }),
+      filter: blogFilter
+    })
   ],
 }
 
@@ -213,7 +219,7 @@ export const defaultContentPageLayout = (() => {
   return (props: QuartzComponentProps) => {
     const slug = props?.fileData?.slug
     
-    // Отладка (будет видно при сборке)
+    // Отладка
     if (process.env.NODE_ENV === 'development') {
       console.log(`  📄 Page: ${slug}, layout: ${slug === 'index' ? 'index' : 'content'}`)
     }

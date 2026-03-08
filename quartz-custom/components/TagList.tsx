@@ -2,7 +2,7 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { classNames } from "../../quartz/util/lang"
 
 // Стили импортируются из отдельного файла
-import style from "./styles/tagList.scss"
+import style from "./styles/TagList.scss"
 
 interface Options {
   title?: string

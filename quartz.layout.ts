@@ -46,7 +46,7 @@ const backlinksConfig = {
   title: "Обратные ссылки", // Единый стиль заголовка
 }
 
-// Конфигурация хлебных крошек (не используются, но оставим для справки)
+// Конфигурация хлебных крошек (не используются)
 const breadcrumbsConfig = {
   rootName: "🏡",
   showCurrentPage: true,
@@ -71,7 +71,6 @@ export const sharedPageComponents: SharedLayout = {
 // ==============================
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
-    // Хлебные крошки убраны
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
@@ -86,8 +85,7 @@ export const gardenContentPageLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(backlinksConfig), // Обратные ссылки на правой панели
-    // RecentNotes убраны
+    Component.Backlinks(backlinksConfig),
     TagList(),
   ],
 }
@@ -104,7 +102,7 @@ export const gardenListPageLayout: PageLayout = {
     Component.Darkmode(),
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
-  right: [], // Явно пустой массив
+  right: [],
 }
 
 // ==============================
@@ -126,8 +124,20 @@ export const blogContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
     TagList(),
+    // RecentNotes только НЕ на главной странице
+    Component.ConditionalRender({
+      component: Component.RecentNotes({
+        limit: 5,
+        showTags: true,
+        filter: blogFilter,
+        title: "Недавние записи"
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index'
+      }
+    })
   ],
-  // ConditionalRender для главной страницы блога
+  // BlogIndex только на главной странице
   afterBody: [
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
@@ -160,11 +170,11 @@ export const blogListPageLayout: PageLayout = {
 // DEFAULT LAYOUT SELECTORS
 // ==============================
 
-// Для контентных страниц возвращаем объект PageLayout
+// Для контентных страниц
 export const defaultContentPageLayout: PageLayout =
   siteType === 'garden' 
     ? gardenContentPageLayout 
-    : blogContentPageLayout  // blogContentPageLayout теперь содержит ConditionalRender
+    : blogContentPageLayout
 
 // Для страниц-списков
 export const defaultListPageLayout: PageLayout =

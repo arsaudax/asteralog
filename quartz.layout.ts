@@ -5,14 +5,12 @@ import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
-import * as CustomComponent from "./quartz-custom/components"
 
-// Определяем тип сайта по BASE_URL (на уровне модуля!)
+// Определяем тип сайта по BASE_URL
 const siteType = typeof process !== 'undefined' 
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// Добавляем отладку
 console.log(`\n🔧 Layout: Building for ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
 
 // Конфигурация проводника
@@ -100,10 +98,12 @@ export const gardenContentPageLayout: PageLayout = {
 // ==============================
 // МАКЕТ БЛОГА (отдельная страница)
 // ==============================
-export const blogIndexPageLayout: PageLayout = {
+export const blogContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
   ],
   left: [
     Component.PageTitle(),
@@ -113,21 +113,14 @@ export const blogIndexPageLayout: PageLayout = {
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
+    Component.Backlinks(backlinksConfig),
     Component.RecentNotes({
-      limit: 10,
+      limit: 8,
       showTags: true,
       filter: blogFilter,
-      title: "Недавние записи"
+      title: "Последние записи",
     }),
-    Component.TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
-  afterBody: [
-    // ИСПОЛЬЗУЕМ НАШ КАСТОМНЫЙ КОМПОНЕНТ
-    CustomComponent.BlogIndex({
-      limit: 100,
-      filter: blogFilter
-    })
+    TagList(),
   ],
 }
 
@@ -157,16 +150,8 @@ export const blogIndexPageLayout: PageLayout = {
     Component.Backlinks(backlinksConfig),
   ],
   afterBody: [
-    // ИСПОЛЬЗУЕМ ContentIndex ВМЕСТО PageList
-    Component.ContentIndex({
-      enableSiteMap: true,
-      enableRSS: true,
-      showDate: true,
-      showDescription: true,
-      showTags: true,
+    CustomComponent.BlogIndex({
       limit: 100,
-      sort: "created",
-      reverse: true,
       filter: blogFilter
     })
   ],
@@ -216,19 +201,12 @@ export const blogListPageLayout: PageLayout = {
 // ВЫБОР МАКЕТА ПО ТИПУ САЙТА И СТРАНИЦЕ
 // ==============================
 export const defaultContentPageLayout = (() => {
-  // Для сада возвращаем просто макет
   if (siteType === 'garden') {
     return gardenContentPageLayout
   }
   
-  // Для блога возвращаем функцию, которая выберет макет по slug
   return (props: QuartzComponentProps) => {
     const slug = props?.fileData?.slug
-    
-    // Отладка
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`  📄 Page: ${slug}, layout: ${slug === 'index' ? 'index' : 'content'}`)
-    }
     
     if (slug === 'index') {
       return blogIndexPageLayout
@@ -237,7 +215,6 @@ export const defaultContentPageLayout = (() => {
   }
 })()
 
-// Макет для страниц-списков (теги, папки)
 export const defaultListPageLayout = (() => {
   if (siteType === 'garden') {
     return gardenListPageLayout

@@ -158,7 +158,7 @@ export const blogIndexPageLayout: PageLayout = {
 }
 
 // ==============================
-// МАКЕТ ДЛЯ СПИСКОВ (теги, папки)
+// МАКЕТ ДЛЯ СПИСКОВ (теги, папки) - САД
 // ==============================
 export const gardenListPageLayout: PageLayout = {
   beforeBody: [
@@ -173,9 +173,12 @@ export const gardenListPageLayout: PageLayout = {
     Component.Darkmode(),
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
-  right: [],
+  right: [],  // Пустой массив, а не undefined
 }
 
+// ==============================
+// МАКЕТ ДЛЯ СПИСКОВ (теги, папки) - БЛОГ
+// ==============================
 export const blogListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),

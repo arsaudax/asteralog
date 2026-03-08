@@ -127,23 +127,7 @@ export const blogContentPageLayout: PageLayout = {
     Component.Backlinks(backlinksConfig),
     TagList(),
   ],
-}
-
-export const blogIndexPageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-  ],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
+  // ConditionalRender для главной страницы блога
   afterBody: [
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
@@ -180,7 +164,7 @@ export const blogListPageLayout: PageLayout = {
 export const defaultContentPageLayout: PageLayout =
   siteType === 'garden' 
     ? gardenContentPageLayout 
-    : blogContentPageLayout
+    : blogContentPageLayout  // blogContentPageLayout теперь содержит ConditionalRender
 
 // Для страниц-списков
 export const defaultListPageLayout: PageLayout =

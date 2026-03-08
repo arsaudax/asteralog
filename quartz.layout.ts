@@ -87,7 +87,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.RecentNotes({
       limit: 5,
       showTags: false,
-      filter: gardenFilter,
+      // filter: gardenFilter,  // УБРАЛИ
       title: "Недавние заметки",
     }),
     TagList(),
@@ -132,7 +132,7 @@ export const blogContentPageLayout: PageLayout = {
     Component.RecentNotes({
       limit: 8,
       showTags: true,
-      filter: blogFilter,
+      // filter: blogFilter,  // УБРАЛИ
       title: "Последние записи",
     }),
     TagList(),
@@ -142,7 +142,7 @@ export const blogContentPageLayout: PageLayout = {
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 100,
-        filter: blogFilter
+        // filter: blogFilter  // УБРАЛИ
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'index'
@@ -168,7 +168,7 @@ const blogIndexPageLayout: PageLayout = {
     Component.RecentNotes({
       limit: 10,
       showTags: true,
-      filter: blogFilter,
+      // filter: blogFilter,  // УБРАЛИ
       title: "Недавние записи",
     }),
     TagList(),
@@ -177,7 +177,7 @@ const blogIndexPageLayout: PageLayout = {
   afterBody: [
     CustomComponent.BlogIndex({
       limit: 100,
-      filter: blogFilter
+      // filter: blogFilter  // УБРАЛИ
     })
   ],
 }
@@ -198,20 +198,20 @@ export const blogListPageLayout: PageLayout = {
     Component.RecentNotes({
       limit: 10,
       showTags: true,
-      filter: blogFilter,
+      // filter: blogFilter,  // УБРАЛИ
     }),
   ],
 }
 
 // ==============================
-// DEFAULT LAYOUT SELECTORS - ИСПРАВЛЕНО!
+// DEFAULT LAYOUT SELECTORS
 // ==============================
 
-// Для контентных страниц возвращаем ТОЛЬКО объект PageLayout, НЕ функцию
+// Для контентных страниц возвращаем ТОЛЬКО объект PageLayout
 export const defaultContentPageLayout: PageLayout =
   siteType === 'garden' 
     ? gardenContentPageLayout 
-    : blogContentPageLayout  // Используем blogContentPageLayout с ConditionalRender
+    : blogContentPageLayout
 
 // Для страниц-списков
 export const defaultListPageLayout: PageLayout =

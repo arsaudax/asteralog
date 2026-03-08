@@ -359,56 +359,56 @@
 
 /* ===== DARK MODE TOGGLE ===== */
 .darkmode {
-  position: fixed;
-  bottom: var(--spacing-lg);
-  right: var(--spacing-lg);
-  z-index: var(--z-fixed);
+  position: fixed !important;
+  bottom: var(--spacing-lg) !important;
+  right: var(--spacing-lg) !important;
+  z-index: var(--z-fixed) !important;
   
   button {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-full);
-    padding: var(--spacing-sm) var(--spacing-lg);
-    color: var(--text-primary);
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    transition: all var(--transition-base);
-    box-shadow: var(--shadow-md);
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--spacing-xs) !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-full) !important;
+    padding: var(--spacing-sm) var(--spacing-lg) !important;
+    color: var(--text-primary) !important;
+    font-size: var(--font-size-sm) !important;
+    cursor: pointer !important;
+    transition: all var(--transition-base) !important;
+    box-shadow: var(--shadow-md) !important;
 
     &:hover {
-      background: var(--highlight);
-      border-color: var(--link-color);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      background: var(--highlight) !important;
+      border-color: var(--link-color) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: var(--shadow-lg) !important;
     }
     
     &:active {
-      transform: translateY(0);
-      box-shadow: var(--shadow-sm);
+      transform: translateY(0) !important;
+      box-shadow: var(--shadow-sm) !important;
     }
 
     svg {
-      width: 1.2em;
-      height: 1.2em;
-      color: var(--link-color);
+      width: 1.2em !important;
+      height: 1.2em !important;
+      color: var(--link-color) !important;
     }
   }
   
   // Адаптив для мобильных
   @media (max-width: 500px) {
-    bottom: var(--spacing-md);
-    right: var(--spacing-md);
+    bottom: var(--spacing-md) !important;
+    right: var(--spacing-md) !important;
     
     button {
-      padding: var(--spacing-xs) var(--spacing-md);
-      font-size: 0;
+      padding: var(--spacing-xs) var(--spacing-md) !important;
+      font-size: 0 !important;
       
       svg {
-        width: 1.4em;
-        height: 1.4em;
+        width: 1.4em !important;
+        height: 1.4em !important;
       }
     }
   }
@@ -505,6 +505,56 @@
   }
 }
 
+/* ===== POPOVER (ПРЕВЬЮ ЗАМЕТОК) ===== */
+.popover {
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  max-width: 300px !important;
+  
+  .popover-inner {
+    color: var(--text-primary) !important;
+    padding: var(--spacing-md) !important;
+    
+    p, li, h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary) !important;
+      margin: var(--spacing-xs) 0 !important;
+    }
+    
+    a {
+      color: var(--link-color) !important;
+      
+      &:hover {
+        color: var(--link-hover) !important;
+      }
+    }
+    
+    // Стили для кода в превью
+    code {
+      background: var(--highlight) !important;
+      color: var(--link-color) !important;
+      padding: 0.1em 0.3em !important;
+      border-radius: var(--radius-sm) !important;
+    }
+    
+    // Стили для тегов в превью
+    .tag {
+      background: transparent !important;
+      color: var(--link-color) !important;
+      border: 1px solid var(--border-color) !important;
+      padding: 0.1em 0.5em !important;
+      border-radius: var(--radius-sm) !important;
+      font-size: var(--font-size-xs) !important;
+    }
+  }
+  
+  // Стрелочка поповера
+  .popover-arrow {
+    border-color: var(--border-color) !important;
+  }
+}
+
 /* ===== ТЁМНАЯ ТЕМА (дополнительные настройки) ===== */
 :root[saved-theme="dark"] {
   .callout {
@@ -528,6 +578,15 @@
   .pagination {
     a.active {
       color: var(--bg-primary);
+    }
+  }
+  
+  /* Дополнительные стили для поповера в тёмной теме */
+  .popover {
+    background: var(--bg-primary) !important;
+    
+    .popover-inner {
+      color: var(--text-primary) !important;
     }
   }
 }

@@ -162,7 +162,7 @@
   }
 }
 
-/* ===== EXPLORER COMPONENT ===== */
+/* ===== EXPLORER COMPONENT (исправление жирности) ===== */
 .explorer {
   margin-bottom: var(--spacing-lg);
   
@@ -206,6 +206,7 @@
     text-decoration: none;
     transition: all var(--transition-fast);
     border-radius: var(--radius-sm);
+    font-weight: normal !important; // ← УБИРАЕМ ЖИРНОСТЬ
 
     &:hover {
       color: var(--link-hover);
@@ -216,7 +217,7 @@
 
   .explorer-link.active {
     color: var(--link-color);
-    font-weight: 600;
+    font-weight: 600 !important; // Только активный жирный
     background: var(--highlight);
     padding-left: var(--spacing-xs);
     border-left: 2px solid var(--link-color);
@@ -517,11 +518,20 @@
     color: var(--text-primary) !important;
     padding: var(--spacing-md) !important;
     
-    p, li, h1, h2, h3, h4, h5, h6 {
+    // Заголовки
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary) !important;
+      margin: var(--spacing-xs) 0 !important;
+      font-size: var(--font-size-md) !important;
+    }
+    
+    // Текст
+    p, li {
       color: var(--text-primary) !important;
       margin: var(--spacing-xs) 0 !important;
     }
     
+    // Ссылки
     a {
       color: var(--link-color) !important;
       
@@ -530,7 +540,7 @@
       }
     }
     
-    // Стили для кода в превью
+    // Код
     code {
       background: var(--highlight) !important;
       color: var(--link-color) !important;
@@ -538,13 +548,29 @@
       border-radius: var(--radius-sm) !important;
     }
     
-    // Стили для тегов в превью
+    // Теги
     .tag {
       background: transparent !important;
       color: var(--link-color) !important;
       border: 1px solid var(--border-color) !important;
       padding: 0.1em 0.5em !important;
       border-radius: var(--radius-sm) !important;
+      font-size: var(--font-size-xs) !important;
+      display: inline-block;
+      margin: 0.1rem;
+      
+      &:hover {
+        background: var(--link-color) !important;
+        color: white !important;
+        border-color: var(--link-color) !important;
+      }
+    }
+    
+    // Мета-информация (даты и т.д.)
+    .content-meta,
+    .meta-created,
+    .meta-reading {
+      color: var(--text-secondary) !important;
       font-size: var(--font-size-xs) !important;
     }
   }
@@ -587,6 +613,16 @@
     
     .popover-inner {
       color: var(--text-primary) !important;
+      
+      p, li, h1, h2, h3, h4, h5, h6 {
+        color: var(--text-primary) !important;
+      }
+      
+      .content-meta,
+      .meta-created,
+      .meta-reading {
+        color: var(--text-secondary) !important;
+      }
     }
   }
 }

@@ -114,8 +114,8 @@
   --bg-primary: var(--asteralog-bg-dark);
   --bg-secondary: var(--asteralog-bg-dark-alt);
   --text-primary: var(--asteralog-fg-dark);
-  --text-secondary: var(--asteralog-comment-dark);
-  --text-muted: color-mix(in srgb, var(--text-secondary) 70%, transparent);
+  --text-secondary: #a0a0a0;
+  --text-muted: #808080;
   --border-color: var(--asteralog-selection-dark);
   --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
   

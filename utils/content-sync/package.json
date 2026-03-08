@@ -7,8 +7,7 @@
   "scripts": {
     "sync": "node index.js",
     "sync:dev": "NODE_ENV=development node index.js",
-    "sync:clean": "rm -rf ../.sync-cache.json && node index.js",
-    "watch": "nodemon index.js"
+    "sync:clean": "rm -rf ../.sync-cache.json && node index.js"
   },
   "keywords": [
     "obsidian",

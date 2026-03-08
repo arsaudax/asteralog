@@ -7,7 +7,6 @@ on:
     types: [content-updated]
   workflow_dispatch:
 
-# Добавляем concurrency для отмены предыдущих запусков
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -33,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          cd utils/content-sync && npm ci
+          cd utils/content-sync && npm install --no-package-lock
 
       - name: Clone or update garden content
         run: |
@@ -58,8 +57,17 @@ jobs:
         env:
           NODE_ENV: production
 
+      # ========== GARDEN BUILD ==========
+      - name: Print Garden env
+        run: |
+          echo "SITE_TYPE=$SITE_TYPE"
+          echo "BASE_URL=$BASE_URL"
+        env:
+          SITE_TYPE: garden
+          BASE_URL: garden.asteralog.ru
+
       - name: Build Garden
-        run: npx quartz build --directory content-garden --output public
+        run: npx quartz build --directory content-garden --output public-garden
         env:
           BASE_URL: garden.asteralog.ru
           SITE_TYPE: garden
@@ -71,14 +79,14 @@ jobs:
           echo "SITE_TYPE: $SITE_TYPE"
           echo "BASE_URL: $BASE_URL"
           echo ""
-          echo "📁 Files in public/:"
-          ls -la public/
+          echo "📁 Files in public-garden/:"
+          ls -la public-garden/
           echo ""
           echo "📄 First 20 lines of index.html:"
-          cat public/index.html | head -20
+          cat public-garden/index.html | head -20
           echo ""
           echo "🔍 Checking for 404 page..."
-          if grep -q "404" public/index.html; then
+          if grep -q "404" public-garden/index.html; then
             echo "❌ ERROR: index.html is a 404 page!"
             echo ""
             echo "=== Looking for index.md in source ==="
@@ -92,21 +100,30 @@ jobs:
           BASE_URL: garden.asteralog.ru
 
       - name: Add CNAME for garden
-        run: echo "garden.asteralog.ru" > public/CNAME
+        run: echo "garden.asteralog.ru" > public-garden/CNAME
 
       - name: Deploy Garden
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
           external_repository: arsaudax/garden.asteralog.ru
-          publish_dir: ./public
+          publish_dir: ./public-garden
           publish_branch: gh-pages
           force_orphan: true
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
 
+      # ========== BLOG BUILD ==========
+      - name: Print Blog env
+        run: |
+          echo "SITE_TYPE=$SITE_TYPE"
+          echo "BASE_URL=$BASE_URL"
+        env:
+          SITE_TYPE: blog
+          BASE_URL: blog.asteralog.ru
+
       - name: Build Blog
-        run: npx quartz build --directory content-blog --output public
+        run: npx quartz build --directory content-blog --output public-blog
         env:
           BASE_URL: blog.asteralog.ru
           SITE_TYPE: blog
@@ -118,14 +135,14 @@ jobs:
           echo "SITE_TYPE: $SITE_TYPE"
           echo "BASE_URL: $BASE_URL"
           echo ""
-          echo "📁 Files in public/:"
-          ls -la public/
+          echo "📁 Files in public-blog/:"
+          ls -la public-blog/
           echo ""
           echo "📄 First 20 lines of index.html:"
-          cat public/index.html | head -20
+          cat public-blog/index.html | head -20
           echo ""
           echo "🔍 Checking for 404 page..."
-          if grep -q "404" public/index.html; then
+          if grep -q "404" public-blog/index.html; then
             echo "❌ ERROR: index.html is a 404 page!"
             echo ""
             echo "=== Looking for index.md in source ==="
@@ -139,14 +156,14 @@ jobs:
           BASE_URL: blog.asteralog.ru
 
       - name: Add CNAME for blog
-        run: echo "blog.asteralog.ru" > public/CNAME
+        run: echo "blog.asteralog.ru" > public-blog/CNAME
 
       - name: Deploy Blog
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.ASTERALOG_DEPLOY }}
           external_repository: arsaudax/blog.asteralog.ru
-          publish_dir: ./public
+          publish_dir: ./public-blog
           publish_branch: gh-pages
           force_orphan: true
           user_name: 'github-actions[bot]'

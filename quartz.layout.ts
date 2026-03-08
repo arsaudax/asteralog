@@ -137,9 +137,22 @@ export const blogContentPageLayout: PageLayout = {
     }),
     TagList(),
   ],
+  // Условный afterBody для главной страницы блога
+  afterBody: [
+    Component.ConditionalRender({
+      component: CustomComponent.BlogIndex({
+        limit: 100,
+        filter: blogFilter
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug === 'index'
+      }
+    })
+  ],
 }
 
-export const blogIndexPageLayout: PageLayout = {
+// Для совместимости оставляем, но не используем напрямую
+const blogIndexPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -191,22 +204,17 @@ export const blogListPageLayout: PageLayout = {
 }
 
 // ==============================
-// DEFAULT LAYOUT SELECTORS
+// DEFAULT LAYOUT SELECTORS - ИСПРАВЛЕНО!
 // ==============================
-export const defaultContentPageLayout = (() => {
-  if (siteType === 'garden') {
-    return gardenContentPageLayout
-  }
-  
-  return (props: QuartzComponentProps) => {
-    const slug = props?.fileData?.slug
-    return slug === 'index' ? blogIndexPageLayout : blogContentPageLayout
-  }
-})()
 
-export const defaultListPageLayout = (() => {
-  if (siteType === 'garden') {
-    return gardenListPageLayout
-  }
-  return blogListPageLayout
-})()
+// Для контентных страниц возвращаем ТОЛЬКО объект PageLayout, НЕ функцию
+export const defaultContentPageLayout: PageLayout =
+  siteType === 'garden' 
+    ? gardenContentPageLayout 
+    : blogContentPageLayout  // Используем blogContentPageLayout с ConditionalRender
+
+// Для страниц-списков
+export const defaultListPageLayout: PageLayout =
+  siteType === 'garden'
+    ? gardenListPageLayout
+    : blogListPageLayout

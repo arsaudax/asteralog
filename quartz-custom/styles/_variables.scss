@@ -5,7 +5,7 @@
   /* ===== ОСНОВНЫЕ ЦВЕТА ===== */
   
   /* Dark mode colors (из blogColors.darkMode) */
-  --asteralog-bg-dark: #1a1c1e;        /* тёмный фон (было #343434) */
+  --asteralog-bg-dark: #1a1c1e;        /* тёмный фон */
   --asteralog-bg-dark-alt: #2e3235;     /* тёмный альтернативный фон */
   --asteralog-fg-dark: #d4d4d4;         /* основной текст */
   --asteralog-comment-dark: #4a4f54;     /* второстепенный текст */
@@ -114,8 +114,8 @@
   --bg-primary: var(--asteralog-bg-dark);
   --bg-secondary: var(--asteralog-bg-dark-alt);
   --text-primary: var(--asteralog-fg-dark);
-  --text-secondary: #a0a0a0;
-  --text-muted: #808080;
+  --text-secondary: #a0a0a0;      /* СРЕДНЕ-СЕРЫЙ для дат и второстепенного текста */
+  --text-muted: #808080;           /* ТЁМНО-СЕРЫЙ для ещё более второстепенного */
   --border-color: var(--asteralog-selection-dark);
   --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
   
@@ -159,6 +159,7 @@
   --bg-primary: var(--asteralog-bg-dark);
   --bg-secondary: var(--asteralog-bg-dark-alt);
   --text-primary: var(--asteralog-fg-dark);
-  --text-secondary: var(--asteralog-comment-dark);
+  --text-secondary: #a0a0a0;      /* ← ИСПРАВЛЕНО */
+  --text-muted: #808080;           /* ← ИСПРАВЛЕНО */
   --border-color: var(--asteralog-selection-dark);
 }

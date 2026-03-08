@@ -6,14 +6,14 @@ import TagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
 
-// Определяем тип сайта по BASE_URL
+// Определяем тип сайта
 const siteType = typeof process !== 'undefined' 
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
 console.log(`\n🔧 Layout: Building for ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
 
-// Конфигурация проводника
+// Конфигурации
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
     const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true
@@ -27,7 +27,6 @@ const explorerConfig = {
   title: "⊹ Сад",
 }
 
-// Конфигурация графа
 const graphConfig = {
   localGraph: {
     showTags: false,
@@ -39,18 +38,18 @@ const graphConfig = {
   },
 }
 
-// Конфигурация обратных ссылок
 const backlinksConfig = {
   hideWhenEmpty: true,
 }
 
-// Конфигурация хлебных крошек
 const breadcrumbsConfig = {
   rootName: "🏡",
   showCurrentPage: true,
 }
 
-// Общие компоненты
+// ==============================
+// SHARED COMPONENTS
+// ==============================
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
@@ -65,7 +64,7 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==============================
-// МАКЕТ САДА
+// GARDEN LAYOUTS
 // ==============================
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
@@ -95,8 +94,24 @@ export const gardenContentPageLayout: PageLayout = {
   ],
 }
 
+export const gardenListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+  ],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [], // Явно пустой массив
+}
+
 // ==============================
-// МАКЕТ БЛОГА (отдельная страница)
+// BLOG LAYOUTS
 // ==============================
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
@@ -124,9 +139,6 @@ export const blogContentPageLayout: PageLayout = {
   ],
 }
 
-// ==============================
-// МАКЕТ ГЛАВНОЙ СТРАНИЦЫ БЛОГА
-// ==============================
 export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -157,28 +169,6 @@ export const blogIndexPageLayout: PageLayout = {
   ],
 }
 
-// ==============================
-// МАКЕТ ДЛЯ СПИСКОВ (теги, папки) - САД
-// ==============================
-export const gardenListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-  ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
-  right: [],  // Пустой массив, а не undefined
-}
-
-// ==============================
-// МАКЕТ ДЛЯ СПИСКОВ (теги, папки) - БЛОГ
-// ==============================
 export const blogListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -201,7 +191,7 @@ export const blogListPageLayout: PageLayout = {
 }
 
 // ==============================
-// ВЫБОР МАКЕТА ПО ТИПУ САЙТА И СТРАНИЦЕ
+// DEFAULT LAYOUT SELECTORS
 // ==============================
 export const defaultContentPageLayout = (() => {
   if (siteType === 'garden') {
@@ -210,11 +200,7 @@ export const defaultContentPageLayout = (() => {
   
   return (props: QuartzComponentProps) => {
     const slug = props?.fileData?.slug
-    
-    if (slug === 'index') {
-      return blogIndexPageLayout
-    }
-    return blogContentPageLayout
+    return slug === 'index' ? blogIndexPageLayout : blogContentPageLayout
   }
 })()
 

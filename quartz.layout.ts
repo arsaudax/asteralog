@@ -79,7 +79,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
-    Component.Darkmode(),
+    Component.Darkmode(), // ← ДОБАВЛЕНО!
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [
@@ -99,7 +99,7 @@ export const gardenListPageLayout: PageLayout = {
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
-    Component.Darkmode(),
+    Component.Darkmode(), // ← ДОБАВЛЕНО!
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [],
@@ -111,7 +111,13 @@ export const gardenListPageLayout: PageLayout = {
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
+    // ContentMeta только НЕ на главной
+    Component.ConditionalRender({
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index'
+      }
+    }),
     Component.TagList(),
   ],
   left: [

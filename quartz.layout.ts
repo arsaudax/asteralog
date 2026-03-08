@@ -5,6 +5,7 @@ import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
+import * as CustomComponent from "./quartz-custom/components"
 
 // Определяем тип сайта по BASE_URL (на уровне модуля!)
 const siteType = typeof process !== 'undefined' 
@@ -99,12 +100,10 @@ export const gardenContentPageLayout: PageLayout = {
 // ==============================
 // МАКЕТ БЛОГА (отдельная страница)
 // ==============================
-export const blogContentPageLayout: PageLayout = {
+export const blogIndexPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
   ],
   left: [
     Component.PageTitle(),
@@ -114,14 +113,21 @@ export const blogContentPageLayout: PageLayout = {
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(backlinksConfig),
     Component.RecentNotes({
-      limit: 8,
+      limit: 10,
       showTags: true,
       filter: blogFilter,
-      title: "Последние записи",
+      title: "Недавние записи"
     }),
-    TagList(),
+    Component.TagList(),
+    Component.Backlinks(backlinksConfig),
+  ],
+  afterBody: [
+    // ИСПОЛЬЗУЕМ НАШ КАСТОМНЫЙ КОМПОНЕНТ
+    CustomComponent.BlogIndex({
+      limit: 100,
+      filter: blogFilter
+    })
   ],
 }
 

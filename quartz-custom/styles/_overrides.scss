@@ -1,19 +1,25 @@
 // Quartz Component Overrides for Asteralog Theme
-// Используем CSS-переменные из _variables.scss
+// Используем семантические переменные из _variables.scss
 
-// Callout/Admonition color overrides
+/* ===== CALLOUTS / ADMONITIONS ===== */
 .callout {
+  border-radius: var(--radius-md);
+  margin: var(--spacing-lg) 0;
+  background: var(--bg-secondary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  
   &[data-callout="note"],
   &[data-callout="info"],
   &[data-callout="abstract"],
   &[data-callout="summary"] {
-    --callout-color: var(--asteralog-accent);
+    --callout-color: var(--link-color);
   }
 
   &[data-callout="tip"],
   &[data-callout="hint"],
   &[data-callout="important"] {
-    --callout-color: var(--asteralog-accent-alt);
+    --callout-color: var(--link-hover);
   }
   
   &[data-callout="success"],
@@ -40,126 +46,151 @@
   
   &[data-callout="quote"],
   &[data-callout="cite"] {
-    --callout-color: var(--gray); // Серый для цитат
+    --callout-color: var(--text-muted); // Серый для цитат
   }
 
-  border-left-color: var(--callout-color);
-  border-radius: 0 4px 4px 0;
+  border-left: 4px solid var(--callout-color);
 
   .callout-title {
     color: var(--callout-color);
     font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    
+    .callout-icon {
+      width: 1.2em;
+      height: 1.2em;
+    }
   }
   
   .callout-content {
-    margin-top: 0.5rem;
+    > :last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
-// Search component styling
+/* ===== SEARCH COMPONENT ===== */
 #search-container {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-lg);
   
   input {
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
     width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     background: var(--bg-primary);
     color: var(--text-primary);
-    transition: all 0.2s ease;
+    font-size: var(--font-size-md);
+    transition: all var(--transition-fast);
 
     &:focus {
-      border-color: var(--asteralog-accent);
-      box-shadow: 0 0 0 2px rgba(171, 125, 76, 0.2);
+      border-color: var(--link-color);
+      box-shadow: 0 0 0 3px var(--highlight);
       outline: none;
     }
     
     &::placeholder {
-      color: var(--text-secondary);
+      color: var(--text-muted);
       opacity: 0.7;
     }
   }
 
   .search-result {
-    padding: 0.5rem;
-    margin: 0.25rem 0;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    padding: var(--spacing-sm);
+    margin: var(--spacing-xs) 0;
+    border-radius: var(--radius-sm);
     cursor: pointer;
+    transition: background-color var(--transition-fast);
 
     &:hover {
       background: var(--highlight);
     }
     
     mark {
-      background: var(--asteralog-accent);
+      background: var(--link-color);
       color: white;
       padding: 0.1em 0.2em;
-      border-radius: 2px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
     }
   }
 }
 
-// Graph component colors
+/* ===== GRAPH COMPONENT ===== */
 #graph-container {
   background: var(--bg-secondary);
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
   
   .node {
-    fill: var(--asteralog-accent);
-    transition: fill 0.2s ease, r 0.2s ease;
+    fill: var(--link-color);
+    transition: fill var(--transition-fast), r var(--transition-fast);
     cursor: pointer;
 
     &:hover {
-      fill: var(--asteralog-accent-alt);
+      fill: var(--link-hover);
       r: 6;
     }
     
     &.active {
-      fill: var(--asteralog-accent-alt);
+      fill: var(--link-hover);
       r: 7;
+      filter: drop-shadow(0 0 4px var(--link-color));
     }
   }
 
   .link {
     stroke: var(--border-color);
     stroke-width: 1.5;
-    transition: stroke 0.2s ease;
+    transition: stroke var(--transition-fast);
 
     &:hover {
-      stroke: var(--asteralog-accent);
+      stroke: var(--link-color);
     }
   }
   
   text {
     fill: var(--text-primary);
-    font-size: 0.8rem;
+    font-size: var(--font-size-xs);
     font-weight: 500;
+    pointer-events: none;
   }
 }
 
-// Explorer component
+/* ===== EXPLORER COMPONENT ===== */
 .explorer {
+  margin-bottom: var(--spacing-lg);
+  
   .folder-button {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0;
-    transition: all 0.2s ease;
-    border-radius: 4px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) 0;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: var(--font-size-md);
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-sm);
 
     &:hover {
       background: var(--highlight);
-      color: var(--asteralog-accent);
-      padding-left: 0.25rem;
+      color: var(--link-color);
+      padding-left: var(--spacing-xs);
     }
     
     svg {
       width: 1em;
       height: 1em;
-      transition: transform 0.2s ease;
+      transition: transform var(--transition-fast);
     }
   }
   
@@ -170,34 +201,43 @@
   .folder-title,
   .explorer-link {
     display: block;
-    padding: 0.25rem 0;
-    transition: all 0.2s ease;
-    border-radius: 4px;
+    padding: var(--spacing-xs) 0;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-sm);
 
     &:hover {
-      color: var(--asteralog-accent-alt);
+      color: var(--link-hover);
       background: var(--highlight);
-      padding-left: 0.25rem;
+      padding-left: var(--spacing-xs);
     }
   }
 
   .explorer-link.active {
-    color: var(--asteralog-accent);
+    color: var(--link-color);
     font-weight: 600;
     background: var(--highlight);
-    padding-left: 0.25rem;
+    padding-left: var(--spacing-xs);
+    border-left: 2px solid var(--link-color);
+  }
+  
+  // Вложенные элементы
+  .folder-outer {
+    margin-left: var(--spacing-md);
   }
 }
 
-// Breadcrumbs enhancement
+/* ===== BREADCRUMBS ===== */
 .breadcrumb-container {
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
   
   a {
     color: var(--link-color);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
 
     &:hover {
       color: var(--link-hover);
@@ -206,8 +246,12 @@
   }
 
   .breadcrumb-separator {
-    color: var(--text-secondary);
-    margin: 0 0.5rem;
+    color: var(--text-muted);
+    margin: 0 var(--spacing-xs);
+    
+    &::after {
+      content: "›";
+    }
   }
   
   .breadcrumb-current {
@@ -216,79 +260,81 @@
   }
 }
 
-// Table of Contents styling
+/* ===== TABLE OF CONTENTS ===== */
 .toc {
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-xl);
   
   .toc-header {
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
     color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--spacing-xs);
   }
   
   ul {
     list-style: none;
-    padding-left: 0;
+    padding: 0;
     margin: 0;
   }
   
   li {
-    margin: 0.25rem 0;
+    margin: var(--spacing-xs) 0;
   }
   
   a {
     display: block;
-    padding: 0.25rem 0 0.25rem 0.75rem;
+    padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-md);
     border-left: 2px solid transparent;
-    transition: all 0.2s ease;
     color: var(--text-secondary);
     text-decoration: none;
+    transition: all var(--transition-fast);
 
     &.active {
-      color: var(--asteralog-accent);
-      border-left-color: var(--asteralog-accent);
+      color: var(--link-color);
+      border-left-color: var(--link-color);
       background: var(--highlight);
       font-weight: 500;
     }
 
     &:hover {
-      color: var(--asteralog-accent-alt);
-      border-left-color: var(--asteralog-accent-alt);
+      color: var(--link-hover);
+      border-left-color: var(--link-hover);
       background: var(--highlight);
     }
   }
   
-  .depth-2 {
-    padding-left: 1rem;
-  }
-  
-  .depth-3 {
-    padding-left: 2rem;
-    font-size: 0.85em;
-  }
+  .depth-2 { padding-left: var(--spacing-xl); }
+  .depth-3 { padding-left: calc(var(--spacing-xl) * 2); font-size: 0.95em; }
+  .depth-4 { padding-left: calc(var(--spacing-xl) * 3); font-size: 0.9em; }
 }
 
-// Backlinks styling
+/* ===== BACKLINKS ===== */
 .backlinks {
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
   border-top: 1px solid var(--border-color);
   
   .backlinks-header {
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-md);
     color: var(--text-primary);
+    font-size: var(--font-size-md);
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--spacing-xs);
   }
   
   .backlink-item {
-    margin: 0.5rem 0;
+    margin: var(--spacing-sm) 0;
   }
   
   a {
     color: var(--link-color);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
     
     &:hover {
       color: var(--link-hover);
@@ -297,126 +343,157 @@
   }
   
   .backlink-count {
-    color: var(--text-secondary);
-    font-size: 0.9em;
-    margin-left: 0.5rem;
+    color: var(--text-muted);
+    font-size: var(--font-size-xs);
+    margin-left: var(--spacing-xs);
+    
+    &::before {
+      content: "(";
+    }
+    
+    &::after {
+      content: ")";
+    }
   }
 }
 
-// Dark mode toggle button
+/* ===== DARK MODE TOGGLE ===== */
 .darkmode {
   position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  z-index: 100;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: var(--z-fixed);
   
   button {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 30px;
-    padding: 0.6rem 1rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-xs);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    padding: var(--spacing-sm) var(--spacing-lg);
     color: var(--text-primary);
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md);
 
     &:hover {
       background: var(--highlight);
-      border-color: var(--asteralog-accent);
+      border-color: var(--link-color);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-lg);
     }
     
     &:active {
       transform: translateY(0);
+      box-shadow: var(--shadow-sm);
     }
 
     svg {
       width: 1.2em;
       height: 1.2em;
-      color: var(--asteralog-accent);
+      color: var(--link-color);
+    }
+  }
+  
+  // Адаптив для мобильных
+  @media (max-width: 500px) {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    
+    button {
+      padding: var(--spacing-xs) var(--spacing-md);
+      font-size: 0;
+      
+      svg {
+        width: 1.4em;
+        height: 1.4em;
+      }
     }
   }
 }
 
-// Recent notes styling
+/* ===== RECENT NOTES ===== */
 .recent-notes {
-  margin-top: 2rem;
+  margin-top: var(--spacing-xl);
   
   .recent-notes-header {
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
     color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--spacing-xs);
   }
   
   .recent-note-item {
     display: block;
-    padding: 0.5rem;
-    margin: 0.25rem 0;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: var(--spacing-sm);
+    margin: var(--spacing-xs) 0;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
     text-decoration: none;
     
     &:hover {
       background: var(--highlight);
-      transform: translateX(2px);
+      transform: translateX(var(--spacing-xs));
     }
     
     .note-title {
       color: var(--link-color);
       font-weight: 500;
-      margin-bottom: 0.25rem;
+      margin-bottom: var(--spacing-xs);
     }
     
     .note-date {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-size: var(--font-size-xs);
     }
     
     .note-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.25rem;
-      margin-top: 0.25rem;
+      gap: var(--spacing-xs);
+      margin-top: var(--spacing-xs);
       
       .tag {
-        font-size: 0.8rem;
+        font-size: var(--font-size-xs);
         padding: 0.1rem 0.3rem;
         background: var(--highlight);
-        border-radius: 3px;
+        border-radius: var(--radius-sm);
         color: var(--text-secondary);
       }
     }
   }
 }
 
-// Pagination
+/* ===== PAGINATION ===== */
 .pagination {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
   justify-content: center;
-  margin: 2rem 0;
+  margin: var(--spacing-xl) 0;
   
-  a, span {
-    padding: 0.5rem 1rem;
+  a, span, button {
+    padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    text-decoration: none;
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
     color: var(--text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    min-width: 2.5rem;
+    text-align: center;
     
-    &:hover:not(.disabled) {
+    &:hover:not(.disabled):not(.active) {
       background: var(--highlight);
-      border-color: var(--asteralog-accent);
-      color: var(--asteralog-accent);
+      border-color: var(--link-color);
+      color: var(--link-color);
     }
     
     &.active {
-      background: var(--asteralog-accent);
-      border-color: var(--asteralog-accent);
+      background: var(--link-color);
+      border-color: var(--link-color);
       color: white;
     }
     
@@ -426,4 +503,43 @@
       pointer-events: none;
     }
   }
+}
+
+/* ===== ТЁМНАЯ ТЕМА (дополнительные настройки) ===== */
+:root[saved-theme="dark"] {
+  .callout {
+    background: var(--bg-secondary);
+  }
+  
+  #graph-container {
+    background: var(--bg-secondary);
+    
+    .node.active {
+      filter: drop-shadow(0 0 4px var(--link-color));
+    }
+  }
+  
+  .explorer {
+    .folder-button:hover {
+      background: var(--highlight);
+    }
+  }
+  
+  .pagination {
+    a.active {
+      color: var(--bg-primary);
+    }
+  }
+}
+
+/* ===== АНИМАЦИИ ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.callout,
+.search-result,
+.recent-note-item {
+  animation: fadeIn var(--transition-slow);
 }

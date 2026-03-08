@@ -2,58 +2,163 @@
 /* Чистый CSS без Sass-переменных */
 
 :root {
-  /* Dark mode colors */
-  --asteralog-bg-dark: #343434;
-  --asteralog-bg-dark-alt: #393639;
-  --asteralog-fg-dark: #ffffff;
-  --asteralog-comment-dark: #ededed;
-  --asteralog-selection-dark: #575756;
+  /* ===== ОСНОВНЫЕ ЦВЕТА ===== */
+  
+  /* Dark mode colors (из blogColors.darkMode) */
+  --asteralog-bg-dark: #1a1c1e;        /* тёмный фон (было #343434) */
+  --asteralog-bg-dark-alt: #2e3235;     /* тёмный альтернативный фон */
+  --asteralog-fg-dark: #d4d4d4;         /* основной текст */
+  --asteralog-comment-dark: #4a4f54;     /* второстепенный текст */
+  --asteralog-selection-dark: #4a4f54;   /* выделение */
 
-  /* Light mode colors */
+  /* Light mode colors (из gardenColors.lightMode) */
   --asteralog-bg-light: #f9f7f4;
   --asteralog-bg-light-alt: #e5e5e5;
   --asteralog-fg-light: #2b2b2b;
   --asteralog-comment-light: #4a4a49;
   --asteralog-selection-light: #b8b8b8;
 
-  /* Accent colors */
+  /* Accent colors (единые для обоих режимов) */
   --asteralog-accent: #ab7d4c;
   --asteralog-accent-alt: #7c5736;
+  --asteralog-accent-light: #c4a37c;    /* светлый акцент */
+  --asteralog-accent-dark: #5e3e2a;     /* тёмный акцент */
   
-  /* Semantic aliases (для удобства использования) */
+  /* ===== СЕМАНТИЧЕСКИЕ АЛИАСЫ ===== */
+  /* Используются в компонентах (по умолчанию светлая тема) */
   --bg-primary: var(--asteralog-bg-light);
   --bg-secondary: var(--asteralog-bg-light-alt);
   --text-primary: var(--asteralog-fg-light);
   --text-secondary: var(--asteralog-comment-light);
+  --text-muted: color-mix(in srgb, var(--text-secondary) 80%, transparent);
   --border-color: var(--asteralog-selection-light);
+  --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
+  
+  /* Акцентные цвета */
   --link-color: var(--asteralog-accent);
   --link-hover: var(--asteralog-accent-alt);
+  --link-visited: color-mix(in srgb, var(--asteralog-accent) 80%, #000000);
   
-  /* Размеры и отступы (опционально) */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-xxl: 3rem;
+  /* Состояния */
+  --highlight: rgba(162, 132, 94, 0.15);
+  --highlight-strong: rgba(162, 132, 94, 0.25);
+  --selection-bg: var(--asteralog-selection-light);
   
-  /* Тени */
+  /* ===== ТИПОГРАФИКА ===== */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-md: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-xxl: 1.5rem;   /* 24px */
+  --font-size-xxxl: 2rem;    /* 32px */
+  --font-size-xxxxl: 2.5rem; /* 40px */
+  
+  --line-height-tight: 1.3;
+  --line-height-base: 1.6;
+  --line-height-loose: 1.8;
+  
+  /* ===== ОТСТУПЫ ===== */
+  --spacing-xxs: 0.125rem; /* 2px */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-xxl: 3rem;     /* 48px */
+  --spacing-xxxl: 4rem;    /* 64px */
+  --spacing-xxxxl: 6rem;   /* 96px */
+  
+  /* ===== СКОРУГЛЕНИЯ ===== */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* ===== ТЕНИ ===== */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   
-  /* Анимации */
+  /* ===== АНИМАЦИИ ===== */
   --transition-fast: 0.15s ease;
   --transition-base: 0.2s ease;
   --transition-slow: 0.3s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ===== ЛАЙАУТ ===== */
+  --container-max-width: 800px;
+  --sidebar-width: 250px;
+  --header-height: 60px;
+  --footer-height: 100px;
+  
+  /* ===== Z-INDEX ===== */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-tooltip: 600;
+  --z-toast: 700;
 }
 
-/* Dark mode overrides */
+/* ===== ТЁМНАЯ ТЕМА ===== */
 :root[saved-theme="dark"] {
+  /* Основные цвета */
+  --bg-primary: var(--asteralog-bg-dark);
+  --bg-secondary: var(--asteralog-bg-dark-alt);
+  --text-primary: var(--asteralog-fg-dark);
+  --text-secondary: var(--asteralog-comment-dark);
+  --text-muted: color-mix(in srgb, var(--text-secondary) 70%, transparent);
+  --border-color: var(--asteralog-selection-dark);
+  --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
+  
+  /* Состояния */
+  --highlight: rgba(171, 125, 76, 0.15);
+  --highlight-strong: rgba(171, 125, 76, 0.25);
+  --selection-bg: var(--asteralog-selection-dark);
+  
+  /* Акцентные цвета остаются теми же */
+  
+  /* Тени в тёмной теме */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== МЕДИА-ЗАПРОСЫ ДЛЯ ДОСТУПНОСТИ ===== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0s;
+    --transition-base: 0s;
+    --transition-slow: 0s;
+    --transition-smooth: 0s;
+  }
+}
+
+/* ===== ВЫСОКАЯ КОНТРАСТНОСТЬ ===== */
+@media (prefers-contrast: high) {
+  :root {
+    --text-secondary: var(--text-primary);
+    --border-color: var(--text-primary);
+    --highlight: transparent;
+  }
+}
+
+/* ===== ТЁМНАЯ ТЕМА ПО УМОЛЧАНИЮ ===== */
+/* Принудительно включаем тёмную тему для обоих сайтов */
+:root {
   --bg-primary: var(--asteralog-bg-dark);
   --bg-secondary: var(--asteralog-bg-dark-alt);
   --text-primary: var(--asteralog-fg-dark);
   --text-secondary: var(--asteralog-comment-dark);
   --border-color: var(--asteralog-selection-dark);
-  /* Акцентные цвета остаются теми же */
 }

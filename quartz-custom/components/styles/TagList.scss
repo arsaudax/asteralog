@@ -1,75 +1,217 @@
+/* TagList Styles for Asteralog */
+@use "../../styles/variables" as *;
+
 .tag-list {
-  margin: 1.5rem 0;
+  margin: var(--spacing-lg) 0;
   width: 100%;
   
+  // Заголовок списка тегов
   h3 {
-    margin: 0 0 1rem 0;
-    color: var(--darkgray);
-    font-size: 1rem;
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-md);
     font-weight: 600;
     letter-spacing: normal;
     text-transform: none;
     opacity: 1;
     text-align: left;
-    font-family: var(--headerFont);
+    font-family: var(--font-family-base);
+    
+    // Единый стиль со всеми заголовками боковых панелей
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--spacing-xs);
   }
   
-  .tag-list-content {
+  // Контейнер для тегов
+  &-content {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
     align-items: center;
     justify-content: flex-start;
     width: 100%;
   }
   
-  .tag-list-item {
+  // Отдельный тег
+  &-item {
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    color: var(--secondary);
+    gap: var(--spacing-xs);
+    color: var(--link-color);
     text-decoration: none;
-    font-size: 0.9rem;
-    padding: 0.25rem 0.75rem;
-    transition: all 0.2s ease;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    transition: all var(--transition-fast);
     background: transparent;
-    border: 1px solid var(--gray);
-    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     
     &:hover {
-      background: var(--secondary);
-      color: var(--light);
-      border-color: var(--secondary);
-      transform: translateY(-1px);
+      background: var(--link-color);
+      color: white;
+      border-color: var(--link-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
       text-decoration: none;
       
       .tag-count {
-        color: var(--light);
+        color: white;
       }
     }
     
+    &:active {
+      transform: translateY(0);
+    }
+    
+    // Счётчик тегов (количество постов)
     .tag-count {
-      font-size: 0.8rem;
-      color: var(--gray);
-      transition: color 0.2s ease;
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+      transition: color var(--transition-fast);
       margin-left: 0.1rem;
+      font-weight: normal;
+      
+      &::before {
+        content: "(";
+        opacity: 0.5;
+      }
+      
+      &::after {
+        content: ")";
+        opacity: 0.5;
+      }
+    }
+  }
+  
+  // Специальный стиль для активного тега
+  &-item.active {
+    background: var(--link-color);
+    color: white;
+    border-color: var(--link-color);
+    
+    .tag-count {
+      color: white;
     }
   }
 }
 
+// Адаптивность для планшетов
 @media (max-width: 768px) {
   .tag-list {
-    margin: 1rem 0;
+    margin: var(--spacing-md) 0;
     
     h3 {
-      font-size: 0.9rem;
-      margin-bottom: 0.75rem;
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--spacing-sm);
     }
     
-    .tag-list-item {
-      font-size: 0.85rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 5px;
+    &-item {
+      font-size: var(--font-size-xs);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+    }
+  }
+}
+
+// Адаптивность для мобильных
+@media (max-width: 500px) {
+  .tag-list {
+    h3 {
+      font-size: var(--font-size-sm);
+    }
+    
+    &-content {
+      gap: var(--spacing-xs);
+    }
+    
+    &-item {
+      font-size: var(--font-size-xs);
+      padding: 0.15rem 0.5rem;
+    }
+  }
+}
+
+// Тёмная тема
+:root[saved-theme="dark"] {
+  .tag-list {
+    h3 {
+      color: var(--text-secondary);
+      border-bottom-color: var(--border-light);
+    }
+    
+    &-item {
+      border-color: var(--border-color);
+      
+      &:hover {
+        background: var(--link-hover);
+        border-color: var(--link-hover);
+      }
+      
+      .tag-count {
+        color: var(--text-muted);
+      }
+    }
+    
+    &-item.active {
+      background: var(--link-hover);
+      border-color: var(--link-hover);
+    }
+  }
+}
+
+// Для экранов с высоким контрастом
+@media (prefers-contrast: high) {
+  .tag-list {
+    &-item {
+      border-width: 2px;
+      
+      &:hover {
+        border-width: 2px;
+      }
+    }
+    
+    h3 {
+      border-bottom-width: 2px;
+    }
+  }
+}
+
+// Для печати
+@media print {
+  .tag-list {
+    h3 {
+      color: #000;
+      border-bottom: 1px solid #000;
+    }
+    
+    &-item {
+      border: 1px solid #999;
+      color: #000;
+      
+      .tag-count {
+        color: #666;
+      }
+      
+      &:hover {
+        background: none;
+        color: #000;
+      }
+    }
+  }
+}
+
+// Анимация появления
+.tag-list-item {
+  animation: fadeInScale var(--transition-slow);
+  
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 }

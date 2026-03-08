@@ -2,19 +2,19 @@ import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as CustomPlugins from "./quartz-custom/plugins"
 
-// Определяем, какой сайт собирается с поддержкой SITE_TYPE и отладкой
+// Определяем, какой сайт собирается
 const siteType = process.env.SITE_TYPE || 
                  (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
 
-// Добавляем отладочный вывод (будет видно в логах GitHub Actions)
+// Добавляем отладочный вывод
 console.log(`\n🔧 ===== QUARTZ CONFIG =====`)
 console.log(`🔧 Site: ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
 console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
 console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
-console.log(`🔧 Default theme: ${siteType === 'blog' ? 'dark' : 'light'}`)
+console.log(`🔧 Default theme: dark (принудительно для обоих сайтов)`)
 console.log(`🔧 ========================\n`)
 
-// Базовая конфигурация (общая для обоих сайтов)
+// Базовая конфигурация
 const baseConfig = {
   pageTitle: "Asteralog",
   pageTitleSuffix: siteType === 'blog' ? " | Блог" : " | Цифровой сад",
@@ -28,48 +28,48 @@ const baseConfig = {
   defaultDateType: "created",
 }
 
-// Цвета для сада (СВЕТЛАЯ тема по умолчанию)
+// Цвета для сада (ТЁМНАЯ тема по умолчанию)
 const gardenColors = {
-  lightMode: {   // Светлая тема для сада (по умолчанию)
-    light: "#f9f7f4",      // фон
-    lightgray: "#e5e5e5",   // границы
-    gray: "#9a9a9a",        // второстепенный текст
-    darkgray: "#4a4a49",    // основной текст
-    dark: "#2b2b2b",        // заголовки
-    secondary: "#ab7d4c",   // ссылки
-    tertiary: "#7c5736",    // ховеры
-    highlight: "rgba(162, 132, 94, 0.15)", // выделение
-    textHighlight: "#fff23688", // выделенный текст
+  lightMode: {   // Светлая тема для сада (переключаемая)
+    light: "#f9f7f4",
+    lightgray: "#e5e5e5",
+    gray: "#9a9a9a",
+    darkgray: "#4a4a49",
+    dark: "#2b2b2b",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
+    highlight: "rgba(162, 132, 94, 0.15)",
+    textHighlight: "#fff23688",
   },
-  darkMode: {    // Тёмная тема для сада (переключаемая)
-    light: "#343434",       // фон
-    lightgray: "#393639",    // границы
-    gray: "#aaaaaa",         // второстепенный текст
-    darkgray: "#ededed",     // основной текст
-    dark: "#ffffff",         // заголовки
-    secondary: "#ab7d4c",    // ссылки
-    tertiary: "#7c5736",     // ховеры
-    highlight: "rgba(162, 132, 94, 0.15)", // выделение
-    textHighlight: "#b3aa0288", // выделенный текст
+  darkMode: {    // Тёмная тема для сада (ПО УМОЛЧАНИЮ)
+    light: "#1a1c1e",       // темный фон
+    lightgray: "#2e3235",   // темные границы
+    gray: "#4a4f54",        // второстепенный текст
+    darkgray: "#d4d4d4",    // основной текст
+    dark: "#ffffff",        // заголовки
+    secondary: "#b5977a",   // ссылки
+    tertiary: "#d4b69b",    // ховеры
+    highlight: "rgba(181, 151, 122, 0.15)", // выделение
+    textHighlight: "#2e2a24", // выделенный текст
   },
 }
 
 // Цвета для блога (ТЁМНАЯ тема по умолчанию)
 const blogColors = {
   lightMode: {   // Светлая тема для блога (переключаемая)
-    light: "#ffffff",       // фон
-    lightgray: "#f0f0f0",   // границы
-    gray: "#9a9a9a",        // второстепенный текст
-    darkgray: "#666666",    // основной текст
-    dark: "#333333",        // заголовки
-    secondary: "#ab7d4c",   // ссылки
-    tertiary: "#7c5736",    // ховеры
-    highlight: "rgba(162, 132, 94, 0.1)", // выделение
-    textHighlight: "#fff23688", // выделенный текст
+    light: "#ffffff",
+    lightgray: "#f0f0f0",
+    gray: "#9a9a9a",
+    darkgray: "#666666",
+    dark: "#333333",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
+    highlight: "rgba(162, 132, 94, 0.1)",
+    textHighlight: "#fff23688",
   },
-  darkMode: {    // Тёмная тема для блога (по умолчанию)
-    light: "#1a1c1e",       // тёмный фон
-    lightgray: "#2e3235",   // тёмные границы
+  darkMode: {    // Тёмная тема для блога (ПО УМОЛЧАНИЮ)
+    light: "#1a1c1e",       // темный фон
+    lightgray: "#2e3235",   // темные границы
     gray: "#4a4f54",        // второстепенный текст
     darkgray: "#d4d4d4",    // основной текст
     dark: "#ffffff",        // заголовки
@@ -86,7 +86,7 @@ const colors = siteType === 'blog' ? blogColors : gardenColors
 const config: QuartzConfig = {
   configuration: {
     ...baseConfig,
-    baseUrl: process.env.BASE_URL || '', // Важно для корректных ссылок
+    baseUrl: process.env.BASE_URL || '',
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,

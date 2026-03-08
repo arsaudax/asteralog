@@ -6,12 +6,18 @@ import { classNames } from "../../quartz/util/lang"
 interface Options {
   limit?: number
   filter?: (file: QuartzPluginData) => boolean
+  showDescription?: boolean
+  showTags?: boolean
+  showDate?: boolean
 }
 
 export default ((opts?: Options) => {
   const BlogIndex: QuartzComponent = ({ allFiles, displayClass, cfg }: QuartzComponentProps) => {
     const limit = opts?.limit ?? 100
     const filter = opts?.filter ?? (() => true)
+    const showDescription = opts?.showDescription ?? true
+    const showTags = opts?.showTags ?? true
+    const showDate = opts?.showDate ?? true
 
     // Фильтруем файлы
     let files = allFiles.filter(filter)
@@ -27,9 +33,11 @@ export default ((opts?: Options) => {
     files = files.slice(0, limit)
 
     if (files.length === 0) {
-      return <div class={classNames(displayClass, "blog-index")}>
-        <p>Пока нет записей в блоге.</p>
-      </div>
+      return (
+        <div class={classNames(displayClass, "blog-index", "blog-index--empty")}>
+          <p class="blog-index-empty">Пока нет записей в блоге.</p>
+        </div>
+      )
     }
 
     return (
@@ -43,21 +51,24 @@ export default ((opts?: Options) => {
             const slug = file.slug || ""
             
             return (
-              <article class="blog-index-item">
+              <article class="blog-index-item" key={slug}>
                 <a href={slug} class="internal blog-index-link">
                   <h2 class="blog-index-title">{title}</h2>
-                  {date && (
+                  
+                  {showDate && date && (
                     <div class="blog-index-date">
                       <Date date={date} locale={cfg.locale} />
                     </div>
                   )}
-                  {description && (
+                  
+                  {showDescription && description && (
                     <p class="blog-index-description">{description}</p>
                   )}
-                  {tags.length > 0 && (
+                  
+                  {showTags && tags.length > 0 && (
                     <div class="blog-index-tags">
                       {tags.map(tag => (
-                        <span class="blog-index-tag">{tag}</span>
+                        <span key={tag} class="blog-index-tag">{tag}</span>
                       ))}
                     </div>
                   )}
@@ -70,63 +81,9 @@ export default ((opts?: Options) => {
     )
   }
 
+  // Стили вынесены в отдельный SCSS файл
   BlogIndex.css = `
-  .blog-index-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .blog-index-item {
-    border-bottom: 1px solid var(--lightgray);
-    padding-bottom: 1.5rem;
-  }
-  .blog-index-item:last-child {
-    border-bottom: none;
-  }
-  .blog-index-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    transition: transform 0.2s ease;
-  }
-  .blog-index-link:hover {
-    transform: translateX(4px);
-  }
-  .blog-index-title {
-    font-size: 1.5rem;
-    margin: 0 0 0.5rem 0;
-    color: var(--secondary);
-  }
-  .blog-index-date {
-    font-size: 0.9rem;
-    color: var(--gray);
-    margin-bottom: 0.75rem;
-  }
-  .blog-index-description {
-    color: var(--darkgray);
-    margin: 0 0 0.75rem 0;
-    line-height: 1.6;
-  }
-  .blog-index-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .blog-index-tag {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.5rem;
-    background: var(--highlight);
-    border-radius: 4px;
-    color: var(--secondary);
-  }
-  @media (max-width: 500px) {
-    .blog-index-list {
-      gap: 1.5rem;
-    }
-    .blog-index-title {
-      font-size: 1.25rem;
-    }
-  }
+  /* Стили будут загружены из blogIndex.scss */
   `
 
   return BlogIndex

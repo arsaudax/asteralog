@@ -13,7 +13,7 @@ const siteType = typeof process !== 'undefined'
 
 console.log(`\n🔧 Layout: Building for ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
 
-// Конфигурации
+// Конфигурация проводника (с эмодзи ⊹ перед файлами)
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
     const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true
@@ -24,9 +24,10 @@ const explorerConfig = {
       node.displayName = "⊹ " + node.displayName
     }
   },
-  title: "⊹ Сад",
+  title: "Сад", // Единый стиль заголовка без эмодзи
 }
 
+// Конфигурация графа
 const graphConfig = {
   localGraph: {
     showTags: false,
@@ -36,20 +37,22 @@ const graphConfig = {
     showTags: false,
     excludeTags: ["graph-exclude"],
   },
+  title: "Граф", // Единый стиль заголовка
 }
 
+// Конфигурация обратных ссылок
 const backlinksConfig = {
   hideWhenEmpty: true,
+  title: "Обратные ссылки", // Единый стиль заголовка
 }
 
+// Конфигурация хлебных крошек (не используются, но оставим для справки)
 const breadcrumbsConfig = {
   rootName: "🏡",
   showCurrentPage: true,
 }
 
-// ==============================
-// SHARED COMPONENTS
-// ==============================
+// Общие компоненты
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
@@ -68,7 +71,7 @@ export const sharedPageComponents: SharedLayout = {
 // ==============================
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
+    // Хлебные крошки убраны
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
@@ -83,20 +86,14 @@ export const gardenContentPageLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(backlinksConfig),
-    Component.RecentNotes({
-      limit: 5,
-      showTags: false,
-      // filter: gardenFilter,  // УБРАЛИ
-      title: "Недавние заметки",
-    }),
+    Component.Backlinks(backlinksConfig), // Обратные ссылки на правой панели
+    // RecentNotes убраны
     TagList(),
   ],
 }
 
 export const gardenListPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
   ],
@@ -115,7 +112,6 @@ export const gardenListPageLayout: PageLayout = {
 // ==============================
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
@@ -129,20 +125,30 @@ export const blogContentPageLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    Component.RecentNotes({
-      limit: 8,
-      showTags: true,
-      // filter: blogFilter,  // УБРАЛИ
-      title: "Последние записи",
-    }),
     TagList(),
   ],
-  // Условный afterBody для главной страницы блога
+}
+
+export const blogIndexPageLayout: PageLayout = {
+  beforeBody: [
+    Component.ArticleTitle(),
+  ],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+  ],
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    TagList(),
+    Component.Backlinks(backlinksConfig),
+  ],
   afterBody: [
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 100,
-        // filter: blogFilter  // УБРАЛИ
+        filter: blogFilter
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'index'
@@ -151,40 +157,8 @@ export const blogContentPageLayout: PageLayout = {
   ],
 }
 
-// Для совместимости оставляем, но не используем напрямую
-const blogIndexPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-  ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-  ],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.RecentNotes({
-      limit: 10,
-      showTags: true,
-      // filter: blogFilter,  // УБРАЛИ
-      title: "Недавние записи",
-    }),
-    TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
-  afterBody: [
-    CustomComponent.BlogIndex({
-      limit: 100,
-      // filter: blogFilter  // УБРАЛИ
-    })
-  ],
-}
-
 export const blogListPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
   ],
   left: [
@@ -195,11 +169,6 @@ export const blogListPageLayout: PageLayout = {
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.RecentNotes({
-      limit: 10,
-      showTags: true,
-      // filter: blogFilter,  // УБРАЛИ
-    }),
   ],
 }
 
@@ -207,7 +176,7 @@ export const blogListPageLayout: PageLayout = {
 // DEFAULT LAYOUT SELECTORS
 // ==============================
 
-// Для контентных страниц возвращаем ТОЛЬКО объект PageLayout
+// Для контентных страниц возвращаем объект PageLayout
 export const defaultContentPageLayout: PageLayout =
   siteType === 'garden' 
     ? gardenContentPageLayout 

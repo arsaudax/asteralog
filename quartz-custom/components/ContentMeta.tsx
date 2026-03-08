@@ -24,26 +24,10 @@ const defaultOptions: ContentMetaOptions = {
 }
 
 /**
- * Форматирует время чтения с эмодзи
- * Использует разные эмодзи в зависимости от длины
+ * Форматирует время чтения без эмодзи (эмодзи добавляются через CSS)
  */
-function formatReadingTime(minutes: number, siteType?: string): string {
-  const cups = Math.round(minutes / 3)
-  
-  // Разные эмодзи для сада и блога
-  const emoji = siteType === 'blog' ? '📖' : '🌱'
-  
-  if (cups > 5) {
-    // Для длинных текстов
-    const bentos = Math.round(cups / Math.E)
-    return `${new Array(bentos).fill("🍱").join("")} ${minutes} мин`
-  } else if (cups > 2) {
-    // Для средних текстов
-    return `${new Array(cups).fill("☕️").join("")} ${minutes} мин`
-  } else {
-    // Для коротких текстов
-    return `${emoji} ${minutes} мин`
-  }
+function formatReadingTime(minutes: number): string {
+  return `${minutes} мин`
 }
 
 /**
@@ -80,7 +64,7 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
     const text = fileData.text
     if (!text) return null
     
-    // Определяем тип сайта
+    // Определяем тип сайта для CSS-стилизации
     const siteType = typeof process !== 'undefined' 
       ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
       : 'garden'
@@ -108,7 +92,7 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
     // Время чтения и количество слов
     if (options.showReadingTime) {
       const { minutes, words } = readingTime(text)
-      const readingTimeDisplay = formatReadingTime(Math.ceil(minutes), siteType)
+      const readingTimeDisplay = formatReadingTime(Math.ceil(minutes))
       
       if (options.showWordCount) {
         segments.push(

@@ -5,19 +5,16 @@
   margin: var(--spacing-lg) 0;
   width: 100%;
   
-  // Заголовок списка тегов
+  // Заголовок в едином стиле с другими панелями
   h3 {
     margin: 0 0 var(--spacing-md) 0;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: var(--font-size-md);
     font-weight: 600;
     letter-spacing: normal;
     text-transform: none;
-    opacity: 1;
     text-align: left;
     font-family: var(--font-family-base);
-    
-    // Единый стиль со всеми заголовками боковых панелей
     border-bottom: 1px solid var(--border-light);
     padding-bottom: var(--spacing-xs);
   }
@@ -63,13 +60,12 @@
       transform: translateY(0);
     }
     
-    // Счётчик тегов (количество постов)
+    // Счётчик тегов
     .tag-count {
       font-size: var(--font-size-xs);
       color: var(--text-muted);
       transition: color var(--transition-fast);
       margin-left: 0.1rem;
-      font-weight: normal;
       
       &::before {
         content: "(";
@@ -83,7 +79,7 @@
     }
   }
   
-  // Специальный стиль для активного тега
+  // Активный тег (текущая страница)
   &-item.active {
     background: var(--link-color);
     color: white;
@@ -95,7 +91,7 @@
   }
 }
 
-// Адаптивность для планшетов
+// Адаптивность
 @media (max-width: 768px) {
   .tag-list {
     margin: var(--spacing-md) 0;
@@ -108,12 +104,10 @@
     &-item {
       font-size: var(--font-size-xs);
       padding: var(--spacing-xs) var(--spacing-sm);
-      border-radius: var(--radius-sm);
     }
   }
 }
 
-// Адаптивность для мобильных
 @media (max-width: 500px) {
   .tag-list {
     h3 {
@@ -135,7 +129,7 @@
 :root[saved-theme="dark"] {
   .tag-list {
     h3 {
-      color: var(--text-secondary);
+      color: var(--text-primary);
       border-bottom-color: var(--border-light);
     }
     
@@ -159,7 +153,7 @@
   }
 }
 
-// Для экранов с высоким контрастом
+// Высокий контраст
 @media (prefers-contrast: high) {
   .tag-list {
     &-item {
@@ -176,7 +170,7 @@
   }
 }
 
-// Для печати
+// Печать
 @media print {
   .tag-list {
     h3 {

@@ -79,7 +79,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
-    Component.Darkmode(), // ← ДОБАВЛЕНО!
+    Component.Darkmode(), // ← Кнопка переключения темы
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [
@@ -99,7 +99,7 @@ export const gardenListPageLayout: PageLayout = {
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
-    Component.Darkmode(), // ← ДОБАВЛЕНО!
+    Component.Darkmode(), // ← Кнопка переключения темы
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [],
@@ -124,7 +124,7 @@ export const blogContentPageLayout: PageLayout = {
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
-    Component.Darkmode(),
+    Component.Darkmode(), // ← Кнопка переключения темы
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
@@ -165,7 +165,7 @@ export const blogListPageLayout: PageLayout = {
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
-    Component.Darkmode(),
+    Component.Darkmode(), // ← Кнопка переключения темы
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),

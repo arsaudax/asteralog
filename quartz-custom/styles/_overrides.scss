@@ -662,19 +662,15 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
 .right {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
-/* ===== ССЫЛКА НА АРХИВ ===== */
+/* ===== ССЫЛКА НА АРХИВ - ОСНОВНЫЕ СТИЛИ ===== */
 .archive-link-container {
   margin-top: auto;
   padding: var(--spacing-md) 0;
   border-top: 1px solid var(--border-color);
   background: var(--bg-primary);
   width: 100%;
-  position: relative;
-  z-index: 5;
-  box-sizing: border-box;
   
   &.sidebar {
     margin-top: auto;
@@ -682,22 +678,16 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
 }
 
 .archive-link {
-  display: block;
-  width: 100%;
-  text-align: center;
+  display: inline-block;
   color: var(--link-color);
   text-decoration: none;
-  font-size: var(--font-size-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  padding: var(--spacing-xs) 0;
+  font-weight: 500;
   transition: all var(--transition-fast);
-  font-weight: 600;
-  box-sizing: border-box;
   
   &:hover {
-    background: var(--highlight);
-    border-color: var(--link-color);
+    color: var(--link-hover);
     transform: translateX(2px);
   }
   
@@ -707,28 +697,42 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
   }
 }
 
-/* Для мобильных */
+/* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
 @media (max-width: 500px) {
+  /* Поиск и кнопка темы справа */
+  .left {
+    .search,
+    .darkmode {
+      margin-left: auto;
+      width: auto;
+    }
+    
+    .search button,
+    .darkmode button {
+      width: auto;
+      padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    /* Скрываем блок RecentNotes на мобильных */
+    .recent-notes {
+      display: none;
+    }
+    
+    /* Уменьшаем отступы */
+    .left,
+    .right {
+      padding: var(--spacing-sm);
+    }
+  }
+  
+  /* Адаптация ссылки на архив для мобильных */
   .archive-link-container {
     padding: var(--spacing-sm) 0;
   }
   
   .archive-link {
-    font-size: var(--font-size-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
   }
-}
-
-/* ===== АНИМАЦИИ ===== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.callout,
-.search-result,
-.recent-note-item {
-  animation: fadeIn 0.25s ease-out;
 }
 
 /* ===== УМЕНЬШЕНИЕ РАЗМЕРА ШРИФТА В БОКОВЫХ ПАНЕЛЯХ ===== */
@@ -746,68 +750,14 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
   font-weight: 600;
 }
 
-/* Ссылка на архив теперь обычная ссылка, не кнопка */
-.archive-link-container {
-  margin-top: auto;
-  padding: var(--spacing-sm) 0;
-  border-top: 1px solid var(--border-light);
-  background: var(--bg-primary);
-  width: 100%;
-  
-  &.sidebar {
-    margin-top: auto;
-  }
+/* ===== АНИМАЦИИ ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.archive-link {
-  display: inline;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--link-color);
-  font-weight: normal;
-  text-decoration: none;
-  width: auto;
-  font-size: 0.9rem;
-  
-  &:hover {
-    background: transparent;
-    transform: none;
-    text-decoration: underline;
-    color: var(--link-hover);
-  }
-  
-  &::after,
-  &::before {
-    display: none !important;
-  }
-}
-
-/* Убираем кнопочный стиль */
-.archive-link-container .archive-link {
-  display: inline;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  font-weight: normal;
-  text-align: left;
-  width: auto;
-  background: transparent;
-  
-  &:hover {
-    background: transparent;
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-/* Для мобильных */
-@media (max-width: 500px) {
-  .archive-link-container {
-    padding: var(--spacing-xs) 0;
-  }
-  
-  .archive-link {
-    font-size: 0.85rem;
-  }
+.callout,
+.search-result,
+.recent-note-item {
+  animation: fadeIn 0.25s ease-out;
 }

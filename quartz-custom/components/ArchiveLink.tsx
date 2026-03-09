@@ -4,6 +4,7 @@ import { classNames } from "../../quartz/util/lang"
 interface Options {
   sidebar?: boolean
   text?: string
+  emoji?: "before" | "after" | "none"
 }
 
 export default ((opts?: Options) => {
@@ -11,7 +12,13 @@ export default ((opts?: Options) => {
     const classes = ["archive-link-container"]
     if (opts?.sidebar) classes.push("sidebar")
     
-    const linkText = opts?.text ?? "📚 Все записи →"
+    const emoji = opts?.emoji ?? "none"
+    const baseText = opts?.text ?? "Все записи"
+    
+    let linkText = baseText
+    if (emoji === "before") linkText = `📚 ${baseText} →`
+    else if (emoji === "after") linkText = `${baseText} → 📚`
+    else linkText = `${baseText} →`
     
     return (
       <div class={classNames(displayClass, ...classes)}>

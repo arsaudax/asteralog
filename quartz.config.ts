@@ -2,16 +2,15 @@ import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as CustomPlugins from "./quartz-custom/plugins"
 
-// Определяем, какой сайт собирается
+// Определяем, какой сайт собирается с поддержкой SITE_TYPE и отладкой
 const siteType = process.env.SITE_TYPE || 
                  (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
 
-// Добавляем отладочный вывод
 console.log(`\n🔧 ===== QUARTZ CONFIG =====`)
 console.log(`🔧 Site: ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
 console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
 console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
-console.log(`🔧 Default theme: dark (принудительно для обоих сайтов)`)
+console.log(`🔧 Default theme: dark (с возможностью переопределения через frontmatter)`)
 console.log(`🔧 ========================\n`)
 
 // Базовая конфигурация
@@ -28,9 +27,9 @@ const baseConfig = {
   defaultDateType: "created",
 }
 
-// Цвета для сада (ТЁМНАЯ тема по умолчанию)
+// Цвета для сада (СВЕТЛАЯ тема по умолчанию)
 const gardenColors = {
-  lightMode: {   // Светлая тема для сада (переключаемая)
+  lightMode: {
     light: "#f9f7f4",
     lightgray: "#e5e5e5",
     gray: "#9a9a9a",
@@ -41,22 +40,22 @@ const gardenColors = {
     highlight: "rgba(162, 132, 94, 0.15)",
     textHighlight: "#fff23688",
   },
-  darkMode: {    // Тёмная тема для сада (ПО УМОЛЧАНИЮ)
-    light: "#1a1c1e",       // темный фон
-    lightgray: "#2e3235",   // темные границы
-    gray: "#4a4f54",        // второстепенный текст
-    darkgray: "#d4d4d4",    // основной текст
-    dark: "#ffffff",        // заголовки
-    secondary: "#b5977a",   // ссылки
-    tertiary: "#d4b69b",    // ховеры
-    highlight: "rgba(181, 151, 122, 0.15)", // выделение
-    textHighlight: "#2e2a24", // выделенный текст
+  darkMode: {
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
+    dark: "#ffffff",
+    secondary: "#b5977a",
+    tertiary: "#d4b69b",
+    highlight: "rgba(181, 151, 122, 0.15)",
+    textHighlight: "#2e2a24",
   },
 }
 
 // Цвета для блога (ТЁМНАЯ тема по умолчанию)
 const blogColors = {
-  lightMode: {   // Светлая тема для блога (переключаемая)
+  lightMode: {
     light: "#ffffff",
     lightgray: "#f0f0f0",
     gray: "#9a9a9a",
@@ -67,20 +66,20 @@ const blogColors = {
     highlight: "rgba(162, 132, 94, 0.1)",
     textHighlight: "#fff23688",
   },
-  darkMode: {    // Тёмная тема для блога (ПО УМОЛЧАНИЮ)
-    light: "#1a1c1e",       // темный фон
-    lightgray: "#2e3235",   // темные границы
-    gray: "#4a4f54",        // второстепенный текст
-    darkgray: "#d4d4d4",    // основной текст
-    dark: "#ffffff",        // заголовки
-    secondary: "#b5977a",   // ссылки
-    tertiary: "#d4b69b",    // ховеры
-    highlight: "rgba(181, 151, 122, 0.15)", // выделение
-    textHighlight: "#2e2a24", // выделенный текст
+  darkMode: {
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
+    dark: "#ffffff",
+    secondary: "#b5977a",
+    tertiary: "#d4b69b",
+    highlight: "rgba(181, 151, 122, 0.15)",
+    textHighlight: "#2e2a24",
   },
 }
 
-// Выбираем нужные цвета на основе siteType
+// Выбираем цвета на основе siteType
 const colors = siteType === 'blog' ? blogColors : gardenColors
 
 const config: QuartzConfig = {
@@ -101,6 +100,8 @@ const config: QuartzConfig = {
   plugins: {
     transformers: [
       Plugin.FrontMatter(),
+      // НОВЫЙ ПЛАГИН — должен быть после FrontMatter
+      CustomPlugins.ThemeFromFrontmatter({ defaultTheme: "dark" }),
       Plugin.CreatedModifiedDate({
         priority: ["frontmatter", "filesystem"],
       }),

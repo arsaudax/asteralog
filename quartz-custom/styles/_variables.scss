@@ -114,8 +114,8 @@
   --bg-primary: var(--asteralog-bg-dark);
   --bg-secondary: var(--asteralog-bg-dark-alt);
   --text-primary: var(--asteralog-fg-dark);
-  --text-secondary: #a0a0a0;      /* СРЕДНЕ-СЕРЫЙ для дат и второстепенного текста */
-  --text-muted: #808080;           /* ТЁМНО-СЕРЫЙ для ещё более второстепенного */
+  --text-secondary: #b0b0b0;      /* УЛУЧШЕНО: #a0a0a0 → #b0b0b0 - светлее */
+  --text-muted: #a0a0a0;           /* УЛУЧШЕНО: #808080 → #a0a0a0 - светлее */
   --border-color: var(--asteralog-selection-dark);
   --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
   
@@ -159,7 +159,7 @@
   --bg-primary: var(--asteralog-bg-dark);
   --bg-secondary: var(--asteralog-bg-dark-alt);
   --text-primary: var(--asteralog-fg-dark);
-  --text-secondary: #a0a0a0;      /* ← ИСПРАВЛЕНО */
-  --text-muted: #808080;           /* ← ИСПРАВЛЕНО */
+  --text-secondary: #b0b0b0;      /* УЛУЧШЕНО: #a0a0a0 → #b0b0b0 - светлее */
+  --text-muted: #a0a0a0;           /* УЛУЧШЕНО: #808080 → #a0a0a0 - светлее */
   --border-color: var(--asteralog-selection-dark);
 }

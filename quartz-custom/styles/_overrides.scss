@@ -526,7 +526,7 @@
     }
     
     // Текст
-    p, li {
+    p, li, div, span {
       color: var(--text-primary) !important;
       margin: var(--spacing-xs) 0 !important;
     }

@@ -43,7 +43,7 @@ const explorerConfig = {
   sort: (a, b) => {
     if (a.isFolder && !b.isFolder) return -1
     if (!a.isFolder && b.isFolder) return 1
-    return a.displayName.localeCompare(b.displayName)
+    return (a.displayName || '').localeCompare(b.displayName || '')
   },
 }
 
@@ -120,7 +120,7 @@ export const gardenListPageLayout: PageLayout = {
     ...baseLeftPanel,
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
-  right: [], // ← обязательно массив, даже пустой
+  right: [],
 }
 
 // ==============================
@@ -211,20 +211,21 @@ export const blogListPageLayout: PageLayout = {
 // DEFAULT LAYOUT SELECTORS
 // ==============================
 
-export const defaultContentPageLayout = (() => {
+// Единая функция для всех страниц
+export const defaultContentPageLayout = (props: QuartzComponentProps): PageLayout => {
   if (siteType === 'garden') {
     return gardenContentPageLayout
   }
   
-  return (props: QuartzComponentProps) => {
-    const slug = props?.fileData?.slug
-    if (slug === 'index') return blogContentPageLayout  // ← используем blogContentPageLayout для index
-    if (slug === 'archive') return blogArchivePageLayout
-    return blogContentPageLayout
-  }
-})()
+  const slug = props?.fileData?.slug
+  if (slug === 'index') return blogContentPageLayout
+  if (slug === 'archive') return blogArchivePageLayout
+  return blogContentPageLayout
+}
 
-export const defaultListPageLayout: PageLayout =
-  siteType === 'garden'
-    ? gardenListPageLayout
-    : blogListPageLayout
+export const defaultListPageLayout = (props: QuartzComponentProps): PageLayout => {
+  if (siteType === 'garden') {
+    return gardenListPageLayout
+  }
+  return blogListPageLayout
+}

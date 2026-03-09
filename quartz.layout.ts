@@ -208,24 +208,17 @@ export const blogListPageLayout: PageLayout = {
 }
 
 // ==============================
-// DEFAULT LAYOUT SELECTORS
+// DEFAULT LAYOUT SELECTORS - ТОЛЬКО ОБЪЕКТЫ!
 // ==============================
 
-// Единая функция для всех страниц
-export const defaultContentPageLayout = (props: QuartzComponentProps): PageLayout => {
-  if (siteType === 'garden') {
-    return gardenContentPageLayout
-  }
-  
-  const slug = props?.fileData?.slug
-  if (slug === 'index') return blogContentPageLayout
-  if (slug === 'archive') return blogArchivePageLayout
-  return blogContentPageLayout
-}
+// Для контентных страниц - ВОЗВРАЩАЕМ ОБЪЕКТ
+export const defaultContentPageLayout: PageLayout =
+  siteType === 'garden' 
+    ? gardenContentPageLayout 
+    : blogContentPageLayout
 
-export const defaultListPageLayout = (props: QuartzComponentProps): PageLayout => {
-  if (siteType === 'garden') {
-    return gardenListPageLayout
-  }
-  return blogListPageLayout
-}
+// Для страниц-списков - ВОЗВРАЩАЕМ ОБЪЕКТ
+export const defaultListPageLayout: PageLayout =
+  siteType === 'garden'
+    ? gardenListPageLayout
+    : blogListPageLayout

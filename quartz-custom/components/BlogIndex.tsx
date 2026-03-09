@@ -19,30 +19,32 @@ export default ((opts?: Options) => {
     const showTags = opts?.showTags ?? true
     const showDate = opts?.showDate ?? true
 
-    // 🔍 ОТЛАДКА
+    // 🔍 ОТЛАДКА - расширенная
     console.log("=== BlogIndex Debug ===")
+    console.log("Component mounted on page:", window?.location?.pathname || "unknown")
     console.log("Total files:", allFiles.length)
     console.log("Files:", JSON.stringify(allFiles.map(f => ({
       slug: f.slug,
       title: f.frontmatter?.title,
-      date: f.frontmatter?.date,  // ← добавили дату
-      tags: f.frontmatter?.tags
+      date: f.frontmatter?.date,
+      tags: f.frontmatter?.tags,
+      hasValidDate: !!getDate(cfg, f)
     })), null, 2))
 
     // Фильтруем файлы
     let files = allFiles.filter(file => {
       const passed = filter(file)
-      console.log(`File ${file.slug}: filter=${passed}, tags=${file.frontmatter?.tags?.join(',')}, date=${file.frontmatter?.date}`)
+      console.log(`File ${file.slug}: filter=${passed}, tags=${file.frontmatter?.tags?.join(',')}, date=${file.frontmatter?.date || 'undefined'}`)
       return passed
     })
     
-    console.log("After filter:", files.length)
+    console.log("After filter:", files.length, "files")
 
     // Сортируем по дате (новые сверху)
     files.sort((a, b) => {
       const aDate = getDate(cfg, a) ?? new Date(0)
       const bDate = getDate(cfg, b) ?? new Date(0)
-      console.log(`Sort: ${a.slug} date=${aDate.toISOString()}, ${b.slug} date=${bDate.toISOString()}`)
+      console.log(`Sort: ${a.slug} (${aDate.toISOString()}) vs ${b.slug} (${bDate.toISOString()}) → ${bDate > aDate ? 'b newer' : 'a newer'}`)
       return bDate.getTime() - aDate.getTime()
     })
 
@@ -50,7 +52,7 @@ export default ((opts?: Options) => {
     files = files.slice(0, limit)
 
     console.log("Final files:", files.map(f => f.slug))
-    console.log("=== End Debug ===")
+    console.log("=== End Debug ===\n")
 
     if (files.length === 0) {
       return (

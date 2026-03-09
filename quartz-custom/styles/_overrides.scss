@@ -1,6 +1,70 @@
 // Quartz Component Overrides for Asteralog Theme
 // Используем семантические переменные из _variables.scss
 
+/* ===== СТИЛИ ДЛЯ ССЫЛОК - МАКСИМАЛЬНО АГРЕССИВНО ===== */
+/* Ставим в самое начало, чтобы переопределить всё */
+
+/* Убиваем все стандартные значки Quartz */
+a[href^="http"] svg,
+a.external svg,
+a.internal svg,
+a[href^="http"] img,
+a.external img,
+a.internal img {
+  display: none !important;
+}
+
+a[href^="http"]::after,
+a[href^="http"]::before,
+a.external::after,
+a.external::before,
+a.internal::after,
+a.internal::before {
+  display: none !important;
+  content: none !important;
+  background-image: none !important;
+  background: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Добавляем свой значок ТОЛЬКО для внешних ссылок */
+a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
+  position: relative;
+  
+  &::after {
+    content: "↗" !important;
+    display: inline-block !important;
+    margin-left: 0.25em;
+    font-size: 0.8em;
+    color: var(--text-muted) !important;
+    background: none !important;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+    text-decoration: none;
+    position: relative;
+    top: -0.1em;
+    width: auto !important;
+    height: auto !important;
+    visibility: visible !important;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+    color: var(--link-color) !important;
+  }
+}
+
+/* Для ссылок в подвале ничего */
+.footer-link::after,
+.footer-link::before {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+}
+
 /* ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ТЕМЫ ===== */
 :root {
   /* Тёмная тема по умолчанию */
@@ -594,33 +658,11 @@
   opacity: 1;
 }
 
-/* ===== СТИЛИ ДЛЯ ССЫЛОК ===== */
-
-/* Отключаем псевдоэлементы ТОЛЬКО в контенте */
-article a::after,
-article a::before {
-  display: none !important;
-}
-
-/* Значок для внешних ссылок (после текста) */
-a[href^="http"]:not(.internal):not(.footer-link)::after {
-  content: "↗";
-  display: inline-block;
-  margin-left: 0.25em;
-  font-size: 0.8em;
-  opacity: 0.6;
-  transition: opacity var(--transition-fast);
-}
-
-a[href^="http"]:not(.internal):not(.footer-link):hover::after {
-  opacity: 1;
-  color: var(--link-color);
-}
-
 /* ===== ПРАВАЯ ПАНЕЛЬ ===== */
 .right {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 /* ===== ССЫЛКА НА АРХИВ ===== */
@@ -630,6 +672,9 @@ a[href^="http"]:not(.internal):not(.footer-link):hover::after {
   border-top: 1px solid var(--border-color);
   background: var(--bg-primary);
   width: 100%;
+  position: relative;
+  z-index: 5;
+  box-sizing: border-box;
   
   &.sidebar {
     margin-top: auto;
@@ -648,6 +693,7 @@ a[href^="http"]:not(.internal):not(.footer-link):hover::after {
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   font-weight: 600;
+  box-sizing: border-box;
   
   &:hover {
     background: var(--highlight);

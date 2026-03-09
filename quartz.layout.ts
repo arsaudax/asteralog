@@ -11,11 +11,6 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// Отладка только в development
-if (process.env.NODE_ENV !== "production") {
-  console.log(`\n🔧 Layout: Building for ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
-}
-
 // Базовая левая панель (общая для всех layout)
 const baseLeftPanel = [
   CustomComponent.PageTitle({ 
@@ -124,7 +119,7 @@ export const gardenListPageLayout: PageLayout = {
 }
 
 // ==============================
-// BLOG LAYOUTS - ИСПРАВЛЕНО!
+// BLOG LAYOUTS
 // ==============================
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
@@ -162,7 +157,7 @@ export const blogContentPageLayout: PageLayout = {
     }),
   ],
   afterBody: [
-    // Для главной страницы - 5 последних постов
+    // Главная страница - 5 последних постов
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 5,
@@ -172,7 +167,7 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
-    // Для страницы архива - все посты
+    // Архив - все посты
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 1000,
@@ -184,10 +179,6 @@ export const blogContentPageLayout: PageLayout = {
     }),
   ],
 }
-
-// ==============================
-// ARCHIVE LAYOUT - УДАЛЯЕМ (теперь всё в blogContentPageLayout)
-// ==============================
 
 export const blogListPageLayout: PageLayout = {
   beforeBody: [
@@ -207,7 +198,7 @@ export const blogListPageLayout: PageLayout = {
 }
 
 // ==============================
-// DEFAULT LAYOUT SELECTORS - ВОЗВРАЩАЕМ ОБЪЕКТЫ!
+// DEFAULT LAYOUT SELECTORS
 // ==============================
 
 export const defaultContentPageLayout: PageLayout =

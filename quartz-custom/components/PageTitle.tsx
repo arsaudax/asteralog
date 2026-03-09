@@ -19,6 +19,9 @@ export default ((opts?: Options) => {
       ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
       : 'garden'
     
+    // Безопасное получение заголовка
+    const pageTitle = cfg?.configuration?.pageTitle ?? "Asteralog"
+    
     // Показываем логотип только в блоге
     const showLogo = siteType === 'blog' && logo
     
@@ -32,7 +35,7 @@ export default ((opts?: Options) => {
             loading="eager"
           />
         )}
-        <a href="." class="page-title-link">{cfg.configuration.pageTitle}</a>
+        <a href="." class="page-title-link">{pageTitle}</a>
       </h2>
     )
   }

@@ -25,13 +25,14 @@ export default ((opts?: Options) => {
     console.log("Files:", JSON.stringify(allFiles.map(f => ({
       slug: f.slug,
       title: f.frontmatter?.title,
+      date: f.frontmatter?.date,  // ← добавили дату
       tags: f.frontmatter?.tags
     })), null, 2))
 
     // Фильтруем файлы
     let files = allFiles.filter(file => {
       const passed = filter(file)
-      console.log(`File ${file.slug}: filter=${passed}, tags=${file.frontmatter?.tags?.join(',')}`)
+      console.log(`File ${file.slug}: filter=${passed}, tags=${file.frontmatter?.tags?.join(',')}, date=${file.frontmatter?.date}`)
       return passed
     })
     
@@ -41,6 +42,7 @@ export default ((opts?: Options) => {
     files.sort((a, b) => {
       const aDate = getDate(cfg, a) ?? new Date(0)
       const bDate = getDate(cfg, b) ?? new Date(0)
+      console.log(`Sort: ${a.slug} date=${aDate.toISOString()}, ${b.slug} date=${bDate.toISOString()}`)
       return bDate.getTime() - aDate.getTime()
     })
 

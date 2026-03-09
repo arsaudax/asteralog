@@ -105,8 +105,8 @@ a[href^="http"]:not(.internal):not(.no-external-icon):not(.footer-link) {
   
   &.sidebar {
     margin: var(--spacing-sm) 0;
-    display: inline-block;
     width: auto;
+    display: inline-block;
   }
 }
 

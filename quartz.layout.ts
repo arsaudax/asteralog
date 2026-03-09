@@ -153,7 +153,13 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    CustomComponent.ArchiveLink({ sidebar: true }),
+    // Ссылка на архив ТОЛЬКО на страницах постов
+    Component.ConditionalRender({
+      component: CustomComponent.ArchiveLink({ sidebar: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+      }
+    }),
   ],
   afterBody: [
     Component.ConditionalRender({
@@ -165,14 +171,7 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
-    Component.ConditionalRender({
-      component: CustomComponent.ArchiveLink({ 
-        text: "📚 Все записи блога →" 
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug === 'index'
-      }
-    })
+    // Убираем ArchiveLink с главной
   ],
 }
 
@@ -186,7 +185,7 @@ export const blogArchivePageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    CustomComponent.ArchiveLink({ sidebar: true }),
+    // Убираем ArchiveLink из архива
   ],
   afterBody: [
     CustomComponent.BlogIndex({
@@ -203,7 +202,13 @@ export const blogListPageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    CustomComponent.ArchiveLink({ sidebar: true }),
+    // Ссылка на архив в списках тегов
+    Component.ConditionalRender({
+      component: CustomComponent.ArchiveLink({ sidebar: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug?.startsWith('tags/') || false
+      }
+    }),
   ],
 }
 

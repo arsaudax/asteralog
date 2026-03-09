@@ -5,7 +5,6 @@ import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
-import { h } from "preact"
 
 // Определяем тип сайта
 const siteType = typeof process !== 'undefined' 
@@ -157,10 +156,8 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    // Ссылка на архив в правой панели
-    <div class="archive-link-container sidebar">
-      <a href="/archive" class="archive-link">📚 Все записи →</a>
-    </div>
+    // Ссылка на архив в правой панели (через компонент)
+    CustomComponent.ArchiveLink({ sidebar: true }),
   ],
   // BlogIndex только на главной странице
   afterBody: [
@@ -175,11 +172,9 @@ export const blogContentPageLayout: PageLayout = {
     }),
     // Ссылка на архив под лентой на главной
     Component.ConditionalRender({
-      component: (
-        <div class="archive-link-container">
-          <a href="/archive" class="archive-link">📚 Все записи блога →</a>
-        </div>
-      ),
+      component: CustomComponent.ArchiveLink({ 
+        text: "📚 Все записи блога →" 
+      }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'index'
       }
@@ -197,10 +192,8 @@ export const blogArchivePageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на архив в правой панели (даже на странице архива)
-    <div class="archive-link-container sidebar">
-      <a href="/archive" class="archive-link">📚 Все записи →</a>
-    </div>
+    // Ссылка на архив в правой панели (через компонент)
+    CustomComponent.ArchiveLink({ sidebar: true }),
   ],
   afterBody: [
     CustomComponent.BlogIndex({
@@ -217,10 +210,8 @@ export const blogListPageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на архив в правой панели
-    <div class="archive-link-container sidebar">
-      <a href="/archive" class="archive-link">📚 Все записи →</a>
-    </div>
+    // Ссылка на архив в правой панели (через компонент)
+    CustomComponent.ArchiveLink({ sidebar: true }),
   ],
 }
 
@@ -236,7 +227,7 @@ export const defaultContentPageLayout = (() => {
   return (props: QuartzComponentProps) => {
     const slug = props?.fileData?.slug
     if (slug === 'index') return blogIndexPageLayout
-    if (slug === 'archive') return blogArchivePageLayout  // ← добавить
+    if (slug === 'archive') return blogArchivePageLayout
     return blogContentPageLayout
   }
 })()

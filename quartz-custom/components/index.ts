@@ -4,11 +4,13 @@ import Footer from "./Footer"
 import TagList from "./TagList"
 import BlogIndex from "./BlogIndex"
 import PageTitle from "./PageTitle"
+import ArchiveLink from "./ArchiveLink"
 
 export { 
   ContentMeta, 
   Footer, 
   TagList, 
-  BlogIndex,  // ← добавить запятую
-  PageTitle 
+  BlogIndex,
+  PageTitle,
+  ArchiveLink
 }

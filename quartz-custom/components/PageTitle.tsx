@@ -4,25 +4,21 @@ import { classNames } from "../../quartz/util/lang"
 interface Options {
   logo?: string
   logoAlt?: string
-  logoSize?: {
-    desktop?: number
-    tablet?: number
-    mobile?: number
-  }
+  title?: string
 }
 
 export default ((opts?: Options) => {
   const PageTitle: QuartzComponent = ({ displayClass, cfg }: QuartzComponentProps) => {
     const logo = opts?.logo
     const logoAlt = opts?.logoAlt ?? "Логотип"
+    const customTitle = opts?.title
+    
     const siteType = typeof process !== 'undefined' 
       ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
       : 'garden'
     
-    // Безопасное получение заголовка
-    const pageTitle = cfg?.configuration?.pageTitle ?? "Asteralog"
-    
-    // Показываем логотип только в блоге
+    const defaultTitle = siteType === 'blog' ? "Carduus camporum" : "Asteralog"
+    const pageTitle = customTitle ?? defaultTitle
     const showLogo = siteType === 'blog' && logo
     
     return (
@@ -40,22 +36,21 @@ export default ((opts?: Options) => {
     )
   }
 
-  // Стили компонента с адаптивностью
   PageTitle.css = `
   .page-title {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     margin: 0 0 var(--spacing-lg) 0;
-    text-align: center;
+    text-align: left;
   }
   
   .page-logo {
-    width: 96px;
-    height: 96px;
+    width: 150px;              /* ← 150px */
+    height: 150px;
     object-fit: contain;
     margin-bottom: 12px;
-    border-radius: 0; /* квадрат */
+    border-radius: 0;
     transition: transform var(--transition-fast);
   }
   
@@ -66,20 +61,19 @@ export default ((opts?: Options) => {
   .page-title-link {
     font-size: 24px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--link-color);
     text-decoration: none;
     transition: color var(--transition-fast);
   }
   
   .page-title-link:hover {
-    color: var(--link-color);
+    color: var(--link-hover);
   }
   
-  /* Планшеты */
   @media (max-width: 768px) {
     .page-logo {
-      width: 80px;
-      height: 80px;
+      width: 125px;              /* 150 * 0.83 */
+      height: 125px;
       margin-bottom: 10px;
     }
     
@@ -88,11 +82,10 @@ export default ((opts?: Options) => {
     }
   }
   
-  /* Мобильные */
   @media (max-width: 500px) {
     .page-logo {
-      width: 64px;
-      height: 64px;
+      width: 100px;              /* 150 * 0.66 */
+      height: 100px;
       margin-bottom: 8px;
     }
     

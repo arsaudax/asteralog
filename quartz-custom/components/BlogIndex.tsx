@@ -27,30 +27,23 @@ export default ((opts?: Options) => {
       console.log("=== BlogIndex Debug ===")
       if (isBrowser) {
         console.log("📍 Page URL:", window.location.pathname)
+      } else {
+        console.log("📍 Component rendering in Node.js (build time)")
       }
       console.log("📍 Total files:", allFiles.length)
     }
 
-    // Фильтруем файлы - исключаем только index (архив оставляем)
+    // Фильтруем файлы
     let files = allFiles.filter(file => {
+      // Пользовательский фильтр
       const passed = filter(file)
-      
-      // Исключаем только главную страницу
-      if (file.slug === 'index') {
-        if (process.env.NODE_ENV !== "production") {
-          console.log(`📍 Excluding ${file.slug} from list`)
-        }
-        return false
-      }
-      
+
+      // Исключаем только index, но не archive для архива
+      if (file.slug === 'index') return false
       return passed
     })
-    
-    if (process.env.NODE_ENV !== "production") {
-      console.log("📍 After filter:", files.length, "files")
-    }
 
-    // Сортируем по дате (новые сверху)
+    // Сортировка по дате (новые сверху)
     files.sort((a, b) => {
       const aDate = getDate(cfg, a) ?? new Date(0)
       const bDate = getDate(cfg, b) ?? new Date(0)
@@ -74,41 +67,48 @@ export default ((opts?: Options) => {
     }
 
     return (
-      <div class={classNames(displayClass, "blog-index")}>
-        <div class="page-list">  {/* ← используем стандартный класс Quartz */}
+      <div 
+        class={classNames(displayClass, "blog-index")} 
+        style={{ border: "3px solid red", padding: "15px", margin: "15px 0" }}
+      >
+        {/* 🔍 Визуальная отладка */}
+        <div style={{ background: "#ff0", color: "#000", padding: "5px", marginBottom: "10px", fontWeight: "bold" }}>
+          🔴 BLOG INDEX RENDERED - Posts: {files.length}
+        </div>
+
+        <div class="blog-index-list">
           {files.map((file) => {
             const title = file.frontmatter?.title || file.slug || "Без названия"
             const date = getDate(cfg, file)
             const description = file.frontmatter?.description || file.description || ""
             const tags = file.frontmatter?.tags || []
-            const slug = file.slug || ""
-            const url = resolveRelative(slug, slug)  // ← правильный URL
-            
+            const url = resolveRelative(file.slug!, file.slug!)
+
             return (
-              <article class="blog-index-item" key={slug}>
-                <h2 class="blog-index-title">
-                  <a href={url} class="internal">
-                    {title}
-                  </a>
-                </h2>
-                
-                {showDate && date && (
-                  <div class="blog-index-date">
-                    <Date date={date} locale={cfg.locale} />
-                  </div>
-                )}
-                
-                {showDescription && description && (
-                  <p class="blog-index-description">{description}</p>
-                )}
-                
-                {showTags && tags.length > 0 && (
-                  <div class="blog-index-tags">
-                    {tags.map(tag => (
-                      <span key={tag} class="blog-index-tag">{tag}</span>
-                    ))}
-                  </div>
-                )}
+              <article class="blog-index-item" key={file.slug} style={{ marginBottom: "15px", borderBottom: "1px solid #333" }}>
+                <a href={url} class="internal blog-index-link" style={{ color: "#ab7d4c" }}>
+                  <h2 class="blog-index-title">{title}</h2>
+                  
+                  {showDate && date && (
+                    <div class="blog-index-date" style={{ color: "#a0a0a0" }}>
+                      <Date date={date} locale={cfg.locale} />
+                    </div>
+                  )}
+                  
+                  {showDescription && description && (
+                    <p class="blog-index-description" style={{ color: "#d4d4d4" }}>{description}</p>
+                  )}
+                  
+                  {showTags && tags.length > 0 && (
+                    <div class="blog-index-tags">
+                      {tags.map(tag => (
+                        <span key={tag} class="blog-index-tag" style={{ color: "#ab7d4c", border: "1px solid #333", padding: "2px 4px", marginRight: "4px" }}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </a>
               </article>
             )
           })}
@@ -118,7 +118,7 @@ export default ((opts?: Options) => {
   }
 
   BlogIndex.css = `
-  /* Стили будут загружены из blogIndex.scss */
+  /* стили можно подключать через blogIndex.scss */
   `
 
   return BlogIndex

@@ -191,10 +191,10 @@ export const blogArchivePageLayout: PageLayout = {
     }),
   ],
   afterBody: [
-    CustomComponent.BlogIndex({
-      limit: 1000,
-      filter: () => true  // ← временно для диагностики
-    })
+     CustomComponent.BlogIndex({
+       limit: 1000,
+       filter: () => true  // пропускаем все файлы
+     })
   ],
 }
 

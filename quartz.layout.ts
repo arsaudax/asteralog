@@ -175,7 +175,7 @@ export const blogContentPageLayout: PageLayout = {
 }
 
 // ==============================
-// ARCHIVE LAYOUT - ИСПРАВЛЕННЫЙ
+// ARCHIVE LAYOUT
 // ==============================
 export const blogArchivePageLayout: PageLayout = {
   beforeBody: [
@@ -184,17 +184,14 @@ export const blogArchivePageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на главную в правой панели архива
     CustomComponent.ArchiveLink({ 
       text: "🏠 На главную",
       sidebar: true 
     }),
   ],
   afterBody: [
-    Component.PageList({  // ← используем встроенный компонент Quartz
+    CustomComponent.BlogIndex({  // ← снова используем BlogIndex
       limit: 1000,
-      sort: "created",
-      reverse: true,
       filter: blogFilter
     })
   ],

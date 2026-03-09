@@ -216,14 +216,23 @@ export const blogListPageLayout: PageLayout = {
 }
 
 // ==============================
-// DEFAULT LAYOUT SELECTORS
+// DEFAULT LAYOUT SELECTORS - ИСПРАВЛЕНО!
 // ==============================
 
-export const defaultContentPageLayout: PageLayout =
-  siteType === 'garden' 
-    ? gardenContentPageLayout 
-    : blogContentPageLayout
+// Функция для выбора layout в зависимости от slug
+export const defaultContentPageLayout = (props: QuartzComponentProps): PageLayout => {
+  if (siteType === 'garden') {
+    return gardenContentPageLayout
+  }
+  
+  const slug = props?.fileData?.slug
+  if (slug === 'archive') {
+    return blogArchivePageLayout
+  }
+  return blogContentPageLayout
+}
 
+// Для страниц-списков оставляем как есть
 export const defaultListPageLayout: PageLayout =
   siteType === 'garden'
     ? gardenListPageLayout

@@ -153,7 +153,7 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    // Кнопка архива - просто компонент, без обёрток
+    // Ссылка на архив - только на страницах постов
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ sidebar: true }),
       condition: (props: QuartzComponentProps) => {
@@ -180,10 +180,29 @@ export const blogContentPageLayout: PageLayout = {
 export const blogArchivePageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
+    // Временная отладка
+    (props: QuartzComponentProps) => {
+      if (process.env.NODE_ENV !== "production") {
+        console.log("🔴 ARCHIVE PAGE RENDERED")
+        console.log("🔴 Slug:", props.fileData.slug)
+        console.log("🔴 Frontmatter:", props.fileData.frontmatter)
+      }
+      return null
+    },
   ],
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
+    // Ссылка на архив в правой панели архива (опционально)
+    Component.ConditionalRender({
+      component: CustomComponent.ArchiveLink({ 
+        text: "📚 Все записи",
+        sidebar: true 
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug === 'archive'
+      }
+    }),
   ],
   afterBody: [
     CustomComponent.BlogIndex({

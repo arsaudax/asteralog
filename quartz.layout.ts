@@ -18,7 +18,10 @@ if (process.env.NODE_ENV !== "production") {
 
 // Базовая левая панель (общая для всех layout)
 const baseLeftPanel = [
-  Component.PageTitle(),
+  CustomComponent.PageTitle({ 
+    logo: "/static/thistle.png",
+    logoAlt: "Чертополох"
+  }),
   Component.MobileOnly(Component.Spacer()),
   Component.Search(),
   Component.Darkmode(),

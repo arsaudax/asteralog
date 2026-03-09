@@ -6,12 +6,15 @@ import * as CustomPlugins from "./quartz-custom/plugins"
 const siteType = process.env.SITE_TYPE || 
                  (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
 
-console.log(`\n🔧 ===== QUARTZ CONFIG =====`)
-console.log(`🔧 Site: ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
-console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
-console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
-console.log(`🔧 Default theme: dark (с возможностью переопределения через frontmatter)`)
-console.log(`🔧 ========================\n`)
+// Отладка только в development
+if (process.env.NODE_ENV !== "production") {
+  console.log(`\n🔧 ===== QUARTZ CONFIG =====`)
+  console.log(`🔧 Site: ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
+  console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
+  console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
+  console.log(`🔧 Default theme: dark`)
+  console.log(`🔧 ========================\n`)
+}
 
 // Базовая конфигурация
 const baseConfig = {
@@ -24,7 +27,7 @@ const baseConfig = {
   },
   locale: "ru-RU",
   ignorePatterns: ["private", "templates", ".obsidian", "**/draft*"],
-  defaultDateType: "created",
+  // defaultDateType: "created", // ← УДАЛЕНО
 }
 
 // Цвета для сада (СВЕТЛАЯ тема по умолчанию)
@@ -103,7 +106,7 @@ const config: QuartzConfig = {
       // НОВЫЙ ПЛАГИН — должен быть после FrontMatter
       CustomPlugins.ThemeFromFrontmatter({ defaultTheme: "dark" }),
       Plugin.CreatedModifiedDate({
-        priority: ["frontmatter", "filesystem"],
+        priority: ["filesystem"], // ← ИЗМЕНЕНО: только filesystem
       }),
       Plugin.SyntaxHighlighting({
         theme: {
@@ -127,6 +130,7 @@ const config: QuartzConfig = {
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
+      Plugin.Darkmode(), // ← ДОБАВЛЕНО
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),

@@ -709,68 +709,79 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
   .left {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs);
+    gap: 12px !important;  /* ← явный отступ между всеми элементами */
+    padding: 12px !important;
+  }
+  
+  /* Контейнер логотипа */
+  .left .page-title {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* Изображение чертополоха */
+  .left .page-logo {
+    margin-bottom: 4px !important;  /* ← отступ между картинкой и текстом */
+  }
+  
+  /* Поиск */
+  .left .search {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     
-    .page-title {
-      margin-bottom: 0;
+    .search-button {
+      width: 100% !important;
+      justify-content: flex-start !important;
+      padding: 10px 12px !important;  /* ← увеличил padding */
     }
     
-    .search {
-      width: 100%;
-      margin: var(--spacing-xs) 0;
-      
-      .search-button {
-        width: 100%;
-        justify-content: flex-start;
-        padding: var(--spacing-xs) var(--spacing-sm);
-      }
-      
-      .search-container {
-        width: 100%;
-      }
+    .search-container {
+      width: 100% !important;
     }
+  }
+  
+  /* Кнопка темы */
+  .left .darkmode {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     
-    .darkmode {
-      width: 100%;
-      margin: 0;
-      
-      button {
-        width: 100%;
-        justify-content: flex-start;
-        padding: var(--spacing-xs) var(--spacing-sm);
-      }
+    button {
+      width: 100% !important;
+      justify-content: flex-start !important;
+      padding: 10px 12px !important;  /* ← увеличил padding */
     }
-    
-    /* Скрываем блок RecentNotes на мобильных */
-    .recent-notes {
-      display: none;
-    }
+  }
+  
+  /* Скрываем блок RecentNotes на мобильных */
+  .recent-notes {
+    display: none !important;
   }
   
   /* Правая панель */
   .right {
-    padding: var(--spacing-sm);
+    padding: 12px !important;
   }
   
-  /* Адаптация ссылки на архив для мобильных */
+  /* Адаптация ссылки на архив */
   .archive-link-container {
-    padding: var(--spacing-sm) 0;
-    text-align: left;
-    
-    &.sidebar {
-      margin-top: auto;
-    }
+    padding: 12px 0 !important;
+    text-align: left !important;
   }
   
   .archive-link {
-    font-size: var(--font-size-sm);
-    display: inline-block;
-    padding: var(--spacing-xs) 0;
+    font-size: var(--font-size-sm) !important;
+    display: inline-block !important;
+    padding: 6px 0 !important;
   }
   
-  /* Убираем лишние отступы */
+  /* Убираем мобильный спейсер */
   .spacer.mobile-only {
-    display: none;
+    display: none !important;
   }
 }
 

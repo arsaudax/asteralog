@@ -27,7 +27,7 @@ const baseConfig = {
   },
   locale: "ru-RU",
   ignorePatterns: ["private", "templates", ".obsidian", "**/draft*"],
-  // defaultDateType: "created", // ← УДАЛЕНО
+  // defaultDateType: "created", // УДАЛЕНО
 }
 
 // Цвета для сада (СВЕТЛАЯ тема по умолчанию)
@@ -103,10 +103,9 @@ const config: QuartzConfig = {
   plugins: {
     transformers: [
       Plugin.FrontMatter(),
-      // НОВЫЙ ПЛАГИН — должен быть после FrontMatter
       CustomPlugins.ThemeFromFrontmatter({ defaultTheme: "dark" }),
       Plugin.CreatedModifiedDate({
-        priority: ["filesystem"], // ← ИЗМЕНЕНО: только filesystem
+        priority: ["filesystem"], // Только файловая система
       }),
       Plugin.SyntaxHighlighting({
         theme: {
@@ -130,7 +129,7 @@ const config: QuartzConfig = {
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
-      Plugin.Darkmode(), // ← ДОБАВЛЕНО
+      // Plugin.Darkmode(), // ← УДАЛЕНО!
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),

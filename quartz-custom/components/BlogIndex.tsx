@@ -19,37 +19,38 @@ export default ((opts?: Options) => {
     const showTags = opts?.showTags ?? true
     const showDate = opts?.showDate ?? true
 
-    // 🔍 ОТЛАДКА - с проверкой на существование window
+    // 🔍 ОТЛАДКА
     const isBrowser = typeof window !== 'undefined'
     
     if (process.env.NODE_ENV !== "production") {
       console.log("=== BlogIndex Debug ===")
       if (isBrowser) {
-        console.log("Component mounted on page:", window.location.pathname)
+        console.log("📍 Page URL:", window.location.pathname)
+        console.log("📍 Component mounted in browser")
       } else {
-        console.log("Component rendering in Node.js (build time)")
+        console.log("📍 Component rendering in Node.js (build time)")
       }
-      console.log("Total files:", allFiles.length)
-      console.log("Files:", JSON.stringify(allFiles.map(f => ({
-        slug: f.slug,
-        title: f.frontmatter?.title,
-        date: f.frontmatter?.date,
-        tags: f.frontmatter?.tags,
-        hasValidDate: !!getDate(cfg, f)
-      })), null, 2))
+      console.log("📍 Total files:", allFiles.length)
     }
 
-    // Фильтруем файлы
+    // Фильтруем файлы - исключаем index и archive
     let files = allFiles.filter(file => {
+      // Сначала применяем пользовательский фильтр
       const passed = filter(file)
-      if (process.env.NODE_ENV !== "production") {
-        console.log(`File ${file.slug}: filter=${passed}, tags=${file.frontmatter?.tags?.join(',')}, date=${file.frontmatter?.date || 'undefined'}`)
+      
+      // Исключаем служебные страницы
+      if (file.slug === 'index' || file.slug === 'archive') {
+        if (process.env.NODE_ENV !== "production") {
+          console.log(`📍 Excluding ${file.slug} from list`)
+        }
+        return false
       }
+      
       return passed
     })
     
     if (process.env.NODE_ENV !== "production") {
-      console.log("After filter:", files.length, "files")
+      console.log("📍 After filter:", files.length, "files")
     }
 
     // Сортируем по дате (новые сверху)
@@ -57,7 +58,7 @@ export default ((opts?: Options) => {
       const aDate = getDate(cfg, a) ?? new Date(0)
       const bDate = getDate(cfg, b) ?? new Date(0)
       if (process.env.NODE_ENV !== "production") {
-        console.log(`Sort: ${a.slug} (${aDate.toISOString()}) vs ${b.slug} (${bDate.toISOString()}) → ${bDate > aDate ? 'b newer' : 'a newer'}`)
+        console.log(`📍 Sort: ${a.slug} (${aDate.toISOString()}) vs ${b.slug} (${bDate.toISOString()})`)
       }
       return bDate.getTime() - aDate.getTime()
     })
@@ -66,7 +67,7 @@ export default ((opts?: Options) => {
     files = files.slice(0, limit)
 
     if (process.env.NODE_ENV !== "production") {
-      console.log("Final files:", files.map(f => f.slug))
+      console.log("📍 Final files:", files.map(f => f.slug))
       console.log("=== End Debug ===\n")
     }
 
@@ -79,7 +80,13 @@ export default ((opts?: Options) => {
     }
 
     return (
-      <div class={classNames(displayClass, "blog-index")}>
+      <div 
+        class={classNames(displayClass, "blog-index")} 
+        style={{ border: "3px solid red", padding: "10px", margin: "10px 0" }}
+      >
+        <div style={{ background: "yellow", padding: "5px", marginBottom: "10px", color: "black" }}>
+          🔍 BLOG INDEX RENDERED - Posts: {files.length}
+        </div>
         <div class="blog-index-list">
           {files.map((file) => {
             const title = file.frontmatter?.title || file.slug || "Без названия"
@@ -119,7 +126,6 @@ export default ((opts?: Options) => {
     )
   }
 
-  // Стили вынесены в отдельный SCSS файл
   BlogIndex.css = `
   /* Стили будут загружены из blogIndex.scss */
   `

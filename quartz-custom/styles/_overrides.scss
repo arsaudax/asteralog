@@ -730,3 +730,84 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
 .recent-note-item {
   animation: fadeIn 0.25s ease-out;
 }
+
+/* ===== УМЕНЬШЕНИЕ РАЗМЕРА ШРИФТА В БОКОВЫХ ПАНЕЛЯХ ===== */
+.left, .right {
+  font-size: 0.9rem;
+}
+
+.left h3, .right h3,
+.left .folder-title, .right .folder-title,
+.left .explorer-link, .right .explorer-link,
+.left .backlinks-header, .right .backlinks-header,
+.left .recent-notes-header, .right .recent-notes-header,
+.left .toc-header, .right .toc-header {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Ссылка на архив теперь обычная ссылка, не кнопка */
+.archive-link-container {
+  margin-top: auto;
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  width: 100%;
+  
+  &.sidebar {
+    margin-top: auto;
+  }
+}
+
+.archive-link {
+  display: inline;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--link-color);
+  font-weight: normal;
+  text-decoration: none;
+  width: auto;
+  font-size: 0.9rem;
+  
+  &:hover {
+    background: transparent;
+    transform: none;
+    text-decoration: underline;
+    color: var(--link-hover);
+  }
+  
+  &::after,
+  &::before {
+    display: none !important;
+  }
+}
+
+/* Убираем кнопочный стиль */
+.archive-link-container .archive-link {
+  display: inline;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-weight: normal;
+  text-align: left;
+  width: auto;
+  background: transparent;
+  
+  &:hover {
+    background: transparent;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* Для мобильных */
+@media (max-width: 500px) {
+  .archive-link-container {
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .archive-link {
+    font-size: 0.85rem;
+  }
+}

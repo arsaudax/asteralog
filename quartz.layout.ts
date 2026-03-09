@@ -148,11 +148,12 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    // Ссылка на архив - только на страницах постов (без эмодзи)
+    // Ссылка на архив в правой панели (с эмодзи в конце)
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
-        emoji: "none"
+        text: "Все записи →📚",
+        emoji: "none"  // эмодзи уже в тексте
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
@@ -173,7 +174,7 @@ export const blogContentPageLayout: PageLayout = {
     // Ссылка на архив под лентой на главной
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
-        text: "Все записи →",
+        text: "Все записи →📚",
         emoji: "none"
       }),
       condition: (props: QuartzComponentProps) => {
@@ -200,10 +201,11 @@ export const blogListPageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на архив в списках тегов (без эмодзи)
+    // Ссылка на архив в списках тегов (с эмодзи в конце)
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
+        text: "Все записи →📚",
         emoji: "none"
       }),
       condition: (props: QuartzComponentProps) => {

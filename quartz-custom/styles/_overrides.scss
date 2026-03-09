@@ -487,12 +487,17 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
   }
   
   @media (max-width: 500px) {
+    position: static !important;  /* ← убрали fixed */
+    margin-top: var(--spacing-xs) !important;
+    width: 100% !important;
+    
     button {
-      padding: var(--spacing-xs) var(--spacing-sm);
+      padding: var(--spacing-xs) var(--spacing-sm) !important;
+      width: 100% !important;
       
       svg {
-        width: 1.4em;
-        height: 1.4em;
+        width: 1.2em !important;
+        height: 1.2em !important;
       }
     }
   }
@@ -664,7 +669,7 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
   flex-direction: column;
 }
 
-/* ===== ССЫЛКА НА АРХИВ - ОСНОВНЫЕ СТИЛИ ===== */
+/* ===== ССЫЛКА НА АРХИВ ===== */
 .archive-link-container {
   margin-top: auto;
   padding: var(--spacing-md) 0;
@@ -674,6 +679,7 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
   
   &.sidebar {
     margin-top: auto;
+    text-align: left;  /* ← выравнивание по левому краю */
   }
 }
 
@@ -728,10 +734,12 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
   /* Адаптация ссылки на архив для мобильных */
   .archive-link-container {
     padding: var(--spacing-sm) 0;
+    text-align: left;
   }
   
   .archive-link {
     font-size: var(--font-size-sm);
+    display: inline-block;
   }
 }
 

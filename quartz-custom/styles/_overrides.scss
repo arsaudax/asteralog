@@ -361,13 +361,6 @@
   gap: .25em;
 }
 
-.archive-link::after {
-
-  content: "📚";
-  font-size: .9em;
-  opacity: .7;
-  transition: opacity .15s ease;
-}
 
 .archive-link:hover {
 

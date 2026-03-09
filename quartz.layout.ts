@@ -5,6 +5,7 @@ import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
+import { h } from "preact"
 
 // Определяем тип сайта
 const siteType = typeof process !== 'undefined' 
@@ -139,21 +140,24 @@ export const blogContentPageLayout: PageLayout = {
   ],
   left: baseLeftPanel,
   right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(backlinksConfig),
-    TagList(),
-    Component.ConditionalRender({
-      component: Component.RecentNotes({
-        limit: 5,
-        showTags: true,
-        filter: blogFilter,
-        title: "Недавние записи"
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
-      }
-    }),
-    // Ссылка на архив ТОЛЬКО на страницах постов
+    // Прокручиваемая область с контентом
+    h('div', { class: 'right-scroll-area' }, [
+      Component.DesktopOnly(Component.TableOfContents()),
+      Component.Backlinks(backlinksConfig),
+      TagList(),
+      Component.ConditionalRender({
+        component: Component.RecentNotes({
+          limit: 5,
+          showTags: true,
+          filter: blogFilter,
+          title: "Недавние записи"
+        }),
+        condition: (props: QuartzComponentProps) => {
+          return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+        }
+      })
+    ]),
+    // Кнопка архива (прижата к низу)
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ sidebar: true }),
       condition: (props: QuartzComponentProps) => {
@@ -171,7 +175,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
-    // Убираем ArchiveLink с главной
   ],
 }
 
@@ -184,8 +187,10 @@ export const blogArchivePageLayout: PageLayout = {
   ],
   left: baseLeftPanel,
   right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    // Убираем ArchiveLink из архива
+    // Прокручиваемая область с контентом (только TOC)
+    h('div', { class: 'right-scroll-area' }, [
+      Component.DesktopOnly(Component.TableOfContents()),
+    ]),
   ],
   afterBody: [
     CustomComponent.BlogIndex({
@@ -201,7 +206,10 @@ export const blogListPageLayout: PageLayout = {
   ],
   left: baseLeftPanel,
   right: [
-    Component.DesktopOnly(Component.TableOfContents()),
+    // Прокручиваемая область с контентом
+    h('div', { class: 'right-scroll-area' }, [
+      Component.DesktopOnly(Component.TableOfContents()),
+    ]),
     // Ссылка на архив в списках тегов
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ sidebar: true }),

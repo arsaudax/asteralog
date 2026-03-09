@@ -1,7 +1,5 @@
 import { QuartzTransformerPlugin } from "../../../quartz/plugins/types"
 import { Root } from "mdast"
-import { visit } from "unist-util-visit"
-import YAML from "yaml"
 
 interface ThemeFromFrontmatterOptions {
   defaultTheme?: "light" | "dark"
@@ -16,22 +14,15 @@ export const ThemeFromFrontmatter: QuartzTransformerPlugin<ThemeFromFrontmatterO
       return [
         () => {
           return (tree: Root, file) => {
-            // Читаем frontmatter
-            let frontmatter: any = {}
-            visit(tree, "yaml", (node: any) => {
-              frontmatter = YAML.parse(node.value)
-            })
-
-            // Если в frontmatter есть поле theme, сохраняем его
-            if (frontmatter && frontmatter.theme) {
-              const theme = frontmatter.theme === "light" ? "light" : "dark"
-              file.data.frontmatter = file.data.frontmatter || {}
+            // Frontmatter уже распарсен плагином FrontMatter и доступен в file.data.frontmatter
+            if (file.data.frontmatter && file.data.frontmatter.theme) {
+              const theme = file.data.frontmatter.theme === "light" ? "light" : "dark"
               file.data.frontmatter.theme = theme
               
-              // Добавляем для отладки
+              // Для отладки (будет видно в логах сборки)
               console.log(`🎨 Page ${file.data.slug} has theme: ${theme} (from frontmatter)`)
             } else {
-              // Иначе используем тему по умолчанию
+              // Если тема не указана, используем тему по умолчанию
               file.data.frontmatter = file.data.frontmatter || {}
               file.data.frontmatter.theme = defaultTheme
             }

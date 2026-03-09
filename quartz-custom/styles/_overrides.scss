@@ -361,15 +361,9 @@
   gap: .25em;
 }
 
-
 .archive-link:hover {
 
   color: var(--link-hover);
-}
-
-.archive-link:hover::after {
-
-  opacity: 1;
 }
 
 /* =========================================================
@@ -388,7 +382,8 @@
     grid-template-columns: 1fr 36px 36px;
     grid-template-rows: auto auto;
 
-    gap: 8px;
+    column-gap: 8px;
+    row-gap: 10px;
 
     position: sticky;
     top: 0;
@@ -404,38 +399,38 @@
 
     grid-column: 1;
     grid-row: 1;
+
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  .left .search-button,
-  .left .darkmode button {
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .left .search-button {
 
     grid-column: 2;
     grid-row: 1;
+
     width: 34px;
     height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     border-radius: 50%;
     padding: 0;
+
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    
-    p {
-      display: none;
-    }
-    
-    svg {
-      width: 18px;
-      height: 18px;
-    }
+  }
+
+  .left .search-button p {
+    display: none;
+  }
+
+  .left .search-button svg {
+    width: 18px;
+    height: 18px;
   }
 
   .left .darkmode {
@@ -443,24 +438,31 @@
     grid-column: 3;
     grid-row: 1;
     justify-self: end;
-    
-    button {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      padding: 0;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      
-      span {
-        display: none;
-      }
-      
-      svg {
-        width: 18px;
-        height: 18px;
-      }
-    }
+  }
+
+  .left .darkmode button {
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    padding: 0;
+
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .left .darkmode span {
+    display: none;
+  }
+
+  .left .darkmode svg {
+    width: 18px;
+    height: 18px;
   }
 
   .left .search {
@@ -469,14 +471,14 @@
     grid-row: 2;
 
     width: 100%;
-    margin: 0 !important;  /* жёстко обнуляем внешние отступы */
-    padding-top: 4px;      /* добавляем небольшой отступ сверху */
+    margin: 0 !important;
+    padding: 0;
   }
 
   .left .search #search-container {
 
     width: 100%;
-    margin: 0 !important;
+    margin: 6px 0 0 0 !important;
   }
 
   .left .search input {
@@ -508,7 +510,6 @@
 @media (max-width: 800px) {
 
   .explorer {
-
     display: none;
   }
 
@@ -520,13 +521,11 @@
 
 .left,
 .right {
-
   font-size: .9rem;
 }
 
 .left h3,
 .right h3 {
-
   font-size: .9rem;
   font-weight: 600;
 }

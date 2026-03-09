@@ -9,6 +9,6 @@ export {
   ContentMeta, 
   Footer, 
   TagList, 
-  BlogIndex 
+  BlogIndex,  // ← добавить запятую
   PageTitle 
 }

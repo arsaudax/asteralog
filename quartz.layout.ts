@@ -5,6 +5,7 @@ import * as CustomComponent from "./quartz-custom/components"
 import TagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
+import { h } from "preact"
 
 // Определяем тип сайта
 const siteType = typeof process !== 'undefined' 
@@ -135,7 +136,7 @@ export const blogContentPageLayout: PageLayout = {
     Component.ConditionalRender({
       component: CustomComponent.ContentMeta({ showReadingTime: true }),
       condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index'
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
     Component.TagList(),
@@ -153,10 +154,15 @@ export const blogContentPageLayout: PageLayout = {
         title: "Недавние записи"
       }),
       condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index'
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
-    })
+    }),
+    // Ссылка на архив в правой панели
+    <div class="archive-link-container sidebar">
+      <a href="/archive" class="archive-link">📚 Все записи →</a>
+    </div>
   ],
+  // BlogIndex только на главной странице
   afterBody: [
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
@@ -166,6 +172,40 @@ export const blogContentPageLayout: PageLayout = {
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'index'
       }
+    }),
+    // Ссылка на архив под лентой на главной
+    Component.ConditionalRender({
+      component: (
+        <div class="archive-link-container">
+          <a href="/archive" class="archive-link">📚 Все записи блога →</a>
+        </div>
+      ),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug === 'index'
+      }
+    })
+  ],
+}
+
+// ==============================
+// ARCHIVE LAYOUT
+// ==============================
+export const blogArchivePageLayout: PageLayout = {
+  beforeBody: [
+    Component.ArticleTitle(),
+  ],
+  left: baseLeftPanel,
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    // Ссылка на архив в правой панели (даже на странице архива)
+    <div class="archive-link-container sidebar">
+      <a href="/archive" class="archive-link">📚 Все записи →</a>
+    </div>
+  ],
+  afterBody: [
+    CustomComponent.BlogIndex({
+      limit: 1000,  // практически все записи
+      filter: blogFilter
     })
   ],
 }
@@ -177,6 +217,10 @@ export const blogListPageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
+    // Ссылка на архив в правой панели
+    <div class="archive-link-container sidebar">
+      <a href="/archive" class="archive-link">📚 Все записи →</a>
+    </div>
   ],
 }
 
@@ -184,10 +228,18 @@ export const blogListPageLayout: PageLayout = {
 // DEFAULT LAYOUT SELECTORS
 // ==============================
 
-export const defaultContentPageLayout: PageLayout =
-  siteType === 'garden' 
-    ? gardenContentPageLayout 
-    : blogContentPageLayout
+export const defaultContentPageLayout = (() => {
+  if (siteType === 'garden') {
+    return gardenContentPageLayout
+  }
+  
+  return (props: QuartzComponentProps) => {
+    const slug = props?.fileData?.slug
+    if (slug === 'index') return blogIndexPageLayout
+    if (slug === 'archive') return blogArchivePageLayout  // ← добавить
+    return blogContentPageLayout
+  }
+})()
 
 export const defaultListPageLayout: PageLayout =
   siteType === 'garden'

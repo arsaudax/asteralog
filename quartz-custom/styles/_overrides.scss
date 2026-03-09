@@ -1,609 +1,131 @@
-// Quartz Component Overrides for Asteralog Theme
-// Используем семантические переменные из _variables.scss
+/* ===== СТИЛИ ДЛЯ ССЫЛОК ===== */
+/* Убираем стандартные синие значки Quartz */
 
-/* ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ТЕМЫ ===== */
-:root {
-  /* Тёмная тема по умолчанию */
-  --bg-primary: var(--asteralog-bg-dark);
-  --bg-secondary: var(--asteralog-bg-dark-alt);
-  --text-primary: var(--asteralog-fg-dark);
-  --text-secondary: #b0b0b0;
-  --text-muted: #a0a0a0;
-  --border-color: var(--asteralog-selection-dark);
-  --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
-  --link-color: var(--asteralog-accent);
-  --link-hover: var(--asteralog-accent-alt);
-  --highlight: rgba(171, 125, 76, 0.15);
-  --highlight-strong: rgba(171, 125, 76, 0.25);
+/* Убираем все стандартные значки у внешних ссылок */
+a[href^="http"]::after {
+  display: none !important;
 }
 
-/* Светлая тема */
-:root[saved-theme="light"] {
-  --bg-primary: var(--asteralog-bg-light);
-  --bg-secondary: var(--asteralog-bg-light-alt);
-  --text-primary: var(--asteralog-fg-light);
-  --text-secondary: var(--asteralog-comment-light);
-  --text-muted: color-mix(in srgb, var(--text-secondary) 80%, transparent);
-  --border-color: var(--asteralog-selection-light);
-  --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
-  --link-color: var(--asteralog-accent);
-  --link-hover: var(--asteralog-accent-alt);
-  --highlight: rgba(162, 132, 94, 0.15);
-  --highlight-strong: rgba(162, 132, 94, 0.25);
+/* Добавляем свой аккуратный значок для внешних ссылок */
+a[href^="http"]:not(.internal):not(.no-external-icon) {
+  position: relative;
+  
+  &::after {
+    content: "↗" !important;
+    display: inline-block !important;
+    margin-left: 0.2em;
+    font-size: 0.8em;
+    color: var(--text-muted) !important;
+    background: none !important;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+    text-decoration: none;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+    color: var(--link-color) !important;
+  }
 }
 
-/* ===== CALLOUTS / ADMONITIONS ===== */
-.callout {
-  border-radius: var(--radius-md);
+/* Для внутренних ссылок никаких значков */
+a.internal::after {
+  display: none !important;
+}
+
+/* Для ссылок в подвале тоже убираем лишнее */
+.footer-link::after {
+  display: none !important;
+}
+
+/* ===== СТИЛИ ДЛЯ ССЫЛОК - МАКСИМАЛЬНО АГРЕССИВНО ===== */
+
+/* 1. Полностью отключаем все псевдоэлементы */
+a::after,
+a::before,
+.internal::after,
+.internal::before,
+.external::after,
+.external::before,
+a[href^="http"]::after,
+a[href^="http"]::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  background-image: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 2. Отключаем возможные фоновые изображения */
+a {
+  background-image: none !important;
+}
+
+/* 3. Добавляем свой значок ТОЛЬКО для внешних ссылок (через before) */
+a[href^="http"]:not(.internal):not(.no-external-icon):not(.footer-link) {
+  position: relative;
+  
+  &::before {
+    content: "↗" !important;
+    display: inline-block !important;
+    margin-left: 0.2em;
+    font-size: 0.8em;
+    color: var(--text-muted) !important;
+    background: none !important;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+    text-decoration: none;
+    position: relative;
+    top: -0.1em;
+    width: auto !important;
+    height: auto !important;
+    visibility: visible !important;
+  }
+  
+  &:hover::before {
+    opacity: 1;
+    color: var(--link-color) !important;
+  }
+}
+
+/* 4. Для ссылок в подвале вообще ничего */
+.footer-link::after,
+.footer-link::before {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+}
+
+/* ===== ССЫЛКИ НА АРХИВ ===== */
+.archive-link-container {
   margin: var(--spacing-lg) 0;
-  background: var(--bg-secondary);
-  padding: var(--spacing-md) var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
   
-  &[data-callout="note"],
-  &[data-callout="info"],
-  &[data-callout="abstract"],
-  &[data-callout="summary"] {
-    --callout-color: var(--link-color);
-  }
-
-  &[data-callout="tip"],
-  &[data-callout="hint"],
-  &[data-callout="important"] {
-    --callout-color: var(--link-hover);
-  }
-  
-  &[data-callout="success"],
-  &[data-callout="check"],
-  &[data-callout="done"] {
-    --callout-color: #4caf50;
-  }
-  
-  &[data-callout="warning"],
-  &[data-callout="caution"],
-  &[data-callout="attention"] {
-    --callout-color: #ff9800;
-  }
-  
-  &[data-callout="danger"],
-  &[data-callout="error"],
-  &[data-callout="bug"] {
-    --callout-color: #f44336;
-  }
-  
-  &[data-callout="example"] {
-    --callout-color: #9c27b0;
-  }
-  
-  &[data-callout="quote"],
-  &[data-callout="cite"] {
-    --callout-color: var(--text-muted);
-  }
-
-  border-left: 4px solid var(--callout-color);
-
-  .callout-title {
-    color: var(--callout-color);
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    
-    .callout-icon {
-      width: 1.2em;
-      height: 1.2em;
-    }
-  }
-  
-  .callout-content {
-    > :last-child {
-      margin-bottom: 0;
-    }
+  &.sidebar {
+    margin-top: var(--spacing-sm);
   }
 }
 
-/* ===== SEARCH COMPONENT ===== */
-#search-container {
-  margin-bottom: var(--spacing-lg);
+.archive-link {
+  display: inline-block;
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
   
-  input {
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-size: var(--font-size-md);
-    transition: all var(--transition-fast);
-
-    &:focus {
-      border-color: var(--link-color);
-      box-shadow: 0 0 0 3px var(--highlight);
-      outline: none;
-    }
-    
-    &::placeholder {
-      color: var(--text-muted);
-      opacity: 0.7;
-    }
-  }
-
-  .search-result {
-    padding: var(--spacing-sm);
-    margin: var(--spacing-xs) 0;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: background-color var(--transition-fast);
-
-    &:hover {
-      background: var(--highlight);
-    }
-    
-    mark {
-      background: var(--link-color);
-      color: white;
-      padding: 0.1em 0.2em;
-      border-radius: var(--radius-sm);
-      font-weight: 500;
-    }
-  }
-}
-
-/* ===== GRAPH COMPONENT ===== */
-#graph-container {
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
-  
-  .node {
-    fill: var(--link-color);
-    transition: fill var(--transition-fast), r var(--transition-fast);
-    cursor: pointer;
-
-    &:hover {
-      fill: var(--link-hover);
-      r: 6;
-    }
-    
-    &.active {
-      fill: var(--link-hover);
-      r: 7;
-      filter: drop-shadow(0 0 4px var(--link-color));
-    }
-  }
-
-  .link {
-    stroke: var(--border-color);
-    stroke-width: 1.5;
-    transition: stroke var(--transition-fast);
-
-    &:hover {
-      stroke: var(--link-color);
-    }
-  }
-  
-  text {
-    fill: var(--text-primary);
-    font-size: var(--font-size-xs);
-    font-weight: 500;
-    pointer-events: none;
-  }
-}
-
-/* ===== EXPLORER COMPONENT ===== */
-.explorer {
-  margin-bottom: var(--spacing-lg);
-  
-  .folder-button {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) 0;
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--text-primary);
-    font-size: var(--font-size-md);
-    text-align: left;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    border-radius: var(--radius-sm);
-
-    &:hover {
-      background: var(--highlight);
-      color: var(--link-color);
-      padding-left: var(--spacing-xs);
-    }
-    
-    svg {
-      width: 1em;
-      height: 1em;
-      transition: transform var(--transition-fast);
-    }
-  }
-  
-  .folder-outer.open > .folder-button svg {
-    transform: rotate(90deg);
-  }
-
-  .folder-title,
-  .explorer-link {
-    display: block;
-    padding: var(--spacing-xs) 0;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: all var(--transition-fast);
-    border-radius: var(--radius-sm);
-    font-weight: normal !important;
-
-    &:hover {
-      color: var(--link-hover);
-      background: var(--highlight);
-      padding-left: var(--spacing-xs);
-    }
-  }
-
-  .explorer-link.active {
-    color: var(--link-color);
-    font-weight: 600 !important;
+  &:hover {
     background: var(--highlight);
-    padding-left: var(--spacing-xs);
-    border-left: 2px solid var(--link-color);
+    border-color: var(--link-color);
+    transform: translateX(2px);
   }
   
-  .folder-outer {
-    margin-left: var(--spacing-md);
+  &::after,
+  &::before {
+    display: none !important;
   }
-}
-
-/* ===== BREADCRUMBS ===== */
-.breadcrumb-container {
-  margin-bottom: var(--spacing-lg);
-  font-size: var(--font-size-sm);
-  color: var(--text-muted);
-  
-  a {
-    color: var(--link-color);
-    text-decoration: none;
-    transition: color var(--transition-fast);
-
-    &:hover {
-      color: var(--link-hover);
-      text-decoration: underline;
-    }
-  }
-
-  .breadcrumb-separator {
-    color: var(--text-muted);
-    margin: 0 var(--spacing-xs);
-    
-    &::after {
-      content: "›";
-    }
-  }
-  
-  .breadcrumb-current {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
-}
-
-/* ===== TABLE OF CONTENTS ===== */
-.toc {
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--spacing-xl);
-  
-  .toc-header {
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border-light);
-    padding-bottom: var(--spacing-xs);
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  li {
-    margin: var(--spacing-xs) 0;
-  }
-  
-  a {
-    display: block;
-    padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-md);
-    border-left: 2px solid transparent;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: all var(--transition-fast);
-
-    &.active {
-      color: var(--link-color);
-      border-left-color: var(--link-color);
-      background: var(--highlight);
-      font-weight: 500;
-    }
-
-    &:hover {
-      color: var(--link-hover);
-      border-left-color: var(--link-hover);
-      background: var(--highlight);
-    }
-  }
-  
-  .depth-2 { padding-left: var(--spacing-xl); }
-  .depth-3 { padding-left: calc(var(--spacing-xl) * 2); font-size: 0.95em; }
-  .depth-4 { padding-left: calc(var(--spacing-xl) * 3); font-size: 0.9em; }
-}
-
-/* ===== BACKLINKS ===== */
-.backlinks {
-  margin-top: var(--spacing-xl);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--border-color);
-  
-  .backlinks-header {
-    font-weight: 600;
-    margin-bottom: var(--spacing-md);
-    color: var(--text-primary);
-    font-size: var(--font-size-md);
-    border-bottom: 1px solid var(--border-light);
-    padding-bottom: var(--spacing-xs);
-  }
-  
-  .backlink-item {
-    margin: var(--spacing-sm) 0;
-  }
-  
-  a {
-    color: var(--link-color);
-    text-decoration: none;
-    transition: color var(--transition-fast);
-    
-    &:hover {
-      color: var(--link-hover);
-      text-decoration: underline;
-    }
-  }
-  
-  .backlink-count {
-    color: var(--text-muted);
-    font-size: var(--font-size-xs);
-    margin-left: var(--spacing-xs);
-    
-    &::before {
-      content: "(";
-    }
-    
-    &::after {
-      content: ")";
-    }
-  }
-}
-
-/* ===== DARK MODE TOGGLE - ИСПРАВЛЕНО ===== */
-.darkmode {
-  position: relative !important;  /* Убрали fixed */
-  bottom: auto !important;
-  right: auto !important;
-  z-index: auto !important;
-  margin-top: var(--spacing-sm);
-  width: 100%;
-  
-  button {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: var(--spacing-xs) !important;
-    background: var(--bg-secondary) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
-    padding: var(--spacing-sm) var(--spacing-md) !important;
-    color: var(--text-primary) !important;
-    font-size: var(--font-size-sm) !important;
-    cursor: pointer !important;
-    transition: all var(--transition-base) !important;
-    width: 100%;
-
-    &:hover {
-      background: var(--highlight) !important;
-      border-color: var(--link-color) !important;
-    }
-
-    svg {
-      width: 1.2em !important;
-      height: 1.2em !important;
-      color: var(--link-color) !important;
-    }
-  }
-  
-  @media (max-width: 500px) {
-    button {
-      padding: var(--spacing-xs) var(--spacing-sm) !important;
-      
-      svg {
-        width: 1.4em !important;
-        height: 1.4em !important;
-      }
-    }
-  }
-}
-
-/* ===== RECENT NOTES ===== */
-.recent-notes {
-  margin-top: var(--spacing-xl);
-  
-  .recent-notes-header {
-    font-weight: 600;
-    margin-bottom: var(--spacing-md);
-    color: var(--text-primary);
-    border-bottom: 1px solid var(--border-light);
-    padding-bottom: var(--spacing-xs);
-  }
-  
-  .recent-note-item {
-    display: block;
-    padding: var(--spacing-sm);
-    margin: var(--spacing-xs) 0;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-    text-decoration: none;
-    
-    &:hover {
-      background: var(--highlight);
-      transform: translateX(var(--spacing-xs));
-    }
-    
-    .note-title {
-      color: var(--link-color);
-      font-weight: 500;
-      margin-bottom: var(--spacing-xs);
-    }
-    
-    .note-date {
-      color: var(--text-muted);
-      font-size: var(--font-size-xs);
-    }
-    
-    .note-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--spacing-xs);
-      margin-top: var(--spacing-xs);
-      
-      .tag {
-        font-size: var(--font-size-xs);
-        padding: 0.1rem 0.3rem;
-        background: var(--highlight);
-        border-radius: var(--radius-sm);
-        color: var(--text-secondary);
-      }
-    }
-  }
-}
-
-/* ===== PAGINATION ===== */
-.pagination {
-  display: flex;
-  gap: var(--spacing-xs);
-  justify-content: center;
-  margin: var(--spacing-xl) 0;
-  
-  a, span, button {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: all var(--transition-fast);
-    min-width: 2.5rem;
-    text-align: center;
-    
-    &:hover:not(.disabled):not(.active) {
-      background: var(--highlight);
-      border-color: var(--link-color);
-      color: var(--link-color);
-    }
-    
-    &.active {
-      background: var(--link-color);
-      border-color: var(--link-color);
-      color: white;
-    }
-    
-    &.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-  }
-}
-
-/* ===== POPOVER (ПРЕВЬЮ ЗАМЕТОК) ===== */
-.popover {
-  background: var(--bg-primary) !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: var(--radius-lg) !important;
-  box-shadow: var(--shadow-lg) !important;
-  max-width: 300px !important;
-  
-  .popover-inner {
-    color: var(--text-primary) !important;
-    padding: var(--spacing-md) !important;
-    
-    h1, h2, h3, h4, h5, h6,
-    p, li, div, span {
-      color: var(--text-primary) !important;
-      margin: var(--spacing-xs) 0 !important;
-    }
-    
-    a {
-      color: var(--link-color) !important;
-      
-      &:hover {
-        color: var(--link-hover) !important;
-      }
-    }
-    
-    code {
-      background: var(--highlight) !important;
-      color: var(--link-color) !important;
-      padding: 0.1em 0.3em !important;
-      border-radius: var(--radius-sm) !important;
-    }
-    
-    .tag {
-      background: transparent !important;
-      color: var(--link-color) !important;
-      border: 1px solid var(--border-color) !important;
-      padding: 0.1em 0.5em !important;
-      border-radius: var(--radius-sm) !important;
-      font-size: var(--font-size-xs) !important;
-      display: inline-block;
-      margin: 0.1rem;
-      
-      &:hover {
-        background: var(--link-color) !important;
-        color: white !important;
-        border-color: var(--link-color) !important;
-      }
-    }
-    
-    .content-meta,
-    .meta-created,
-    .meta-reading {
-      color: var(--text-secondary) !important;
-      font-size: var(--font-size-xs) !important;
-    }
-  }
-  
-  .popover-arrow {
-    border-color: var(--border-color) !important;
-  }
-}
-
-/* ===== КНОПКИ В ГРАФЕ ===== */
-.graph-controls button,
-.global-graph-button {
-  opacity: 1 !important;
-}
-
-/* ===== АНИМАЦИИ ===== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.callout,
-.search-result,
-.recent-note-item {
-  animation: fadeIn var(--transition-slow);
 }

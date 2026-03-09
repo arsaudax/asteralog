@@ -705,41 +705,72 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
 
 /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
 @media (max-width: 500px) {
-  /* Поиск и кнопка темы справа */
+  /* Левая панель */
   .left {
-    .search,
-    .darkmode {
-      margin-left: auto;
-      width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    
+    .page-title {
+      margin-bottom: 0;
     }
     
-    .search button,
-    .darkmode button {
-      width: auto;
-      padding: var(--spacing-xs) var(--spacing-sm);
+    .search {
+      width: 100%;
+      margin: var(--spacing-xs) 0;
+      
+      .search-button {
+        width: 100%;
+        justify-content: flex-start;
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+      
+      .search-container {
+        width: 100%;
+      }
+    }
+    
+    .darkmode {
+      width: 100%;
+      margin: 0;
+      
+      button {
+        width: 100%;
+        justify-content: flex-start;
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
     }
     
     /* Скрываем блок RecentNotes на мобильных */
     .recent-notes {
       display: none;
     }
-    
-    /* Уменьшаем отступы */
-    .left,
-    .right {
-      padding: var(--spacing-sm);
-    }
+  }
+  
+  /* Правая панель */
+  .right {
+    padding: var(--spacing-sm);
   }
   
   /* Адаптация ссылки на архив для мобильных */
   .archive-link-container {
     padding: var(--spacing-sm) 0;
     text-align: left;
+    
+    &.sidebar {
+      margin-top: auto;
+    }
   }
   
   .archive-link {
     font-size: var(--font-size-sm);
     display: inline-block;
+    padding: var(--spacing-xs) 0;
+  }
+  
+  /* Убираем лишние отступы */
+  .spacer.mobile-only {
+    display: none;
   }
 }
 

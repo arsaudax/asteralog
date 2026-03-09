@@ -11,12 +11,23 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-console.log(`\n🔧 Layout: Building for ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
+// Отладка только в development
+if (process.env.NODE_ENV !== "production") {
+  console.log(`\n🔧 Layout: Building for ${siteType === 'blog' ? '📝 Blog' : '🌱 Garden'}`)
+}
+
+// Базовая левая панель (общая для всех layout)
+const baseLeftPanel = [
+  Component.PageTitle(),
+  Component.MobileOnly(Component.Spacer()),
+  Component.Search(),
+  Component.Darkmode(),
+]
 
 // Конфигурация проводника (с эмодзи ⊹ перед файлами)
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
-    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude") === true
+    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude")
     return !hasExcludedTag
   },
   mapFn: (node: FileTrieNode) => {
@@ -24,7 +35,15 @@ const explorerConfig = {
       node.displayName = "⊹ " + node.displayName
     }
   },
-  title: "Сад", // Единый стиль заголовка без эмодзи
+  title: "Сад",
+  // Добавляем настройки для нормального вида
+  folderDefaultState: "collapsed", // папки свернуты по умолчанию
+  sort: (a, b) => {
+    // Сортировка: папки сверху, файлы в алфавитном порядке
+    if (a.isFolder && !b.isFolder) return -1
+    if (!a.isFolder && b.isFolder) return 1
+    return a.displayName.localeCompare(b.displayName)
+  },
 }
 
 // Конфигурация графа
@@ -37,19 +56,13 @@ const graphConfig = {
     showTags: false,
     excludeTags: ["graph-exclude"],
   },
-  title: "Граф", // Единый стиль заголовка
+  title: "Граф",
 }
 
 // Конфигурация обратных ссылок
 const backlinksConfig = {
   hideWhenEmpty: true,
-  title: "Обратные ссылки", // Единый стиль заголовка
-}
-
-// Конфигурация хлебных крошек (не используются)
-const breadcrumbsConfig = {
-  rootName: "🏡",
-  showCurrentPage: true,
+  title: "Обратные ссылки",
 }
 
 // Общие компоненты
@@ -76,10 +89,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.TagList(),
   ],
   left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(), // ← Кнопка переключения темы (под поиском)
+    ...baseLeftPanel,
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [
@@ -96,10 +106,7 @@ export const gardenListPageLayout: PageLayout = {
     CustomComponent.ContentMeta({ showReadingTime: true }),
   ],
   left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(), // ← Кнопка переключения темы (под поиском)
+    ...baseLeftPanel,
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [],
@@ -120,12 +127,7 @@ export const blogContentPageLayout: PageLayout = {
     }),
     Component.TagList(),
   ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(), // ← Кнопка переключения темы (под поиском)
-  ],
+  left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
@@ -161,12 +163,7 @@ export const blogListPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
   ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(), // ← Кнопка переключения темы (под поиском)
-  ],
+  left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
   ],

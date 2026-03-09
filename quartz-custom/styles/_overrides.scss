@@ -467,17 +467,23 @@
 
     grid-column: 1 / -1;
     grid-row: 2;
+
     width: 100%;
-    
-    #search-container {
-      width: 100%;
-      margin: 0;
-      
-      input {
-        width: 100%;
-        padding: 8px 12px;
-      }
-    }
+    margin: 0 !important;  /* жёстко обнуляем внешние отступы */
+    padding-top: 4px;      /* добавляем небольшой отступ сверху */
+  }
+
+  .left .search #search-container {
+
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  .left .search input {
+
+    width: 100%;
+    padding: 8px 12px;
+    margin: 0 !important;
   }
 
   .recent-notes {

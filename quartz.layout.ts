@@ -2,10 +2,9 @@ import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
-import TagList from "./quartz-custom/components/TagList"
+import CustomTagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
-import { h } from "preact"
 
 // Определяем тип сайта
 const siteType = typeof process !== 'undefined' 
@@ -103,7 +102,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    TagList(),
+    CustomTagList(),
   ],
 }
 
@@ -140,24 +139,21 @@ export const blogContentPageLayout: PageLayout = {
   ],
   left: baseLeftPanel,
   right: [
-    // Прокручиваемая область с контентом
-    h('div', { class: 'right-scroll-area' }, [
-      Component.DesktopOnly(Component.TableOfContents()),
-      Component.Backlinks(backlinksConfig),
-      TagList(),
-      Component.ConditionalRender({
-        component: Component.RecentNotes({
-          limit: 5,
-          showTags: true,
-          filter: blogFilter,
-          title: "Недавние записи"
-        }),
-        condition: (props: QuartzComponentProps) => {
-          return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
-        }
-      })
-    ]),
-    // Кнопка архива (прижата к низу)
+    Component.DesktopOnly(Component.TableOfContents()),
+    Component.Backlinks(backlinksConfig),
+    CustomTagList(),
+    Component.ConditionalRender({
+      component: Component.RecentNotes({
+        limit: 5,
+        showTags: true,
+        filter: blogFilter,
+        title: "Недавние записи"
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+      }
+    }),
+    // Кнопка архива - просто компонент, без обёрток
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ sidebar: true }),
       condition: (props: QuartzComponentProps) => {
@@ -187,10 +183,7 @@ export const blogArchivePageLayout: PageLayout = {
   ],
   left: baseLeftPanel,
   right: [
-    // Прокручиваемая область с контентом (только TOC)
-    h('div', { class: 'right-scroll-area' }, [
-      Component.DesktopOnly(Component.TableOfContents()),
-    ]),
+    Component.DesktopOnly(Component.TableOfContents()),
   ],
   afterBody: [
     CustomComponent.BlogIndex({
@@ -206,10 +199,7 @@ export const blogListPageLayout: PageLayout = {
   ],
   left: baseLeftPanel,
   right: [
-    // Прокручиваемая область с контентом
-    h('div', { class: 'right-scroll-area' }, [
-      Component.DesktopOnly(Component.TableOfContents()),
-    ]),
+    Component.DesktopOnly(Component.TableOfContents()),
     // Ссылка на архив в списках тегов
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ sidebar: true }),
@@ -221,16 +211,14 @@ export const blogListPageLayout: PageLayout = {
 }
 
 // ==============================
-// DEFAULT LAYOUT SELECTORS - ТОЛЬКО ОБЪЕКТЫ!
+// DEFAULT LAYOUT SELECTORS
 // ==============================
 
-// Для контентных страниц - ВОЗВРАЩАЕМ ОБЪЕКТ
 export const defaultContentPageLayout: PageLayout =
   siteType === 'garden' 
     ? gardenContentPageLayout 
     : blogContentPageLayout
 
-// Для страниц-списков - ВОЗВРАЩАЕМ ОБЪЕКТ
 export const defaultListPageLayout: PageLayout =
   siteType === 'garden'
     ? gardenListPageLayout

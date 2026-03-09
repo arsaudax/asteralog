@@ -19,40 +19,56 @@ export default ((opts?: Options) => {
     const showTags = opts?.showTags ?? true
     const showDate = opts?.showDate ?? true
 
-    // 🔍 ОТЛАДКА - расширенная
-    console.log("=== BlogIndex Debug ===")
-    console.log("Component mounted on page:", window?.location?.pathname || "unknown")
-    console.log("Total files:", allFiles.length)
-    console.log("Files:", JSON.stringify(allFiles.map(f => ({
-      slug: f.slug,
-      title: f.frontmatter?.title,
-      date: f.frontmatter?.date,
-      tags: f.frontmatter?.tags,
-      hasValidDate: !!getDate(cfg, f)
-    })), null, 2))
+    // 🔍 ОТЛАДКА - с проверкой на существование window
+    const isBrowser = typeof window !== 'undefined'
+    
+    if (process.env.NODE_ENV !== "production") {
+      console.log("=== BlogIndex Debug ===")
+      if (isBrowser) {
+        console.log("Component mounted on page:", window.location.pathname)
+      } else {
+        console.log("Component rendering in Node.js (build time)")
+      }
+      console.log("Total files:", allFiles.length)
+      console.log("Files:", JSON.stringify(allFiles.map(f => ({
+        slug: f.slug,
+        title: f.frontmatter?.title,
+        date: f.frontmatter?.date,
+        tags: f.frontmatter?.tags,
+        hasValidDate: !!getDate(cfg, f)
+      })), null, 2))
+    }
 
     // Фильтруем файлы
     let files = allFiles.filter(file => {
       const passed = filter(file)
-      console.log(`File ${file.slug}: filter=${passed}, tags=${file.frontmatter?.tags?.join(',')}, date=${file.frontmatter?.date || 'undefined'}`)
+      if (process.env.NODE_ENV !== "production") {
+        console.log(`File ${file.slug}: filter=${passed}, tags=${file.frontmatter?.tags?.join(',')}, date=${file.frontmatter?.date || 'undefined'}`)
+      }
       return passed
     })
     
-    console.log("After filter:", files.length, "files")
+    if (process.env.NODE_ENV !== "production") {
+      console.log("After filter:", files.length, "files")
+    }
 
     // Сортируем по дате (новые сверху)
     files.sort((a, b) => {
       const aDate = getDate(cfg, a) ?? new Date(0)
       const bDate = getDate(cfg, b) ?? new Date(0)
-      console.log(`Sort: ${a.slug} (${aDate.toISOString()}) vs ${b.slug} (${bDate.toISOString()}) → ${bDate > aDate ? 'b newer' : 'a newer'}`)
+      if (process.env.NODE_ENV !== "production") {
+        console.log(`Sort: ${a.slug} (${aDate.toISOString()}) vs ${b.slug} (${bDate.toISOString()}) → ${bDate > aDate ? 'b newer' : 'a newer'}`)
+      }
       return bDate.getTime() - aDate.getTime()
     })
 
     // Ограничиваем количество
     files = files.slice(0, limit)
 
-    console.log("Final files:", files.map(f => f.slug))
-    console.log("=== End Debug ===\n")
+    if (process.env.NODE_ENV !== "production") {
+      console.log("Final files:", files.map(f => f.slug))
+      console.log("=== End Debug ===\n")
+    }
 
     if (files.length === 0) {
       return (

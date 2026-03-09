@@ -13,13 +13,11 @@ export default ((opts?: Options) => {
     const logoAlt = opts?.logoAlt ?? "Логотип"
     const customTitle = opts?.title
     
-    const siteType = typeof process !== 'undefined' 
-      ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
-      : 'garden'
+    // Единый заголовок для обоих сайтов
+    const pageTitle = customTitle ?? "Asteralog"
     
-    const defaultTitle = siteType === 'blog' ? "Carduus camporum" : "Asteralog"
-    const pageTitle = customTitle ?? defaultTitle
-    const showLogo = siteType === 'blog' && logo  // ← Логотип ТОЛЬКО в блоге
+    // Показываем логотип на обоих сайтах
+    const showLogo = logo ? true : false  // ← ТЕПЕРЬ ВСЕГДА, ЕСЛИ ЕСТЬ ЛОГО
     
     return (
       <h2 class={classNames(displayClass, "page-title")}>
@@ -46,13 +44,13 @@ export default ((opts?: Options) => {
   }
   
   .page-logo {
-    width: 120px;              /* ← УМЕНЬШЕНО до 120px */
+    width: 120px;
     height: 120px;
-    object-fit: cover;          /* ← cover для круга (обрезает по краям) */
+    object-fit: cover;
     margin-bottom: 12px;
-    border-radius: 50%;         /* ← КРУГ */
-    transition: transform var(--transition-fast);
-    border: 2px solid var(--border-color); /* ← тонкая рамка */
+    border-radius: 50%;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+    border: 2px solid var(--border-color);
   }
   
   .page-logo:hover {
@@ -74,7 +72,7 @@ export default ((opts?: Options) => {
   
   @media (max-width: 768px) {
     .page-logo {
-      width: 100px;              /* 120 * 0.83 */
+      width: 100px;
       height: 100px;
       margin-bottom: 10px;
     }
@@ -86,7 +84,7 @@ export default ((opts?: Options) => {
   
   @media (max-width: 500px) {
     .page-logo {
-      width: 80px;               /* 120 * 0.66 */
+      width: 80px;
       height: 80px;
       margin-bottom: 8px;
     }

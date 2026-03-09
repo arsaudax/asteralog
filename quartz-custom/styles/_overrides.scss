@@ -1,6 +1,37 @@
 // Quartz Component Overrides for Asteralog Theme
 // Используем семантические переменные из _variables.scss
 
+/* ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ТЕМЫ ===== */
+:root {
+  /* Тёмная тема по умолчанию */
+  --bg-primary: var(--asteralog-bg-dark);
+  --bg-secondary: var(--asteralog-bg-dark-alt);
+  --text-primary: var(--asteralog-fg-dark);
+  --text-secondary: #b0b0b0;
+  --text-muted: #a0a0a0;
+  --border-color: var(--asteralog-selection-dark);
+  --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
+  --link-color: var(--asteralog-accent);
+  --link-hover: var(--asteralog-accent-alt);
+  --highlight: rgba(171, 125, 76, 0.15);
+  --highlight-strong: rgba(171, 125, 76, 0.25);
+}
+
+/* Светлая тема */
+:root[saved-theme="light"] {
+  --bg-primary: var(--asteralog-bg-light);
+  --bg-secondary: var(--asteralog-bg-light-alt);
+  --text-primary: var(--asteralog-fg-light);
+  --text-secondary: var(--asteralog-comment-light);
+  --text-muted: color-mix(in srgb, var(--text-secondary) 80%, transparent);
+  --border-color: var(--asteralog-selection-light);
+  --border-light: color-mix(in srgb, var(--border-color) 50%, transparent);
+  --link-color: var(--asteralog-accent);
+  --link-hover: var(--asteralog-accent-alt);
+  --highlight: rgba(162, 132, 94, 0.15);
+  --highlight-strong: rgba(162, 132, 94, 0.25);
+}
+
 /* ===== CALLOUTS / ADMONITIONS ===== */
 .callout {
   border-radius: var(--radius-md);
@@ -25,28 +56,28 @@
   &[data-callout="success"],
   &[data-callout="check"],
   &[data-callout="done"] {
-    --callout-color: #4caf50; // Зелёный для успеха
+    --callout-color: #4caf50;
   }
   
   &[data-callout="warning"],
   &[data-callout="caution"],
   &[data-callout="attention"] {
-    --callout-color: #ff9800; // Оранжевый для предупреждений
+    --callout-color: #ff9800;
   }
   
   &[data-callout="danger"],
   &[data-callout="error"],
   &[data-callout="bug"] {
-    --callout-color: #f44336; // Красный для ошибок
+    --callout-color: #f44336;
   }
   
   &[data-callout="example"] {
-    --callout-color: #9c27b0; // Фиолетовый для примеров
+    --callout-color: #9c27b0;
   }
   
   &[data-callout="quote"],
   &[data-callout="cite"] {
-    --callout-color: var(--text-muted); // Серый для цитат
+    --callout-color: var(--text-muted);
   }
 
   border-left: 4px solid var(--callout-color);
@@ -162,7 +193,7 @@
   }
 }
 
-/* ===== EXPLORER COMPONENT (исправление жирности) ===== */
+/* ===== EXPLORER COMPONENT ===== */
 .explorer {
   margin-bottom: var(--spacing-lg);
   
@@ -206,7 +237,7 @@
     text-decoration: none;
     transition: all var(--transition-fast);
     border-radius: var(--radius-sm);
-    font-weight: normal !important; // ← УБИРАЕМ ЖИРНОСТЬ
+    font-weight: normal !important;
 
     &:hover {
       color: var(--link-hover);
@@ -217,13 +248,12 @@
 
   .explorer-link.active {
     color: var(--link-color);
-    font-weight: 600 !important; // Только активный жирный
+    font-weight: 600 !important;
     background: var(--highlight);
     padding-left: var(--spacing-xs);
     border-left: 2px solid var(--link-color);
   }
   
-  // Вложенные элементы
   .folder-outer {
     margin-left: var(--spacing-md);
   }
@@ -358,37 +388,33 @@
   }
 }
 
-/* ===== DARK MODE TOGGLE ===== */
+/* ===== DARK MODE TOGGLE - ИСПРАВЛЕНО ===== */
 .darkmode {
-  position: fixed !important;
-  bottom: var(--spacing-lg) !important;
-  right: var(--spacing-lg) !important;
-  z-index: var(--z-fixed) !important;
+  position: relative !important;  /* Убрали fixed */
+  bottom: auto !important;
+  right: auto !important;
+  z-index: auto !important;
+  margin-top: var(--spacing-sm);
+  width: 100%;
   
   button {
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
     gap: var(--spacing-xs) !important;
     background: var(--bg-secondary) !important;
     border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-full) !important;
-    padding: var(--spacing-sm) var(--spacing-lg) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--spacing-sm) var(--spacing-md) !important;
     color: var(--text-primary) !important;
     font-size: var(--font-size-sm) !important;
     cursor: pointer !important;
     transition: all var(--transition-base) !important;
-    box-shadow: var(--shadow-md) !important;
+    width: 100%;
 
     &:hover {
       background: var(--highlight) !important;
       border-color: var(--link-color) !important;
-      transform: translateY(-2px) !important;
-      box-shadow: var(--shadow-lg) !important;
-    }
-    
-    &:active {
-      transform: translateY(0) !important;
-      box-shadow: var(--shadow-sm) !important;
     }
 
     svg {
@@ -398,14 +424,9 @@
     }
   }
   
-  // Адаптив для мобильных
   @media (max-width: 500px) {
-    bottom: var(--spacing-md) !important;
-    right: var(--spacing-md) !important;
-    
     button {
-      padding: var(--spacing-xs) var(--spacing-md) !important;
-      font-size: 0 !important;
+      padding: var(--spacing-xs) var(--spacing-sm) !important;
       
       svg {
         width: 1.4em !important;
@@ -518,20 +539,12 @@
     color: var(--text-primary) !important;
     padding: var(--spacing-md) !important;
     
-    // Заголовки
-    h1, h2, h3, h4, h5, h6 {
-      color: var(--text-primary) !important;
-      margin: var(--spacing-xs) 0 !important;
-      font-size: var(--font-size-md) !important;
-    }
-    
-    // Текст
+    h1, h2, h3, h4, h5, h6,
     p, li, div, span {
       color: var(--text-primary) !important;
       margin: var(--spacing-xs) 0 !important;
     }
     
-    // Ссылки
     a {
       color: var(--link-color) !important;
       
@@ -540,7 +553,6 @@
       }
     }
     
-    // Код
     code {
       background: var(--highlight) !important;
       color: var(--link-color) !important;
@@ -548,7 +560,6 @@
       border-radius: var(--radius-sm) !important;
     }
     
-    // Теги
     .tag {
       background: transparent !important;
       color: var(--link-color) !important;
@@ -566,7 +577,6 @@
       }
     }
     
-    // Мета-информация (даты и т.д.)
     .content-meta,
     .meta-created,
     .meta-reading {
@@ -575,56 +585,15 @@
     }
   }
   
-  // Стрелочка поповера
   .popover-arrow {
     border-color: var(--border-color) !important;
   }
 }
 
-/* ===== ТЁМНАЯ ТЕМА (дополнительные настройки) ===== */
-:root[saved-theme="dark"] {
-  .callout {
-    background: var(--bg-secondary);
-  }
-  
-  #graph-container {
-    background: var(--bg-secondary);
-    
-    .node.active {
-      filter: drop-shadow(0 0 4px var(--link-color));
-    }
-  }
-  
-  .explorer {
-    .folder-button:hover {
-      background: var(--highlight);
-    }
-  }
-  
-  .pagination {
-    a.active {
-      color: var(--bg-primary);
-    }
-  }
-  
-  /* Дополнительные стили для поповера в тёмной теме */
-  .popover {
-    background: var(--bg-primary) !important;
-    
-    .popover-inner {
-      color: var(--text-primary) !important;
-      
-      p, li, h1, h2, h3, h4, h5, h6 {
-        color: var(--text-primary) !important;
-      }
-      
-      .content-meta,
-      .meta-created,
-      .meta-reading {
-        color: var(--text-secondary) !important;
-      }
-    }
-  }
+/* ===== КНОПКИ В ГРАФЕ ===== */
+.graph-controls button,
+.global-graph-button {
+  opacity: 1 !important;
 }
 
 /* ===== АНИМАЦИИ ===== */

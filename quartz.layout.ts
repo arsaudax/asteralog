@@ -164,7 +164,7 @@ export const blogContentPageLayout: PageLayout = {
   afterBody: [
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
-        limit: 100,
+        limit: 5,  // только 5 последних постов на главной
         filter: blogFilter
       }),
       condition: (props: QuartzComponentProps) => {
@@ -175,38 +175,26 @@ export const blogContentPageLayout: PageLayout = {
 }
 
 // ==============================
-// ARCHIVE LAYOUT
+// ARCHIVE LAYOUT - ИСПРАВЛЕННЫЙ
 // ==============================
 export const blogArchivePageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
-    // Временная отладка
-    (props: QuartzComponentProps) => {
-      if (process.env.NODE_ENV !== "production") {
-        console.log("🔴 ARCHIVE PAGE RENDERED")
-        console.log("🔴 Slug:", props.fileData.slug)
-        console.log("🔴 Frontmatter:", props.fileData.frontmatter)
-      }
-      return null
-    },
   ],
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на архив в правой панели архива (опционально)
-    Component.ConditionalRender({
-      component: CustomComponent.ArchiveLink({ 
-        text: "📚 Все записи",
-        sidebar: true 
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug === 'archive'
-      }
+    // Ссылка на главную в правой панели архива
+    CustomComponent.ArchiveLink({ 
+      text: "🏠 На главную",
+      sidebar: true 
     }),
   ],
   afterBody: [
-    CustomComponent.BlogIndex({
+    Component.PageList({  // ← используем встроенный компонент Quartz
       limit: 1000,
+      sort: "created",
+      reverse: true,
       filter: blogFilter
     })
   ],

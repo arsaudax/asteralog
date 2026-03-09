@@ -124,7 +124,7 @@ export const gardenListPageLayout: PageLayout = {
 }
 
 // ==============================
-// BLOG LAYOUTS
+// BLOG LAYOUTS - ИСПРАВЛЕНО!
 // ==============================
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
@@ -162,6 +162,7 @@ export const blogContentPageLayout: PageLayout = {
     }),
   ],
   afterBody: [
+    // Для главной страницы - 5 последних постов
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 5,
@@ -171,32 +172,22 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
+    // Для страницы архива - все посты
+    Component.ConditionalRender({
+      component: CustomComponent.BlogIndex({
+        limit: 1000,
+        filter: () => true
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug === 'archive'
+      }
+    }),
   ],
 }
 
 // ==============================
-// ARCHIVE LAYOUT
+// ARCHIVE LAYOUT - УДАЛЯЕМ (теперь всё в blogContentPageLayout)
 // ==============================
-export const blogArchivePageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  left: baseLeftPanel,
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на главную в правой панели архива
-    CustomComponent.ArchiveLink({ 
-      text: "🏠 На главную",
-      sidebar: true 
-    }),
-  ],
-  afterBody: [
-     CustomComponent.BlogIndex({
-       limit: 1000,
-       filter: () => true  // пропускаем все файлы
-     })
-  ],
-}
 
 export const blogListPageLayout: PageLayout = {
   beforeBody: [
@@ -216,23 +207,14 @@ export const blogListPageLayout: PageLayout = {
 }
 
 // ==============================
-// DEFAULT LAYOUT SELECTORS - ИСПРАВЛЕНО!
+// DEFAULT LAYOUT SELECTORS - ВОЗВРАЩАЕМ ОБЪЕКТЫ!
 // ==============================
 
-// Функция для выбора layout в зависимости от slug
-export const defaultContentPageLayout = (props: QuartzComponentProps): PageLayout => {
-  if (siteType === 'garden') {
-    return gardenContentPageLayout
-  }
-  
-  const slug = props?.fileData?.slug
-  if (slug === 'archive') {
-    return blogArchivePageLayout
-  }
-  return blogContentPageLayout
-}
+export const defaultContentPageLayout: PageLayout =
+  siteType === 'garden' 
+    ? gardenContentPageLayout 
+    : blogContentPageLayout
 
-// Для страниц-списков оставляем как есть
 export const defaultListPageLayout: PageLayout =
   siteType === 'garden'
     ? gardenListPageLayout

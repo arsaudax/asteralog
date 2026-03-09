@@ -20,14 +20,14 @@ if (process.env.NODE_ENV !== "production") {
 const baseLeftPanel = [
   CustomComponent.PageTitle({ 
     logo: "/static/thistle.png",
-    logoAlt: "Чертополох"
+    logoAlt: "Логотип"
   }),
   Component.MobileOnly(Component.Spacer()),
   Component.Search(),
   Component.Darkmode(),
 ]
 
-// Конфигурация проводника (с эмодзи ⊹ перед файлами)
+// Конфигурация проводника
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
     const hasExcludedTag = node.data?.tags?.includes("explorer-exclude")
@@ -39,10 +39,8 @@ const explorerConfig = {
     }
   },
   title: "Сад",
-  // Добавляем настройки для нормального вида
-  folderDefaultState: "collapsed", // папки свернуты по умолчанию
+  folderDefaultState: "collapsed",
   sort: (a, b) => {
-    // Сортировка: папки сверху, файлы в алфавитном порядке
     if (a.isFolder && !b.isFolder) return -1
     if (!a.isFolder && b.isFolder) return 1
     return a.displayName.localeCompare(b.displayName)
@@ -88,7 +86,13 @@ export const sharedPageComponents: SharedLayout = {
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
+    // ContentMeta только НЕ на главной
+    Component.ConditionalRender({
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index'
+      }
+    }),
     Component.TagList(),
   ],
   left: [
@@ -106,7 +110,13 @@ export const gardenContentPageLayout: PageLayout = {
 export const gardenListPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
+    // ContentMeta только НЕ на главной
+    Component.ConditionalRender({
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index'
+      }
+    }),
   ],
   left: [
     ...baseLeftPanel,
@@ -135,7 +145,6 @@ export const blogContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
     TagList(),
-    // RecentNotes только НЕ на главной странице
     Component.ConditionalRender({
       component: Component.RecentNotes({
         limit: 5,
@@ -148,7 +157,6 @@ export const blogContentPageLayout: PageLayout = {
       }
     })
   ],
-  // BlogIndex только на главной странице
   afterBody: [
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
@@ -176,13 +184,11 @@ export const blogListPageLayout: PageLayout = {
 // DEFAULT LAYOUT SELECTORS
 // ==============================
 
-// Для контентных страниц
 export const defaultContentPageLayout: PageLayout =
   siteType === 'garden' 
     ? gardenContentPageLayout 
     : blogContentPageLayout
 
-// Для страниц-списков
 export const defaultListPageLayout: PageLayout =
   siteType === 'garden'
     ? gardenListPageLayout

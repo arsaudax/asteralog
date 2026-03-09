@@ -101,10 +101,12 @@ a[href^="http"]:not(.internal):not(.no-external-icon):not(.footer-link) {
 
 /* ===== ССЫЛКИ НА АРХИВ ===== */
 .archive-link-container {
-  margin: var(--spacing-lg) 0;
+  margin: var(--spacing-md) 0;
   
   &.sidebar {
-    margin-top: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+    display: inline-block;
+    width: auto;
   }
 }
 
@@ -117,6 +119,7 @@ a[href^="http"]:not(.internal):not(.no-external-icon):not(.footer-link) {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
+  white-space: nowrap;
   
   &:hover {
     background: var(--highlight);
@@ -127,5 +130,19 @@ a[href^="http"]:not(.internal):not(.no-external-icon):not(.footer-link) {
   &::after,
   &::before {
     display: none !important;
+  }
+}
+
+/* Для мобильных */
+@media (max-width: 500px) {
+  .archive-link-container.sidebar {
+    display: block;
+    width: 100%;
+    
+    .archive-link {
+      width: 100%;
+      text-align: center;
+      white-space: normal;
+    }
   }
 }

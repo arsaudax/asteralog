@@ -31,12 +31,12 @@ export default ((opts?: Options) => {
       console.log("📍 Total files:", allFiles.length)
     }
 
-    // Фильтруем файлы - исключаем index и archive
+    // Фильтруем файлы - исключаем только index (архив оставляем)
     let files = allFiles.filter(file => {
       const passed = filter(file)
       
-      // Исключаем служебные страницы
-      if (file.slug === 'index' || file.slug === 'archive') {
+      // Исключаем только главную страницу
+      if (file.slug === 'index') {
         if (process.env.NODE_ENV !== "production") {
           console.log(`📍 Excluding ${file.slug} from list`)
         }
@@ -75,38 +75,40 @@ export default ((opts?: Options) => {
 
     return (
       <div class={classNames(displayClass, "blog-index")}>
-        <div class="blog-index-list">
+        <div class="page-list">  {/* ← используем стандартный класс Quartz */}
           {files.map((file) => {
             const title = file.frontmatter?.title || file.slug || "Без названия"
             const date = getDate(cfg, file)
             const description = file.frontmatter?.description || file.description || ""
             const tags = file.frontmatter?.tags || []
             const slug = file.slug || ""
-            const url = resolveRelative(slug, slug)  // ← правильный URL для Quartz
+            const url = resolveRelative(slug, slug)  // ← правильный URL
             
             return (
               <article class="blog-index-item" key={slug}>
-                <a href={url} class="internal blog-index-link">
-                  <h2 class="blog-index-title">{title}</h2>
-                  
-                  {showDate && date && (
-                    <div class="blog-index-date">
-                      <Date date={date} locale={cfg.locale} />
-                    </div>
-                  )}
-                  
-                  {showDescription && description && (
-                    <p class="blog-index-description">{description}</p>
-                  )}
-                  
-                  {showTags && tags.length > 0 && (
-                    <div class="blog-index-tags">
-                      {tags.map(tag => (
-                        <span key={tag} class="blog-index-tag">{tag}</span>
-                      ))}
-                    </div>
-                  )}
-                </a>
+                <h2 class="blog-index-title">
+                  <a href={url} class="internal">
+                    {title}
+                  </a>
+                </h2>
+                
+                {showDate && date && (
+                  <div class="blog-index-date">
+                    <Date date={date} locale={cfg.locale} />
+                  </div>
+                )}
+                
+                {showDescription && description && (
+                  <p class="blog-index-description">{description}</p>
+                )}
+                
+                {showTags && tags.length > 0 && (
+                  <div class="blog-index-tags">
+                    {tags.map(tag => (
+                      <span key={tag} class="blog-index-tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
               </article>
             )
           })}

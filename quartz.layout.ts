@@ -164,7 +164,7 @@ export const blogContentPageLayout: PageLayout = {
   afterBody: [
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
-        limit: 5,  // только 5 последних постов на главной
+        limit: 5,
         filter: blogFilter
       }),
       condition: (props: QuartzComponentProps) => {
@@ -184,15 +184,16 @@ export const blogArchivePageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
+    // Ссылка на главную в правой панели архива
     CustomComponent.ArchiveLink({ 
       text: "🏠 На главную",
       sidebar: true 
     }),
   ],
   afterBody: [
-    CustomComponent.BlogIndex({  // ← снова используем BlogIndex
+    CustomComponent.BlogIndex({
       limit: 1000,
-      filter: blogFilter
+      filter: () => true  // ← временно для диагностики
     })
   ],
 }

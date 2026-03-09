@@ -705,82 +705,154 @@ a[href^="http"]:not(.internal):not(.footer-link):not(.no-external-icon) {
 
 /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
 @media (max-width: 500px) {
-  /* Левая панель */
+  /* Основной контейнер левой панели */
   .left {
-    display: flex;
-    flex-direction: column;
-    gap: 12px !important;  /* ← явный отступ между всеми элементами */
+    display: grid !important;
+    grid-template-columns: 1fr auto auto !important;
+    grid-template-rows: auto auto !important;
+    gap: 8px !important;
     padding: 12px !important;
+    
+    /* Sticky header с полупрозрачностью */
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;  /* не перекрывает popover */
+    
+    /* Полупрозрачный фон с размытием */
+    background: color-mix(in srgb, var(--bg-primary) 92%, transparent) !important;
+    backdrop-filter: blur(6px) !important;
+    border-bottom: 1px solid var(--border-color) !important;
   }
-  
-  /* Контейнер логотипа */
+
+  /* Логотип + название */
   .left .page-title {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
     margin: 0 !important;
-    padding: 0 !important;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    max-width: none !important;  /* убираем старое ограничение */
   }
-  
-  /* Изображение чертополоха */
-  .left .page-logo {
-    margin-bottom: 4px !important;  /* ← отступ между картинкой и текстом */
-  }
-  
-  /* Поиск */
+
+  /* Контейнер поиска занимает всю вторую строку */
   .left .search {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
     
-    .search-button {
+    #search-container {
       width: 100% !important;
-      justify-content: flex-start !important;
-      padding: 10px 12px !important;  /* ← увеличил padding */
-    }
-    
-    .search-container {
-      width: 100% !important;
+      margin: 0 !important;
+      
+      input {
+        width: 100% !important;
+        padding: 8px 12px !important;
+        border-radius: var(--radius-md) !important;
+        background: var(--bg-secondary) !important;
+        border: 1px solid var(--border-color) !important;
+      }
     }
   }
-  
-  /* Кнопка темы */
-  .left .darkmode {
-    width: 100% !important;
-    margin: 0 !important;
+
+  /* Кнопка поиска */
+  .left .search-button {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
     padding: 0 !important;
+    justify-content: center !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    transition: all var(--transition-fast) !important;
+    
+    p {
+      display: none !important;
+    }
+    
+    svg {
+      width: 20px !important;
+      height: 20px !important;
+    }
+    
+    &:hover {
+      background: var(--highlight) !important;
+    }
+  }
+
+  /* Переключатель темы */
+  .left .darkmode {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    width: auto !important;
+    margin: 0 !important;
+    justify-self: end !important;
     
     button {
-      width: 100% !important;
-      justify-content: flex-start !important;
-      padding: 10px 12px !important;  /* ← увеличил padding */
+      width: 36px !important;
+      height: 36px !important;
+      border-radius: 50% !important;
+      padding: 0 !important;
+      justify-content: center !important;
+      background: var(--bg-secondary) !important;
+      border: 1px solid var(--border-color) !important;
+      transition: all var(--transition-fast) !important;
+      
+      span {
+        display: none !important;
+      }
+      
+      svg {
+        width: 20px !important;
+        height: 20px !important;
+      }
+      
+      &:hover {
+        background: var(--highlight) !important;
+      }
     }
   }
-  
+
   /* Скрываем блок RecentNotes на мобильных */
   .recent-notes {
     display: none !important;
   }
-  
+
   /* Правая панель */
   .right {
     padding: 12px !important;
   }
-  
+
   /* Адаптация ссылки на архив */
   .archive-link-container {
     padding: 12px 0 !important;
     text-align: left !important;
+    
+    &.sidebar {
+      margin-top: auto !important;
+    }
   }
-  
+
   .archive-link {
     font-size: var(--font-size-sm) !important;
     display: inline-block !important;
     padding: 6px 0 !important;
+    
+    &:hover {
+      color: var(--link-hover) !important;
+    }
   }
-  
+
   /* Убираем мобильный спейсер */
   .spacer.mobile-only {
+    display: none !important;
+  }
+}
+
+/* Скрываем Explorer на мобильных */
+@media (max-width: 800px) {
+  .explorer {
     display: none !important;
   }
 }

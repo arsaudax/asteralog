@@ -395,14 +395,19 @@
     border-bottom: 1px solid var(--border-color);
   }
 
+  /* ===== ИСПРАВЛЕНИЕ ПРОБЛЕМЫ ПРИЛИПАНИЯ ===== */
   .left .page-title {
-
     grid-column: 1;
     grid-row: 1;
-
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+
+  .left .page-title img,
+  .left .page-title svg {
+    display: block;
   }
 
   .left .search-button {
@@ -473,6 +478,7 @@
     width: 100%;
     margin: 0 !important;
     padding: 0;
+    margin-top: 6px !important;
   }
 
   .left .search #search-container {
@@ -488,13 +494,54 @@
     margin: 0 !important;
   }
 
-  .recent-notes {
+  /* ===== УЛУЧШЕНИЕ РАССТОЯНИЙ МЕЖДУ ПОСТАМИ ===== */
+  .blog-index-item {
+    margin-bottom: 32px !important;
+    padding-bottom: 32px !important;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .blog-index-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
 
+  /* ===== ПРАВАЯ ПАНЕЛЬ - ТОЛЬКО 2 БЛОКА ===== */
+  .right {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Для сада: показываем только граф и обратные ссылки */
+  .right .graph,
+  .right .backlinks {
+    display: block;
+  }
+  
+  .right .toc,
+  .right .tag-list {
+    display: none;
+  }
+  
+  /* Для блога: показываем только теги и архив */
+  [data-site-type="blog"] .right .tag-list,
+  [data-site-type="blog"] .right .archive-link-container {
+    display: block;
+  }
+  
+  [data-site-type="blog"] .right .graph,
+  [data-site-type="blog"] .right .backlinks,
+  [data-site-type="blog"] .right .toc,
+  [data-site-type="blog"] .right .recent-notes {
+    display: none;
+  }
+
+  .recent-notes {
     display: none;
   }
 
   .right {
-
     padding: 12px;
   }
 

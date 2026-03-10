@@ -433,18 +433,16 @@ a[href^="http"] img {
 
 @media (max-width: 500px) {
 
-  .left {
+  .left.sidebar {
+
+    display: grid;
+    grid-template-columns: 1fr 36px 36px;
+    grid-template-rows: auto auto;
+    column-gap: 8px;
+    row-gap: 10px !important;
 
     margin: 0;
     padding: 10px 12px;
-
-    display: grid;
-
-    grid-template-columns: 1fr 36px 36px;
-    grid-template-rows: auto auto;
-
-    column-gap: 8px;
-    row-gap: 10px;
 
     position: sticky;
     top: 0;
@@ -456,19 +454,33 @@ a[href^="http"] img {
     border-bottom: 1px solid var(--border-color);
   }
 
-  /* ===== ИСПРАВЛЕНИЕ ПРОБЛЕМЫ ПРИЛИПАНИЯ ===== */
+  /* Логотип и текст в одну строку */
   .left .page-title {
     grid-column: 1;
     grid-row: 1;
+    
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    margin-bottom: 6px;
+    
+    margin: 0 !important;
   }
 
-  .left .page-title img,
-  .left .page-title svg {
-    display: block;
+  .left .page-logo {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .left .page-title-link {
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .left .search-button {
@@ -539,13 +551,12 @@ a[href^="http"] img {
     width: 100%;
     margin: 0 !important;
     padding: 0;
-    margin-top: 6px !important;
   }
 
   .left .search #search-container {
 
     width: 100%;
-    margin: 6px 0 0 0 !important;
+    margin: 0 !important;
   }
 
   .left .search input {
@@ -643,7 +654,7 @@ a[href^="http"] img {
 .right h3 {
   font-size: .9rem;
   font-weight: 600;
-  border-bottom: none !important;  /* убираем все линии у заголовков */
+  border-bottom: none !important;
 }
 
 /* =========================================================

@@ -63,7 +63,7 @@ const backlinksConfig = {
 
 // Общие компоненты
 export const sharedPageComponents: SharedLayout = {
-  head: CustomComponent.Head(),  // ← кастомный Head
+  head: CustomComponent.Head(),
   header: [],
   afterBody: [],
   footer: CustomComponent.Footer({
@@ -192,31 +192,7 @@ export const blogContentPageLayout: PageLayout = {
       }
     }),
     // Скрипт восстановления темы для SPA-навигации
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-          (function() {
-            function restoreTheme() {
-              const theme = localStorage.getItem("saved-theme");
-              if (theme) {
-                document.documentElement.setAttribute("saved-theme", theme);
-              }
-            }
-            
-            // Восстанавливаем тему после SPA-переходов
-            document.addEventListener("nav", restoreTheme);
-            window.addEventListener("popstate", restoreTheme);
-            
-            // При загрузке страницы
-            if (document.readyState === "loading") {
-              document.addEventListener("DOMContentLoaded", restoreTheme);
-            } else {
-              restoreTheme();
-            }
-          })();
-        `
-      }}
-    />
+    CustomComponent.ThemeRestoreScript(),
   ],
 }
 
@@ -238,30 +214,8 @@ export const blogListPageLayout: PageLayout = {
         return props.fileData.slug?.startsWith('tags/') || false
       }
     }),
-    // Скрипт восстановления темы для SPA-навигации (на всех страницах)
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-          (function() {
-            function restoreTheme() {
-              const theme = localStorage.getItem("saved-theme");
-              if (theme) {
-                document.documentElement.setAttribute("saved-theme", theme);
-              }
-            }
-            
-            document.addEventListener("nav", restoreTheme);
-            window.addEventListener("popstate", restoreTheme);
-            
-            if (document.readyState === "loading") {
-              document.addEventListener("DOMContentLoaded", restoreTheme);
-            } else {
-              restoreTheme();
-            }
-          })();
-        `
-      }}
-    />
+    // Скрипт восстановления темы для SPA-навигации
+    CustomComponent.ThemeRestoreScript(),
   ],
 }
 

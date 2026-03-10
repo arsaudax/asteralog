@@ -543,6 +543,7 @@ a[href^="http"] img {
     height: 18px;
   }
 
+  /* ===== ИСПРАВЛЕННЫЙ БЛОК ПОИСКА ===== */
   .left .search {
 
     grid-column: 1 / -1;
@@ -553,10 +554,10 @@ a[href^="http"] img {
     padding: 0;
   }
 
-  .left .search #search-container {
+  .left .search .search-container {
 
     width: 100%;
-    margin: 0 !important;
+    margin-top: 10px !important;  /* ← реальный отступ */
   }
 
   .left .search input {
@@ -564,6 +565,12 @@ a[href^="http"] img {
     width: 100%;
     padding: 8px 12px;
     margin: 0 !important;
+  }
+
+  /* ===== СПЕЙСЕР ДАЁТ ВЕРТИКАЛЬНЫЙ ОТСТУП ===== */
+  .spacer.mobile-only {
+    height: 8px !important;
+    display: block !important;  /* ← не скрываем, а оставляем с высотой */
   }
 
   /* ===== ПРАВАЯ ПАНЕЛЬ - ТОЛЬКО 2 БЛОКА ===== */
@@ -627,18 +634,6 @@ a[href^="http"] img {
   .archive-link-container {
     padding: 8px 0 !important;
   }
-
-  .spacer.mobile-only {
-    display: none;
-  }
-}
-
-@media (max-width: 800px) {
-
-  .explorer {
-    display: none;
-  }
-
 }
 
 /* =========================================================

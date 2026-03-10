@@ -90,6 +90,7 @@ const config: QuartzConfig = {
     ...baseConfig,
     baseUrl: process.env.BASE_URL || '',
     theme: {
+      defaultTheme: "dark",  // ← ДОБАВЛЕНО! Принудительно тёмная тема
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {

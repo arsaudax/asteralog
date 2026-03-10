@@ -38,31 +38,45 @@ export default (() => {
 
     return (
       <head>
-        {/* Жёсткая установка тёмной темы с подавлением светлой */}
+        {/* Критический CSS для принудительной тёмной темы */}
+        <style>{`
+          /* Всегда ставим dark как первичную тему */
+          html {
+            color-scheme: dark;
+            background-color: #1a1c1e !important;
+            --bg-primary: #1a1c1e;
+            --bg-secondary: #2e3235;
+            --text-primary: #d4d4d4;
+            --text-secondary: #b0b0b0;
+            --text-muted: #9a9a9a;
+            --border-color: #4a4f54;
+            --link-color: #b5977a;
+            --link-hover: #d4b69b;
+            --highlight: rgba(181, 151, 122, 0.15);
+          }
+          
+          body {
+            background-color: #1a1c1e !important;
+            color: #d4d4d4 !important;
+          }
+          
+          /* Если система явно светлая — игнорируем */
+          @media (prefers-color-scheme: light) {
+            html {
+              color-scheme: dark; /* всё равно используем dark */
+            }
+          }
+        `}</style>
+
+        {/* Резервный скрипт для синхронизации с localStorage */}
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
-              const htmlEl = document.documentElement;
               const saved = localStorage.getItem('saved-theme');
-
-              // Функция жёсткой установки dark
-              function forceDark() {
-                htmlEl.classList.add('dark');
-                htmlEl.classList.remove('light');
-
-                // Наблюдаем за изменениями класса и сбрасываем light
-                new MutationObserver((mutations) => {
-                  mutations.forEach((m) => {
-                    if (m.attributeName === 'class' && htmlEl.classList.contains('light')) {
-                      htmlEl.classList.remove('light');
-                    }
-                  });
-                }).observe(htmlEl, { attributes: true });
-              }
-
-              // Применяем тёмную тему, если сохранено dark или системная dark
-              if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                forceDark();
+              if (saved === 'light') {
+                document.documentElement.style.backgroundColor = '#f9f7f4';
+                document.body.style.backgroundColor = '#f9f7f4';
+                document.body.style.color = '#2b2b2b';
               }
             })();
           `

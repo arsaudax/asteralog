@@ -3,50 +3,50 @@
    ========================================================= */
 
 /* =========================================================
-   ПЕРЕМЕННЫЕ ТЕМЫ — ТОЛЬКО ЧЕРЕЗ saved-theme С !important
+   ПЕРЕМЕННЫЕ ТЕМЫ — ЧЕРЕЗ ПРАВИЛЬНЫЙ СЕЛЕКТОР
    ========================================================= */
 
-:root[saved-theme="dark"] {
-  --bg-primary: #1a1c1e !important;
-  --bg-secondary: #2e3235 !important;
-  --text-primary: #d4d4d4 !important;
-  --text-secondary: #b0b0b0 !important;
-  --text-muted: #9a9a9a !important;
-  --border-color: #4a4f54 !important;
-  --link-color: #b5977a !important;
-  --link-hover: #d4b69b !important;
-  --highlight: rgba(181, 151, 122, 0.15) !important;
+html[saved-theme="dark"] {
+  --bg-primary: #1a1c1e;
+  --bg-secondary: #2e3235;
+  --text-primary: #d4d4d4;
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --border-color: #4a4f54;
+  --link-color: #b5977a;
+  --link-hover: #d4b69b;
+  --highlight: rgba(181, 151, 122, 0.15);
 }
 
-:root[saved-theme="light"] {
-  --bg-primary: #f9f7f4 !important;
-  --bg-secondary: #e5e5e5 !important;
-  --text-primary: #2b2b2b !important;
-  --text-secondary: #4a4a49 !important;
-  --text-muted: #9a9a9a !important;
-  --border-color: #b8b8b8 !important;
-  --link-color: #ab7d4c !important;
-  --link-hover: #7c5736 !important;
-  --highlight: rgba(162, 132, 94, 0.15) !important;
+html[saved-theme="light"] {
+  --bg-primary: #f9f7f4;
+  --bg-secondary: #e5e5e5;
+  --text-primary: #2b2b2b;
+  --text-secondary: #4a4a49;
+  --text-muted: #9a9a9a;
+  --border-color: #b8b8b8;
+  --link-color: #ab7d4c;
+  --link-hover: #7c5736;
+  --highlight: rgba(162, 132, 94, 0.15);
 }
 
 /* Значения по умолчанию (тёмная тема) */
-:root {
-  --bg-primary: #1a1c1e !important;
-  --bg-secondary: #2e3235 !important;
-  --text-primary: #d4d4d4 !important;
-  --text-secondary: #b0b0b0 !important;
-  --text-muted: #9a9a9a !important;
-  --border-color: #4a4f54 !important;
-  --link-color: #b5977a !important;
-  --link-hover: #d4b69b !important;
-  --highlight: rgba(181, 151, 122, 0.15) !important;
+html {
+  --bg-primary: #1a1c1e;
+  --bg-secondary: #2e3235;
+  --text-primary: #d4d4d4;
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --border-color: #4a4f54;
+  --link-color: #b5977a;
+  --link-hover: #d4b69b;
+  --highlight: rgba(181, 151, 122, 0.15);
 }
 
-/* Фон для первого кадра (до применения переменных) */
+/* Фон для первого кадра (только если JS не успел) */
 html {
-  background-color: #1a1c1e !important;
-  color: #d4d4d4 !important;
+  background-color: #1a1c1e;
+  color: #d4d4d4;
 }
 
 /* =========================================================

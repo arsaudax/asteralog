@@ -38,22 +38,32 @@ export default (() => {
 
     return (
       <head>
-        {/* Минимальный скрипт для установки тёмной темы до рендера */}
+        {/* Жёсткая установка тёмной темы с подавлением светлой */}
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
-              // Получаем сохранённую тему из localStorage
+              const htmlEl = document.documentElement;
               const saved = localStorage.getItem('saved-theme');
-              
-              // Если сохранённая тема — dark, ставим класс html.dark
-              if (saved === 'dark') {
-                document.documentElement.classList.add('dark');
+
+              // Функция жёсткой установки dark
+              function forceDark() {
+                htmlEl.classList.add('dark');
+                htmlEl.classList.remove('light');
+
+                // Наблюдаем за изменениями класса и сбрасываем light
+                new MutationObserver((mutations) => {
+                  mutations.forEach((m) => {
+                    if (m.attributeName === 'class' && htmlEl.classList.contains('light')) {
+                      htmlEl.classList.remove('light');
+                    }
+                  });
+                }).observe(htmlEl, { attributes: true });
               }
-              // Если нет сохранённой, но системная тема тёмная
-              else if (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
+
+              // Применяем тёмную тему, если сохранено dark или системная dark
+              if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                forceDark();
               }
-              // Иначе — оставляем светлую (без класса)
             })();
           `
         }} />

@@ -404,9 +404,13 @@ a[href^="http"] img {
   .left.sidebar {
     display: grid;
     grid-template-columns: 1fr 36px 36px;
-    grid-template-rows: auto auto;
+    grid-template-rows: 
+      auto  /* строка 1: логотип */
+      auto  /* строка 2: спейсер */
+      auto  /* строка 3: поиск */
+      auto; /* строка 4: остальное */
     column-gap: 8px;
-    row-gap: 10px !important;
+    row-gap: 8px;
     margin: 0;
     padding: 10px 12px;
     position: sticky;
@@ -417,9 +421,9 @@ a[href^="http"] img {
     border-bottom: 1px solid var(--border-color);
   }
 
-  /* Логотип и текст в одну строку */
+  /* Логотип и текст занимают всю ширину */
   .left .page-title {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 1;
     display: flex !important;
     align-items: center !important;
@@ -443,11 +447,17 @@ a[href^="http"] img {
     text-overflow: ellipsis;
   }
 
-  /* ===== КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: display:contents ===== */
-  .left .search {
-    display: contents !important;
+  /* Спейсер с явной высотой */
+  .spacer.mobile-only {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: block !important;
+    height: 12px !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
+  /* Кнопка поиска (позиционируется в первой строке, но поверх всего) */
   .left .search-button {
     grid-column: 2 !important;
     grid-row: 1 !important;
@@ -460,6 +470,7 @@ a[href^="http"] img {
     padding: 0;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
+    z-index: 2;
   }
 
   .left .search-button p {
@@ -471,10 +482,12 @@ a[href^="http"] img {
     height: 18px;
   }
 
+  /* Кнопка темы */
   .left .darkmode {
     grid-column: 3 !important;
     grid-row: 1 !important;
     justify-self: end;
+    z-index: 2;
   }
 
   .left .darkmode button {
@@ -498,23 +511,24 @@ a[href^="http"] img {
     height: 18px;
   }
 
-  /* Контейнер поиска во второй строке */
-  .left .search .search-container {
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
+  /* Контейнер поиска в третьей строке */
+  .left .search {
+    grid-column: 1 / -1;
+    grid-row: 3;
     width: 100%;
-    margin-top: 4px !important;
+    margin: 0 !important;
+    padding: 0;
+  }
+
+  .left .search .search-container {
+    width: 100%;
+    margin: 0 !important;
   }
 
   .left .search input {
     width: 100%;
     padding: 8px 12px;
     margin: 0 !important;
-  }
-
-  /* Скрываем спейсер */
-  .spacer.mobile-only {
-    display: none !important;
   }
 
   /* ===== ПРАВАЯ ПАНЕЛЬ - ТОЛЬКО 2 БЛОКА ===== */

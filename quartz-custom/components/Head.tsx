@@ -7,130 +7,172 @@ import { unescapeHTML } from "../../quartz/util/escape"
 import { CustomOgImagesEmitterName } from "../../quartz/plugins/emitters/ogImage"
 
 export default (() => {
-  const Head: QuartzComponent = ({
-    cfg,
-    fileData,
-    externalResources,
-    ctx,
-  }: QuartzComponentProps) => {
+  const Head: QuartzComponent = ({ cfg, fileData, externalResources, ctx }: QuartzComponentProps) => {
     const titleSuffix = cfg.pageTitleSuffix ?? ""
-    const title =
-      (fileData.frontmatter?.title ?? i18n(cfg.locale).propertyDefaults.title) + titleSuffix
-    const description =
-      fileData.frontmatter?.socialDescription ??
-      fileData.frontmatter?.description ??
-      unescapeHTML(fileData.description?.trim() ?? i18n(cfg.locale).propertyDefaults.description)
+    const title = (fileData.frontmatter?.title ?? i18n(cfg.locale).propertyDefaults.title) + titleSuffix
+    const description = fileData.frontmatter?.socialDescription
+      ?? fileData.frontmatter?.description
+      ?? unescapeHTML(fileData.description?.trim() ?? i18n(cfg.locale).propertyDefaults.description)
 
     const { css, js, additionalHead } = externalResources
-
     const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
-    const path = url.pathname as FullSlug
-    const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
+    const baseDir = fileData.slug === "404" ? url.pathname : pathToRoot(fileData.slug!)
     const iconPath = joinSegments(baseDir, "static/icon.png")
-
-    const socialUrl =
-      fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
-
-    const usesCustomOgImage = ctx.cfg.plugins.emitters.some(
-      (e) => e.name === CustomOgImagesEmitterName,
-    )
+    const socialUrl = fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
+    const usesCustomOgImage = ctx.cfg.plugins.emitters.some(e => e.name === CustomOgImagesEmitterName)
     const ogImageDefaultPath = `https://${cfg.baseUrl}/static/og-image.png`
+
+    // Критический CSS для первого кадра
+    const criticalCSS = `
+      html[saved-theme="dark"] body,
+      html[saved-theme="dark"] #quartz-root,
+      html[saved-theme="dark"] #quartz-body {
+        background: #1a1c1e !important;
+        color: #d4d4d4 !important;
+      }
+      html[saved-theme="light"] body,
+      html[saved-theme="light"] #quartz-root,
+      html[saved-theme="light"] #quartz-body {
+        background: #f9f7f4 !important;
+        color: #2b2b2b !important;
+      }
+      html.no-transitions *,
+      html.no-transitions *::before,
+      html.no-transitions *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+    `
+
+    // Скрипт для установки темы ДО загрузки CSS
+    const earlyThemeScript = `
+      (function(){
+        try {
+          const html = document.documentElement;
+          let theme = null;
+          try { theme = localStorage.getItem('saved-theme'); } catch(e) { theme = null; }
+          
+          // Если нет сохранённой темы, ставим dark (инкогнито / первый визит)
+          if (!theme) theme = 'dark';
+          
+          // Устанавливаем атрибут ДО загрузки CSS
+          html.setAttribute('saved-theme', theme);
+          
+          // Отключаем переходы на время первого рендера
+          html.classList.add('no-transitions');
+          
+          // inline-стили для первого кадра (пока не применится CSS)
+          html.style.backgroundColor = theme === 'dark' ? '#1a1c1e' : '#f9f7f4';
+          html.style.color = theme === 'dark' ? '#d4d4d4' : '#2b2b2b';
+        } catch(e) { /* silent */ }
+      })();
+    `
+
+    // Финальный скрипт для очистки временных стилей
+    const finalizeThemeScript = `
+      (function(){
+        var remove = function(){
+          try {
+            var html = document.documentElement;
+            // Убираем временные inline-стили
+            html.style.backgroundColor = '';
+            html.style.color = '';
+            // Возвращаем переходы
+            html.classList.remove('no-transitions');
+          } catch(e) {}
+        };
+        
+        // Убираем временные стили после загрузки
+        if (document.readyState === 'loading') {
+          window.addEventListener('DOMContentLoaded', () => setTimeout(remove, 40), { once: true });
+        } else {
+          setTimeout(remove, 40);
+        }
+        
+        // Восстанавливаем тему при SPA-переходах
+        document.addEventListener('nav', function(){ 
+          try {
+            var theme = null; 
+            try { theme = localStorage.getItem('saved-theme'); } catch(e) { theme = null; }
+            if (theme) document.documentElement.setAttribute('saved-theme', theme);
+          } catch(e) {} 
+        });
+      })();
+    `
 
     return (
       <head>
-        {/* Критический скрипт для установки saved-theme ДО загрузки CSS */}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              const html = document.documentElement;
-              
-              // Читаем сохранённую тему
-              let theme = localStorage.getItem("saved-theme");
-              
-              // Если нет сохранённой, ставим dark по умолчанию (игнорируем систему!)
-              if (!theme) {
-                theme = "dark";  // ← всегда dark в инкогнито
-              }
-              
-              // Устанавливаем атрибут ДО загрузки CSS
-              html.setAttribute("saved-theme", theme);
-              
-              // inline-стили для первого кадра (пока не загрузится CSS)
-              if (theme === "dark") {
-                html.style.backgroundColor = "#1a1c1e";
-                html.style.color = "#d4d4d4";
-              } else {
-                html.style.backgroundColor = "#f9f7f4";
-                html.style.color = "#2b2b2b";
-              }
-            })();
-          `
-        }} />
-
-        {/* Синхронизация системных UI-элементов */}
-        <meta name="color-scheme" content="dark light" />
-        
+        <meta charSet="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="color-scheme" content="dark light"/>
         <title>{title}</title>
-        <meta charSet="utf-8" />
+        <meta name="description" content={description}/>
+        <meta name="generator" content="Quartz"/>
+        <link rel="icon" href={iconPath}/>
+
+        {/* 1) Устанавливаем тему и отключаем переходы */}
+        <script dangerouslySetInnerHTML={{ __html: earlyThemeScript }} />
         
+        {/* 2) Критический CSS для первого кадра */}
+        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
+
+        {/* 3) Шрифты с display=swap для оптимизации LCP */}
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
           <>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" />
-            <link rel="stylesheet" href={googleFontHref(cfg.theme)} />
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="preconnect" href="https://fonts.gstatic.com"/>
+            <link 
+              rel="stylesheet" 
+              href={`${googleFontHref(cfg.theme)}&display=swap`}
+            />
             {cfg.theme.typography.title && (
-              <link rel="stylesheet" href={googleFontSubsetHref(cfg.theme, cfg.pageTitle)} />
+              <link 
+                rel="stylesheet" 
+                href={`${googleFontSubsetHref(cfg.theme, cfg.pageTitle)}&display=swap`}
+              />
             )}
           </>
         )}
-        
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="og:site_name" content={cfg.pageTitle} />
-        <meta property="og:title" content={title} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image:alt" content={description} />
+        {/* 4) Preconnect для CDN */}
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous"/>
+
+        {/* 5) Open Graph / Twitter мета-теги */}
+        <meta property="og:site_name" content={cfg.pageTitle}/>
+        <meta property="og:title" content={title}/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:description" content={description}/>
+        <meta property="og:image:alt" content={description}/>
+        <meta name="twitter:card" content="summary_large_image"/>
+        <meta name="twitter:title" content={title}/>
+        <meta name="twitter:description" content={description}/>
 
         {!usesCustomOgImage && (
           <>
-            <meta property="og:image" content={ogImageDefaultPath} />
-            <meta property="og:image:url" content={ogImageDefaultPath} />
-            <meta name="twitter:image" content={ogImageDefaultPath} />
-            <meta
-              property="og:image:type"
-              content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}
-            />
+            <meta property="og:image" content={ogImageDefaultPath}/>
+            <meta property="og:image:url" content={ogImageDefaultPath}/>
+            <meta name="twitter:image" content={ogImageDefaultPath}/>
+            <meta property="og:image:type" content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}/>
           </>
         )}
 
         {cfg.baseUrl && (
           <>
-            <meta property="twitter:domain" content={cfg.baseUrl} />
-            <meta property="og:url" content={socialUrl} />
-            <meta property="twitter:url" content={socialUrl} />
+            <meta property="twitter:domain" content={cfg.baseUrl}/>
+            <meta property="og:url" content={socialUrl}/>
+            <meta property="twitter:url" content={socialUrl}/>
           </>
         )}
 
-        <link rel="icon" href={iconPath} />
-        <meta name="description" content={description} />
-        <meta name="generator" content="Quartz" />
-
-        {css.map((resource) => CSSResourceToStyleElement(resource, true))}
+        {/* 6) Основные CSS и JS ресурсы от Quartz */}
+        {css.map(res => CSSResourceToStyleElement(res, true))}
         {js
-          .filter((resource) => resource.loadTime === "beforeDOMReady")
-          .map((res) => JSResourceToScriptElement(res, true))}
-        {additionalHead.map((resource) => {
-          if (typeof resource === "function") {
-            return resource(fileData)
-          } else {
-            return resource
-          }
-        })}
+          .filter(res => res.loadTime === 'beforeDOMReady')
+          .map(res => JSResourceToScriptElement(res, true))}
+        {additionalHead.map(res => typeof res === 'function' ? res(fileData) : res)}
+
+        {/* 7) Финальный скрипт: убираем временные стили и восстанавливаем тему */}
+        <script dangerouslySetInnerHTML={{ __html: finalizeThemeScript }} />
       </head>
     )
   }

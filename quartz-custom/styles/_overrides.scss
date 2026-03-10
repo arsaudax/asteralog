@@ -483,10 +483,14 @@ a[href^="http"] img {
     text-overflow: ellipsis;
   }
 
-  .left .search-button {
+  /* ===== КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: display:contents ===== */
+  .left .search {
+    display: contents !important;
+  }
 
-    grid-column: 2;
-    grid-row: 1;
+  .left .search-button {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
 
     width: 34px;
     height: 34px;
@@ -512,9 +516,8 @@ a[href^="http"] img {
   }
 
   .left .darkmode {
-
-    grid-column: 3;
-    grid-row: 1;
+    grid-column: 3 !important;
+    grid-row: 1 !important;
     justify-self: end;
   }
 
@@ -543,34 +546,23 @@ a[href^="http"] img {
     height: 18px;
   }
 
-  /* ===== ИСПРАВЛЕННЫЙ БЛОК ПОИСКА ===== */
-  .left .search {
-
-    grid-column: 1 / -1;
-    grid-row: 2;
-
-    width: 100%;
-    margin: 0 !important;
-    padding: 0;
-  }
-
+  /* Контейнер поиска во второй строке */
   .left .search .search-container {
-
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
     width: 100%;
-    margin-top: 10px !important;  /* ← реальный отступ */
+    margin-top: 4px !important;
   }
 
   .left .search input {
-
     width: 100%;
     padding: 8px 12px;
     margin: 0 !important;
   }
 
-  /* ===== СПЕЙСЕР ДАЁТ ВЕРТИКАЛЬНЫЙ ОТСТУП ===== */
+  /* Скрываем спейсер */
   .spacer.mobile-only {
-    height: 8px !important;
-    display: block !important;  /* ← не скрываем, а оставляем с высотой */
+    display: none !important;
   }
 
   /* ===== ПРАВАЯ ПАНЕЛЬ - ТОЛЬКО 2 БЛОКА ===== */
@@ -578,6 +570,7 @@ a[href^="http"] img {
     display: flex;
     flex-direction: column;
     gap: 0 !important;
+    padding: 12px;
   }
   
   /* Для сада: показываем только граф и обратные ссылки */
@@ -627,13 +620,17 @@ a[href^="http"] img {
     display: none;
   }
 
-  .right {
-    padding: 12px;
-  }
-
   .archive-link-container {
     padding: 8px 0 !important;
   }
+}
+
+@media (max-width: 800px) {
+
+  .explorer {
+    display: none !important;
+  }
+
 }
 
 /* =========================================================

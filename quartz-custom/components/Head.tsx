@@ -38,45 +38,34 @@ export default (() => {
 
     return (
       <head>
-        {/* Критический CSS для принудительной тёмной темы */}
-        <style>{`
-          /* Всегда ставим dark как первичную тему */
-          html {
-            color-scheme: dark;
-            background-color: #1a1c1e !important;
-            --bg-primary: #1a1c1e;
-            --bg-secondary: #2e3235;
-            --text-primary: #d4d4d4;
-            --text-secondary: #b0b0b0;
-            --text-muted: #9a9a9a;
-            --border-color: #4a4f54;
-            --link-color: #b5977a;
-            --link-hover: #d4b69b;
-            --highlight: rgba(181, 151, 122, 0.15);
-          }
-          
-          body {
-            background-color: #1a1c1e !important;
-            color: #d4d4d4 !important;
-          }
-          
-          /* Если система явно светлая — игнорируем */
-          @media (prefers-color-scheme: light) {
-            html {
-              color-scheme: dark; /* всё равно используем dark */
-            }
-          }
-        `}</style>
-
-        {/* Резервный скрипт для синхронизации с localStorage */}
+        {/* Критический скрипт для установки saved-theme ДО загрузки CSS */}
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
-              const saved = localStorage.getItem('saved-theme');
-              if (saved === 'light') {
-                document.documentElement.style.backgroundColor = '#f9f7f4';
-                document.body.style.backgroundColor = '#f9f7f4';
-                document.body.style.color = '#2b2b2b';
+              const html = document.documentElement;
+              
+              // Читаем сохранённую тему
+              let theme = localStorage.getItem("saved-theme");
+              
+              // Если нет сохранённой, смотрим системные настройки
+              if (!theme) {
+                if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                  theme = "dark";
+                } else {
+                  theme = "light";
+                }
+              }
+              
+              // Устанавливаем атрибут ДО загрузки CSS
+              html.setAttribute("saved-theme", theme);
+              
+              // inline-стили для первого кадра (пока не загрузится CSS)
+              if (theme === "dark") {
+                html.style.backgroundColor = "#1a1c1e";
+                html.style.color = "#d4d4d4";
+              } else {
+                html.style.backgroundColor = "#f9f7f4";
+                html.style.color = "#2b2b2b";
               }
             })();
           `

@@ -22,14 +22,54 @@ const baseConfig = {
 
 // Цвета для сада
 const gardenColors = {
-  lightMode: { /* ... */ },
-  darkMode: { /* ... */ },
+  lightMode: {
+    light: "#f9f7f4",
+    lightgray: "#e5e5e5",
+    gray: "#9a9a9a",
+    darkgray: "#4a4a49",
+    dark: "#2b2b2b",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
+    highlight: "rgba(162, 132, 94, 0.15)",
+    textHighlight: "#fff23688",
+  },
+  darkMode: {
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
+    dark: "#ffffff",
+    secondary: "#b5977a",
+    tertiary: "#d4b69b",
+    highlight: "rgba(181, 151, 122, 0.15)",
+    textHighlight: "#2e2a24",
+  },
 }
 
 // Цвета для блога
 const blogColors = {
-  lightMode: { /* ... */ },
-  darkMode: { /* ... */ },
+  lightMode: {
+    light: "#ffffff",
+    lightgray: "#f0f0f0",
+    gray: "#9a9a9a",
+    darkgray: "#666666",
+    dark: "#333333",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
+    highlight: "rgba(162, 132, 94, 0.1)",
+    textHighlight: "#fff23688",
+  },
+  darkMode: {
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
+    dark: "#ffffff",
+    secondary: "#b5977a",
+    tertiary: "#d4b69b",
+    highlight: "rgba(181, 151, 122, 0.15)",
+    textHighlight: "#2e2a24",
+  },
 }
 
 const colors = siteType === 'blog' ? blogColors : gardenColors
@@ -39,7 +79,7 @@ const config: QuartzConfig = {
     ...baseConfig,
     baseUrl: process.env.BASE_URL || '',
     theme: {
-      defaultTheme: "dark",  // ← ДОБАВЛЯЕМ
+      defaultTheme: "dark",  // принудительно тёмная тема
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {

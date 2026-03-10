@@ -63,7 +63,7 @@ const backlinksConfig = {
 
 // Общие компоненты
 export const sharedPageComponents: SharedLayout = {
-  head: CustomComponent.Head(),  // ← ИСПРАВЛЕНО: используем кастомный Head
+  head: CustomComponent.Head(),  // ← кастомный Head
   header: [],
   afterBody: [],
   footer: CustomComponent.Footer({
@@ -148,12 +148,12 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    // Ссылка на архив в правой панели (с эмодзи в конце)
+    // Ссылка на архив в правой панели
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
         text: "Все записи →📚",
-        emoji: "none"  // эмодзи уже в тексте
+        emoji: "none"
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
@@ -191,6 +191,32 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'archive'
       }
     }),
+    // Скрипт восстановления темы для SPA-навигации
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            function restoreTheme() {
+              const theme = localStorage.getItem("saved-theme");
+              if (theme) {
+                document.documentElement.setAttribute("saved-theme", theme);
+              }
+            }
+            
+            // Восстанавливаем тему после SPA-переходов
+            document.addEventListener("nav", restoreTheme);
+            window.addEventListener("popstate", restoreTheme);
+            
+            // При загрузке страницы
+            if (document.readyState === "loading") {
+              document.addEventListener("DOMContentLoaded", restoreTheme);
+            } else {
+              restoreTheme();
+            }
+          })();
+        `
+      }}
+    />
   ],
 }
 
@@ -201,7 +227,7 @@ export const blogListPageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на архив в списках тегов (с эмодзи в конце)
+    // Ссылка на архив в списках тегов
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
@@ -212,6 +238,30 @@ export const blogListPageLayout: PageLayout = {
         return props.fileData.slug?.startsWith('tags/') || false
       }
     }),
+    // Скрипт восстановления темы для SPA-навигации (на всех страницах)
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            function restoreTheme() {
+              const theme = localStorage.getItem("saved-theme");
+              if (theme) {
+                document.documentElement.setAttribute("saved-theme", theme);
+              }
+            }
+            
+            document.addEventListener("nav", restoreTheme);
+            window.addEventListener("popstate", restoreTheme);
+            
+            if (document.readyState === "loading") {
+              document.addEventListener("DOMContentLoaded", restoreTheme);
+            } else {
+              restoreTheme();
+            }
+          })();
+        `
+      }}
+    />
   ],
 }
 

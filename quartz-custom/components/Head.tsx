@@ -70,6 +70,9 @@ export default (() => {
             })();
           `
         }} />
+
+        {/* Синхронизация системных UI-элементов */}
+        <meta name="color-scheme" content="dark light" />
         
         <title>{title}</title>
         <meta charSet="utf-8" />

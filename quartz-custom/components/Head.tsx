@@ -47,13 +47,9 @@ export default (() => {
               // Читаем сохранённую тему
               let theme = localStorage.getItem("saved-theme");
               
-              // Если нет сохранённой, смотрим системные настройки
+              // Если нет сохранённой, ставим dark по умолчанию (игнорируем систему!)
               if (!theme) {
-                if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                  theme = "dark";
-                } else {
-                  theme = "light";
-                }
+                theme = "dark";  // ← всегда dark в инкогнито
               }
               
               // Устанавливаем атрибут ДО загрузки CSS

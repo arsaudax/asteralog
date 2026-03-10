@@ -420,6 +420,13 @@ a[href^="http"] img {
   padding-bottom: 0 !important;
 }
 
+/* Убираем лишний разделитель между заголовком и информацией */
+.blog-index-item h2 {
+  border-bottom: none !important;
+  margin-bottom: 8px !important;
+  padding-bottom: 0 !important;
+}
+
 /* =========================================================
    МОБИЛЬНАЯ ВЕРСИЯ
    ========================================================= */
@@ -552,15 +559,15 @@ a[href^="http"] img {
   .right {
     display: flex;
     flex-direction: column;
-    gap: 0 !important;  /* убираем gap между блоками */
+    gap: 0 !important;
   }
   
   /* Для сада: показываем только граф и обратные ссылки */
   .right .graph,
   .right .backlinks {
     display: block;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
   }
   
   .right .toc,
@@ -572,8 +579,8 @@ a[href^="http"] img {
   [data-site-type="blog"] .right .tag-list,
   [data-site-type="blog"] .right .archive-link-container {
     display: block;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
   }
   
   [data-site-type="blog"] .right .graph,
@@ -583,15 +590,19 @@ a[href^="http"] img {
     display: none;
   }
 
-  /* Убираем границы у всех блоков в правой панели */
+  /* Убираем все границы у блоков в правой панели */
   .right .graph,
   .right .backlinks,
   .right .tag-list,
   .right .archive-link-container {
     border-top: none !important;
     border-bottom: none !important;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
+  }
+  
+  /* Убираем лишние отступы у заголовков */
+  .right h3 {
+    margin-bottom: 4px !important;
+    border-bottom: none !important;
   }
 
   .recent-notes {
@@ -603,7 +614,7 @@ a[href^="http"] img {
   }
 
   .archive-link-container {
-    padding: 4px 0 !important;
+    padding: 8px 0 !important;
   }
 
   .spacer.mobile-only {
@@ -632,6 +643,7 @@ a[href^="http"] img {
 .right h3 {
   font-size: .9rem;
   font-weight: 600;
+  border-bottom: none !important;  /* убираем все линии у заголовков */
 }
 
 /* =========================================================

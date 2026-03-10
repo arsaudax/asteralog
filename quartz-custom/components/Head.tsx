@@ -22,158 +22,196 @@ export default (() => {
     const usesCustomOgImage = ctx.cfg.plugins.emitters.some(e => e.name === CustomOgImagesEmitterName)
     const ogImageDefaultPath = `https://${cfg.baseUrl}/static/og-image.png`
 
-    // Критический CSS для первого кадра
-    const criticalCSS = `
-      html[saved-theme="dark"] body,
-      html[saved-theme="dark"] #quartz-root,
-      html[saved-theme="dark"] #quartz-body {
-        background: #1a1c1e !important;
-        color: #d4d4d4 !important;
-      }
-      html[saved-theme="light"] body,
-      html[saved-theme="light"] #quartz-root,
-      html[saved-theme="light"] #quartz-body {
-        background: #f9f7f4 !important;
-        color: #2b2b2b !important;
-      }
-      html.no-transitions *,
-      html.no-transitions *::before,
-      html.no-transitions *::after {
-        transition: none !important;
-        animation: none !important;
-      }
-    `
-
-    // Скрипт для установки темы ДО загрузки CSS
-    const earlyThemeScript = `
-      (function(){
-        try {
-          const html = document.documentElement;
-          let theme = null;
-          try { theme = localStorage.getItem('saved-theme'); } catch(e) { theme = null; }
-          
-          // Если нет сохранённой темы, ставим dark (инкогнито / первый визит)
-          if (!theme) theme = 'dark';
-          
-          // Устанавливаем атрибут ДО загрузки CSS
-          html.setAttribute('saved-theme', theme);
-          
-          // Отключаем переходы на время первого рендера
-          html.classList.add('no-transitions');
-          
-          // inline-стили для первого кадра (пока не применится CSS)
-          html.style.backgroundColor = theme === 'dark' ? '#1a1c1e' : '#f9f7f4';
-          html.style.color = theme === 'dark' ? '#d4d4d4' : '#2b2b2b';
-        } catch(e) { /* silent */ }
-      })();
-    `
-
-    // Финальный скрипт для очистки временных стилей
-    const finalizeThemeScript = `
-      (function(){
-        var remove = function(){
-          try {
-            var html = document.documentElement;
-            // Убираем временные inline-стили
-            html.style.backgroundColor = '';
-            html.style.color = '';
-            // Возвращаем переходы
-            html.classList.remove('no-transitions');
-          } catch(e) {}
-        };
-        
-        // Убираем временные стили после загрузки
-        if (document.readyState === 'loading') {
-          window.addEventListener('DOMContentLoaded', () => setTimeout(remove, 40), { once: true });
-        } else {
-          setTimeout(remove, 40);
-        }
-        
-        // Восстанавливаем тему при SPA-переходах
-        document.addEventListener('nav', function(){ 
-          try {
-            var theme = null; 
-            try { theme = localStorage.getItem('saved-theme'); } catch(e) { theme = null; }
-            if (theme) document.documentElement.setAttribute('saved-theme', theme);
-          } catch(e) {} 
-        });
-      })();
-    `
+    // Определяем тему прямо в шаблоне (без JS для первого кадра)
+    const initialTheme = (() => {
+      // Мы не можем прочитать localStorage здесь, поэтому полагаемся на системные настройки
+      // Это будет переопределено JS, если есть сохранённая тема
+      return "dark"; // по умолчанию тёмная
+    })()
 
     return (
-      <head>
-        <meta charSet="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta name="color-scheme" content="dark light"/>
-        <title>{title}</title>
-        <meta name="description" content={description}/>
-        <meta name="generator" content="Quartz"/>
-        <link rel="icon" href={iconPath}/>
+      <html 
+        lang="ru" 
+        dir="ltr" 
+        saved-theme={initialTheme}
+        style={{
+          backgroundColor: initialTheme === 'dark' ? '#1a1c1e' : '#f9f7f4',
+          color: initialTheme === 'dark' ? '#d4d4d4' : '#2b2b2b',
+        }}
+      >
+        <head>
+          <meta charSet="utf-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1"/>
+          <meta name="color-scheme" content="dark light"/>
+          <title>{title}</title>
+          <meta name="description" content={description}/>
+          <meta name="generator" content="Quartz"/>
+          <link rel="icon" href={iconPath}/>
 
-        {/* 1) Устанавливаем тему и отключаем переходы */}
-        <script dangerouslySetInnerHTML={{ __html: earlyThemeScript }} />
-        
-        {/* 2) Критический CSS для первого кадра */}
-        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
+          {/* 1) Критический CSS для первого кадра */}
+          <style>{`
+            html[saved-theme="dark"] body,
+            html[saved-theme="dark"] #quartz-root,
+            html[saved-theme="dark"] #quartz-body {
+              background: #1a1c1e !important;
+              color: #d4d4d4 !important;
+            }
+            html[saved-theme="light"] body,
+            html[saved-theme="light"] #quartz-root,
+            html[saved-theme="light"] #quartz-body {
+              background: #f9f7f4 !important;
+              color: #2b2b2b !important;
+            }
+            html.no-transitions *,
+            html.no-transitions *::before,
+            html.no-transitions *::after {
+              transition: none !important;
+              animation: none !important;
+            }
+          `}</style>
 
-        {/* 3) Шрифты с display=swap для оптимизации LCP */}
-        {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
-          <>
-            <link rel="preconnect" href="https://fonts.googleapis.com"/>
-            <link rel="preconnect" href="https://fonts.gstatic.com"/>
-            <link 
-              rel="stylesheet" 
-              href={`${googleFontHref(cfg.theme)}&display=swap`}
-            />
-            {cfg.theme.typography.title && (
+          {/* 2) Preload критических ресурсов */}
+          <link rel="preconnect" href="https://fonts.googleapis.com"/>
+          <link rel="preconnect" href="https://fonts.gstatic.com"/>
+          <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous"/>
+
+          {/* 3) Шрифты с display=swap */}
+          {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
+            <>
+              <link 
+                rel="preload" 
+                as="style" 
+                href={`${googleFontHref(cfg.theme)}&display=swap`}
+              />
               <link 
                 rel="stylesheet" 
-                href={`${googleFontSubsetHref(cfg.theme, cfg.pageTitle)}&display=swap`}
+                href={`${googleFontHref(cfg.theme)}&display=swap`} 
+                media="print" 
+                onLoad="this.media='all'"
               />
-            )}
-          </>
-        )}
+              {cfg.theme.typography.title && (
+                <>
+                  <link 
+                    rel="preload" 
+                    as="style" 
+                    href={`${googleFontSubsetHref(cfg.theme, cfg.pageTitle)}&display=swap`}
+                  />
+                  <link 
+                    rel="stylesheet" 
+                    href={`${googleFontSubsetHref(cfg.theme, cfg.pageTitle)}&display=swap`}
+                    media="print" 
+                    onLoad="this.media='all'"
+                  />
+                </>
+              )}
+              <noscript>
+                <link rel="stylesheet" href={`${googleFontHref(cfg.theme)}&display=swap`}/>
+                {cfg.theme.typography.title && (
+                  <link rel="stylesheet" href={`${googleFontSubsetHref(cfg.theme, cfg.pageTitle)}&display=swap`}/>
+                )}
+              </noscript>
+            </>
+          )}
 
-        {/* 4) Preconnect для CDN */}
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous"/>
+          {/* 4) Скрипт ранней установки темы (корректирует localStorage) */}
+          <script dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const html = document.documentElement;
+                  
+                  // Читаем сохранённую тему
+                  let theme = null;
+                  try { theme = localStorage.getItem('saved-theme'); } catch(e) { theme = null; }
+                  
+                  // Если нет сохранённой, смотрим системные настройки
+                  if (!theme) {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  
+                  // Обновляем атрибут
+                  html.setAttribute('saved-theme', theme);
+                  
+                  // Обновляем inline-стили
+                  html.style.backgroundColor = theme === 'dark' ? '#1a1c1e' : '#f9f7f4';
+                  html.style.color = theme === 'dark' ? '#d4d4d4' : '#2b2b2b';
+                  
+                  // Отключаем переходы на время первого рендера
+                  html.classList.add('no-transitions');
+                } catch(e) { /* silent */ }
+              })();
+            `
+          }} />
 
-        {/* 5) Open Graph / Twitter мета-теги */}
-        <meta property="og:site_name" content={cfg.pageTitle}/>
-        <meta property="og:title" content={title}/>
-        <meta property="og:type" content="website"/>
-        <meta property="og:description" content={description}/>
-        <meta property="og:image:alt" content={description}/>
-        <meta name="twitter:card" content="summary_large_image"/>
-        <meta name="twitter:title" content={title}/>
-        <meta name="twitter:description" content={description}/>
+          {/* 5) Open Graph / Twitter мета-теги */}
+          <meta property="og:site_name" content={cfg.pageTitle}/>
+          <meta property="og:title" content={title}/>
+          <meta property="og:type" content="website"/>
+          <meta property="og:description" content={description}/>
+          <meta property="og:image:alt" content={description}/>
+          <meta name="twitter:card" content="summary_large_image"/>
+          <meta name="twitter:title" content={title}/>
+          <meta name="twitter:description" content={description}/>
 
-        {!usesCustomOgImage && (
-          <>
-            <meta property="og:image" content={ogImageDefaultPath}/>
-            <meta property="og:image:url" content={ogImageDefaultPath}/>
-            <meta name="twitter:image" content={ogImageDefaultPath}/>
-            <meta property="og:image:type" content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}/>
-          </>
-        )}
+          {!usesCustomOgImage && (
+            <>
+              <meta property="og:image" content={ogImageDefaultPath}/>
+              <meta property="og:image:url" content={ogImageDefaultPath}/>
+              <meta name="twitter:image" content={ogImageDefaultPath}/>
+              <meta property="og:image:type" content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}/>
+            </>
+          )}
 
-        {cfg.baseUrl && (
-          <>
-            <meta property="twitter:domain" content={cfg.baseUrl}/>
-            <meta property="og:url" content={socialUrl}/>
-            <meta property="twitter:url" content={socialUrl}/>
-          </>
-        )}
+          {cfg.baseUrl && (
+            <>
+              <meta property="twitter:domain" content={cfg.baseUrl}/>
+              <meta property="og:url" content={socialUrl}/>
+              <meta property="twitter:url" content={socialUrl}/>
+            </>
+          )}
 
-        {/* 6) Основные CSS и JS ресурсы от Quartz */}
-        {css.map(res => CSSResourceToStyleElement(res, true))}
-        {js
-          .filter(res => res.loadTime === 'beforeDOMReady')
-          .map(res => JSResourceToScriptElement(res, true))}
-        {additionalHead.map(res => typeof res === 'function' ? res(fileData) : res)}
+          {/* 6) Основные CSS и JS ресурсы от Quartz */}
+          {css.map(res => CSSResourceToStyleElement(res, true))}
+          {js
+            .filter(res => res.loadTime === 'beforeDOMReady')
+            .map(res => JSResourceToScriptElement(res, true))}
+          {additionalHead.map(res => typeof res === 'function' ? res(fileData) : res)}
 
-        {/* 7) Финальный скрипт: убираем временные стили и восстанавливаем тему */}
-        <script dangerouslySetInnerHTML={{ __html: finalizeThemeScript }} />
-      </head>
+          {/* 7) Финальный скрипт: убираем no-transitions и восстанавливаем тему после навигации */}
+          <script dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Убираем no-transitions после первого кадра
+                const removeTransitions = function() {
+                  const html = document.documentElement;
+                  html.classList.remove('no-transitions');
+                  html.style.backgroundColor = '';
+                  html.style.color = '';
+                };
+                
+                // Используем requestAnimationFrame для точной синхронизации с рендером
+                if (document.readyState === 'loading') {
+                  window.addEventListener('DOMContentLoaded', () => {
+                    requestAnimationFrame(removeTransitions);
+                  }, { once: true });
+                } else {
+                  requestAnimationFrame(removeTransitions);
+                }
+                
+                // Восстанавливаем тему при SPA-переходах
+                document.addEventListener('nav', function() { 
+                  try {
+                    const theme = localStorage.getItem('saved-theme');
+                    if (theme) {
+                      document.documentElement.setAttribute('saved-theme', theme);
+                    }
+                  } catch(e) {} 
+                });
+              })();
+            `
+          }} />
+        </head>
+      </html>
     )
   }
 

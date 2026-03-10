@@ -63,7 +63,7 @@ const backlinksConfig = {
 
 // Общие компоненты
 export const sharedPageComponents: SharedLayout = {
-  head: Component.Head(),
+  head: CustomComponent.Head(),  // ← ИСПРАВЛЕНО: используем кастомный Head
   header: [],
   afterBody: [],
   footer: CustomComponent.Footer({

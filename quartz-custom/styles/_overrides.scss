@@ -3,28 +3,64 @@
    ========================================================= */
 
 /* =========================================================
-   ССЫЛКИ
+   ССЫЛКИ — МАКСИМАЛЬНО АГРЕССИВНОЕ УБИВАНИЕ СИНИХ ЗНАЧКОВ
    ========================================================= */
 
+/* Полностью отключаем все стандартные значки */
+.external::after,
+.external::before,
+.internal::after,
+.internal::before,
+a[href^="http"]::after,
+a[href^="http"]::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  background-image: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Убираем SVG и изображения в ссылках */
 .external svg,
 .external img,
 .internal svg,
-.internal img {
-  display: none;
+.internal img,
+a[href^="http"] svg,
+a[href^="http"] img {
+  display: none !important;
 }
 
-.external:not(.footer-link):not(.no-external-icon)::after {
-  content: "↗";
-  margin-left: 0.25em;
-  font-size: 0.8em;
-  opacity: .6;
-  color: var(--text-muted);
-  transition: opacity var(--transition-fast);
+/* Добавляем свой значок */
+.external:not(.footer-link):not(.no-external-icon) {
+  position: relative;
+  
+  &::after {
+    content: "↗" !important;
+    display: inline-block !important;
+    margin-left: 0.25em;
+    font-size: 0.8em;
+    color: var(--text-muted) !important;
+    opacity: .6;
+    transition: opacity var(--transition-fast);
+    background: none !important;
+    width: auto !important;
+    height: auto !important;
+    visibility: visible !important;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+    color: var(--link-color) !important;
+  }
 }
 
-.external:hover::after {
-  opacity: 1;
-  color: var(--link-color);
+/* Для ссылок в подвале ничего */
+.footer-link::after,
+.footer-link::before {
+  display: none !important;
 }
 
 /* =========================================================
@@ -359,11 +395,29 @@
   display: inline-flex;
   align-items: center;
   gap: .25em;
+  font-size: var(--font-size-md);
+  font-weight: 500;
 }
 
 .archive-link:hover {
 
   color: var(--link-hover);
+}
+
+/* =========================================================
+   ПОСТЫ В ЛЕНТЕ — РАЗДЕЛЕНИЕ ДЛЯ ВСЕХ ЭКРАНОВ
+   ========================================================= */
+
+.blog-index-item {
+  margin-bottom: 48px !important;
+  padding-bottom: 48px !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.blog-index-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* =========================================================
@@ -494,29 +548,19 @@
     margin: 0 !important;
   }
 
-  /* ===== УЛУЧШЕНИЕ РАССТОЯНИЙ МЕЖДУ ПОСТАМИ ===== */
-  .blog-index-item {
-    margin-bottom: 32px !important;
-    padding-bottom: 32px !important;
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  .blog-index-item:last-child {
-    border-bottom: none;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
   /* ===== ПРАВАЯ ПАНЕЛЬ - ТОЛЬКО 2 БЛОКА ===== */
   .right {
     display: flex;
     flex-direction: column;
+    gap: 0 !important;  /* убираем gap между блоками */
   }
   
   /* Для сада: показываем только граф и обратные ссылки */
   .right .graph,
   .right .backlinks {
     display: block;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
   
   .right .toc,
@@ -528,6 +572,8 @@
   [data-site-type="blog"] .right .tag-list,
   [data-site-type="blog"] .right .archive-link-container {
     display: block;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
   
   [data-site-type="blog"] .right .graph,
@@ -535,6 +581,17 @@
   [data-site-type="blog"] .right .toc,
   [data-site-type="blog"] .right .recent-notes {
     display: none;
+  }
+
+  /* Убираем границы у всех блоков в правой панели */
+  .right .graph,
+  .right .backlinks,
+  .right .tag-list,
+  .right .archive-link-container {
+    border-top: none !important;
+    border-bottom: none !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
   }
 
   .recent-notes {
@@ -546,7 +603,7 @@
   }
 
   .archive-link-container {
-    padding: 12px 0;
+    padding: 4px 0 !important;
   }
 
   .spacer.mobile-only {

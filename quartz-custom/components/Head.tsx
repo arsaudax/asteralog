@@ -38,15 +38,26 @@ export default (() => {
 
     return (
       <head>
-        {/* Скрипт установки тёмной темы */}
+        {/* Скрипт установки темы через класс + inline-стили */}
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
               try {
                 const theme = localStorage.getItem('theme') || 'dark';
-                document.documentElement.setAttribute('saved-theme', theme);
+                // Добавляем класс к html
+                document.documentElement.classList.add(theme);
+                // inline-стили для гарантии (пока не загрузятся CSS-переменные)
+                if (theme === 'dark') {
+                  document.documentElement.style.backgroundColor = '#1a1c1e';
+                  document.documentElement.style.color = '#d4d4d4';
+                } else {
+                  document.documentElement.style.backgroundColor = '#f9f7f4';
+                  document.documentElement.style.color = '#2b2b2b';
+                }
               } catch (e) {
-                document.documentElement.setAttribute('saved-theme', 'dark');
+                document.documentElement.classList.add('dark');
+                document.documentElement.style.backgroundColor = '#1a1c1e';
+                document.documentElement.style.color = '#d4d4d4';
               }
             })();
           `
@@ -102,7 +113,6 @@ export default (() => {
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
 
-        {/* ВАЖНО: подключаем CSS и JS */}
         {css.map((resource) => CSSResourceToStyleElement(resource, true))}
         {js
           .filter((resource) => resource.loadTime === "beforeDOMReady")

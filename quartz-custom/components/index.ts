@@ -4,6 +4,7 @@ import BlogIndex from "./BlogIndex"
 import PageTitle from "./PageTitle"
 import ArchiveLink from "./ArchiveLink"
 import Head from "./Head"
+import ThemeRestoreScript from "./ThemeRestoreScript"  // ← импорт
 
 export { 
   ContentMeta, 
@@ -11,5 +12,6 @@ export {
   BlogIndex, 
   PageTitle,
   ArchiveLink,
-  Head
+  Head,
+  ThemeRestoreScript  // ← экспорт
 }

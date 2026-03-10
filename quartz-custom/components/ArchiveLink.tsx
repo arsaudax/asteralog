@@ -16,9 +16,10 @@ export default ((opts?: Options) => {
     const baseText = opts?.text ?? "Все записи"
     
     let linkText = baseText
-    if (emoji === "before") linkText = `📚 ${baseText} →`
-    else if (emoji === "after") linkText = `${baseText} → 📚`
-    else linkText = `${baseText} →`
+    // Убираем стрелку из текста — она будет добавляться через CSS
+    if (emoji === "before") linkText = `📚 ${baseText}`
+    else if (emoji === "after") linkText = `${baseText} 📚`
+    else linkText = baseText
     
     return (
       <div class={classNames(displayClass, ...classes)}>

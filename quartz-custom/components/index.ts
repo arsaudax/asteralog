@@ -1,16 +1,19 @@
-// Экспорт всех кастомных компонентов Asteralog
 import ContentMeta from "./ContentMeta"
 import Footer from "./Footer"
-import TagList from "./TagList"
+import PageTagList from "./PageTagList" 
 import BlogIndex from "./BlogIndex"
 import PageTitle from "./PageTitle"
 import ArchiveLink from "./ArchiveLink"
+import RightScrollArea from "./RightScrollArea"
+import Head from "./Head"  // ← добавляем кастомный Head
 
 export { 
   ContentMeta, 
   Footer, 
-  TagList, 
-  BlogIndex,
+  PageTagList, 
+  BlogIndex, 
   PageTitle,
-  ArchiveLink
+  ArchiveLink,
+  RightScrollArea,
+  Head  // ← экспортируем Head
 }

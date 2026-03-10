@@ -403,7 +403,7 @@ a[href^="http"] img {
 
   .left.sidebar {
     display: grid;
-    grid-template-columns: 1fr 36px 36px;
+    grid-template-columns: 1fr 40px 40px;  /* увеличил колонки под кнопки */
     grid-template-rows: 
       auto  /* строка 1: логотип */
       auto  /* строка 2: спейсер */
@@ -427,21 +427,22 @@ a[href^="http"] img {
     grid-row: 1;
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 12px !important;  /* увеличил gap */
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     margin: 0 !important;
   }
 
+  /* ===== УВЕЛИЧЕНИЕ ИЗОБРАЖЕНИЯ В 1.6 РАЗ ===== */
   .left .page-logo {
-    width: 40px;
-    height: 40px;
+    width: 64px !important;  /* было 40px → 64px (1.6x) */
+    height: 64px !important;
     flex-shrink: 0;
   }
 
   .left .page-title-link {
-    font-size: 18px;
+    font-size: 20px;  /* немного увеличил текст */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -457,12 +458,12 @@ a[href^="http"] img {
     padding: 0 !important;
   }
 
-  /* Кнопка поиска (позиционируется в первой строке, но поверх всего) */
+  /* Кнопка поиска */
   .left .search-button {
     grid-column: 2 !important;
     grid-row: 1 !important;
-    width: 34px;
-    height: 34px;
+    width: 40px;  /* увеличил под размер колонок */
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -478,8 +479,8 @@ a[href^="http"] img {
   }
 
   .left .search-button svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;  /* увеличил иконку */
+    height: 20px;
   }
 
   /* Кнопка темы */
@@ -491,8 +492,8 @@ a[href^="http"] img {
   }
 
   .left .darkmode button {
-    width: 34px;
-    height: 34px;
+    width: 40px;  /* увеличил под размер колонок */
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -507,8 +508,8 @@ a[href^="http"] img {
   }
 
   .left .darkmode svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;  /* увеличил иконку */
+    height: 20px;
   }
 
   /* Контейнер поиска в третьей строке */

@@ -5,6 +5,7 @@ import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
 import { CustomOgImagesEmitterName } from "../plugins/emitters/ogImage"
+
 export default (() => {
   const Head: QuartzComponent = ({
     cfg,
@@ -38,6 +39,22 @@ export default (() => {
 
     return (
       <head>
+        {/* Критический скрипт для установки темы ДО загрузки CSS */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                // Принудительно устанавливаем тёмную тему до загрузки CSS
+                const theme = localStorage.getItem('theme') || 'dark';
+                document.documentElement.setAttribute('saved-theme', theme);
+              } catch (e) {
+                // В случае ошибки (например, в инкогнито) всё равно ставим тёмную
+                document.documentElement.setAttribute('saved-theme', 'dark');
+              }
+            })();
+          `
+        }} />
+        
         <title>{title}</title>
         <meta charSet="utf-8" />
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (

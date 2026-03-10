@@ -38,27 +38,22 @@ export default (() => {
 
     return (
       <head>
-        {/* Скрипт установки темы через класс + inline-стили */}
+        {/* Минимальный скрипт для установки тёмной темы до рендера */}
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
-              try {
-                const theme = localStorage.getItem('theme') || 'dark';
-                // Добавляем класс к html
-                document.documentElement.classList.add(theme);
-                // inline-стили для гарантии (пока не загрузятся CSS-переменные)
-                if (theme === 'dark') {
-                  document.documentElement.style.backgroundColor = '#1a1c1e';
-                  document.documentElement.style.color = '#d4d4d4';
-                } else {
-                  document.documentElement.style.backgroundColor = '#f9f7f4';
-                  document.documentElement.style.color = '#2b2b2b';
-                }
-              } catch (e) {
+              // Получаем сохранённую тему из localStorage
+              const saved = localStorage.getItem('saved-theme');
+              
+              // Если сохранённая тема — dark, ставим класс html.dark
+              if (saved === 'dark') {
                 document.documentElement.classList.add('dark');
-                document.documentElement.style.backgroundColor = '#1a1c1e';
-                document.documentElement.style.color = '#d4d4d4';
               }
+              // Если нет сохранённой, но системная тема тёмная
+              else if (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+              }
+              // Иначе — оставляем светлую (без класса)
             })();
           `
         }} />

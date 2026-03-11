@@ -176,10 +176,10 @@ export default (() => {
           @media (max-width: 500px) {
             .left.sidebar {
               display: grid !important;
-              grid-template-columns: 1fr 40px 40px !important;
-              grid-template-rows: auto auto auto auto !important;
-              gap: 8px !important;
-              padding: 10px 12px !important;
+              grid-template-columns: auto 40px 40px !important;
+              grid-template-rows: auto !important;
+              gap: 4px !important;
+              padding: 8px 12px !important;
               margin: 0 !important;
               position: sticky !important;
               top: 0 !important;
@@ -190,11 +190,12 @@ export default (() => {
             }
             
             .left .page-title {
-              grid-column: 1 / -1 !important;
+              grid-column: 1 !important;
               grid-row: 1 !important;
               display: flex !important;
               align-items: center !important;
-              gap: 12px !important;
+              justify-content: flex-start !important;
+              gap: 8px !important;
               margin: 0 !important;
               overflow: hidden !important;
               white-space: nowrap !important;
@@ -202,8 +203,8 @@ export default (() => {
             }
             
             .left .page-logo {
-              width: 64px !important;
-              height: 64px !important;
+              width: 40px !important;
+              height: 40px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
@@ -212,7 +213,7 @@ export default (() => {
             }
             
             .left .page-title-link {
-              font-size: 20px !important;
+              font-size: 16px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
               white-space: nowrap !important;
@@ -221,12 +222,7 @@ export default (() => {
             }
             
             .spacer.mobile-only {
-              grid-column: 1 / -1 !important;
-              grid-row: 2 !important;
-              display: block !important;
-              height: 12px !important;
-              margin: 0 !important;
-              padding: 0 !important;
+              display: none !important;
             }
             
             .left .search {
@@ -288,25 +284,7 @@ export default (() => {
             }
             
             .left .search .search-container {
-              grid-column: 1 / -1 !important;
-              grid-row: 3 !important;
-              width: 100% !important;
-            }
-            
-            .left .search input {
-              width: 100% !important;
-              padding: 10px 12px !important;
-              border-radius: 8px !important;
-              border: 1px solid var(--border-color) !important;
-              background: var(--bg-secondary) !important;
-              color: var(--text-primary) !important;
-              font-size: 16px !important;
-            }
-            
-            .left .search input:focus {
-              border-color: var(--link-color) !important;
-              outline: none !important;
-              box-shadow: 0 0 0 3px var(--highlight) !important;
+              display: none !important;
             }
             
             .right {

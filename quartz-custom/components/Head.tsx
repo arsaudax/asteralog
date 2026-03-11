@@ -73,8 +73,7 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ 
-             С ИДЕАЛЬНЫМ МОБИЛЬНЫМ ДИЗАЙНОМ
+             ФИНАЛЬНАЯ АРХИТЕКТУРНО ПРАВИЛЬНАЯ ВЕРСИЯ
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -129,7 +128,7 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS С ИДЕАЛЬНЫМ МОБИЛЬНЫМ ДИЗАЙНОМ */}
+        {/* 4. КРИТИЧЕСКИЙ CSS */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
@@ -172,158 +171,122 @@ export default (() => {
             min-height: 100vh;
           }
 
-                   /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
+          /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
           @media (max-width: 500px) {
-            body .left.sidebar,
-            html body .left.sidebar {
-              display: grid !important;
-              grid-template-columns: 1fr 44px 44px !important;
-              grid-template-rows: auto !important;
-              gap: 12px !important;  /* увеличил расстояние между кнопками */
-              padding: 8px 20px !important;
-              margin: 0 !important;
-              position: fixed !important;
+            .left.sidebar {
+              position: sticky !important;
               top: 0 !important;
-              left: 0 !important;
-              right: 0 !important;
               z-index: 999999 !important;
-              background: color-mix(in srgb, var(--bg-primary) 95%, transparent) !important;
-              backdrop-filter: blur(8px) !important;
-              -webkit-backdrop-filter: blur(8px) !important;
-              border-bottom: 1px solid var(--border-color) !important;
-              transform: translateY(0) !important;
-              transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) !important;  /* более плавная, с замедлением в конце */
-              box-shadow: none !important;
-              width: 100% !important;
-              max-width: 100% !important;
-              box-sizing: border-box !important;
-            }
-            
-            /* Класс для скрытой панели */
-            body .left.sidebar.hidden,
-            html body .left.sidebar.hidden {
-              transform: translateY(-100%) !important;
-              transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
-            }
-            
-            body .left .page-title,
-            html body .left .page-title {
-              grid-column: 1 !important;
-              grid-row: 1 !important;
+              
               display: flex !important;
               align-items: center !important;
-              justify-content: flex-start !important;
-              gap: 10px !important;
-              margin: 0 !important;
-              padding: 0 !important;
-              overflow: hidden !important;
-              white-space: nowrap !important;
-              text-overflow: ellipsis !important;
+              justify-content: space-between !important;
+              
+              padding: 10px 20px !important;
+              gap: 16px !important;
+              
+              background: rgba(26, 28, 30, 0.85) !important;
+              backdrop-filter: blur(12px) !important;
+              -webkit-backdrop-filter: blur(12px) !important;
+              
+              border-bottom: 1px solid var(--border-color) !important;
+              
+              transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+              box-sizing: border-box !important;
               width: 100% !important;
-              line-height: 1 !important;  /* убираем лишние отступы */
             }
             
-            body .left .page-logo,
-            html body .left .page-logo {
-              width: 36px !important;  /* чуть уменьшил логотип */
-              height: 36px !important;
-              min-width: 36px !important;
+            .left.sidebar.hidden {
+              transform: translateY(-100%) !important;
+            }
+            
+            .page-title {
+              display: flex !important;
+              align-items: center !important;
+              gap: 12px !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              flex-shrink: 1 !important;
+              min-width: 0 !important;
+            }
+            
+            .page-logo {
+              width: 32px !important;
+              height: 32px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
               flex-shrink: 0 !important;
-              display: inline-block !important;
-              margin: 0 !important;
-              vertical-align: middle !important;
+              display: block !important;
             }
             
-            body .left .page-title-link,
-            html body .left .page-title-link {
-              font-size: 16px !important;
+            .page-title-link {
+              font-size: 17px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
+              line-height: 1.2 !important;
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
-              line-height: 36px !important;  /* выравниваем по вертикали с логотипом */
-              margin: 0 !important;
+            }
+            
+            /* Контейнер для кнопок */
+            .search,
+            .darkmode {
+              flex-shrink: 0 !important;
+            }
+            
+            .search {
+              display: flex !important;
+              margin-right: 4px !important;
+            }
+            
+            .darkmode {
+              display: flex !important;
+            }
+            
+            .search-button,
+            .darkmode button {
+              width: 36px !important;
+              height: 36px !important;
+              
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              
+              border-radius: 10px !important;
+              
+              background: var(--bg-secondary) !important;
+              border: 1px solid var(--border-color) !important;
+              
+              cursor: pointer !important;
               padding: 0 !important;
-              display: inline-block !important;
-              vertical-align: middle !important;
+              transition: all 0.2s ease !important;
+            }
+            
+            .search-button:hover,
+            .darkmode button:hover {
+              background: var(--highlight) !important;
+              border-color: var(--link-color) !important;
+            }
+            
+            .search-button p {
+              display: none !important;
+            }
+            
+            .search-button svg,
+            .darkmode button svg {
+              width: 18px !important;
+              height: 18px !important;
+              color: var(--link-color) !important;
             }
             
             .spacer.mobile-only {
               display: none !important;
             }
             
-            .left .search {
-              display: contents !important;
-            }
-            
-            .left .search-button {
-              grid-column: 2 !important;
-              grid-row: 1 !important;
-              width: 40px !important;  /* уменьшил до 40px */
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              border-radius: 50% !important;
-              padding: 0 !important;
-              background: var(--bg-secondary) !important;
-              border: 1px solid var(--border-color) !important;
-              z-index: 2 !important;
-              cursor: pointer !important;
-            }
-            
-            .left .search-button p {
+            .search .search-container {
               display: none !important;
-            }
-            
-            .left .search-button svg {
-              width: 20px !important;  /* уменьшил иконки */
-              height: 20px !important;
-              color: var(--link-color) !important;
-            }
-            
-            .left .darkmode {
-              grid-column: 3 !important;
-              grid-row: 1 !important;
-              justify-self: end !important;
-              z-index: 2 !important;
-            }
-            
-            .left .darkmode button {
-              width: 40px !important;  /* одинаковый размер с кнопкой поиска */
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              border-radius: 50% !important;
-              padding: 0 !important;
-              background: var(--bg-secondary) !important;
-              border: 1px solid var(--border-color) !important;
-              cursor: pointer !important;
-            }
-            
-            .left .darkmode button span {
-              display: none !important;
-            }
-            
-            .left .darkmode button svg {
-              width: 20px !important;  /* одинаковые иконки */
-              height: 20px !important;
-              color: var(--link-color) !important;
-            }
-            
-            .left .search .search-container {
-              display: none !important;
-            }
-            
-            /* Добавляем отступ для контента */
-            body .page,
-            html body .page {
-              padding-top: 65px !important;  /* уменьшил под новый размер */
             }
           }
 
@@ -418,7 +381,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - С ПЛАВНОЙ АНИМАЦИЕЙ */}
+        {/* 8. ФИНАЛЬНЫЙ СКРИПТ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -439,7 +402,7 @@ export default (() => {
                   window.requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С ПЛАВНОЙ АНИМАЦИЕЙ =====
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ =====
                 if (window.innerWidth <= 500) {
                   function initScrollBehavior() {
                     const header = document.querySelector('.left.sidebar');
@@ -449,16 +412,12 @@ export default (() => {
                       window.addEventListener('scroll', function() {
                         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                         
-                        // Скролл вниз
                         if (scrollTop > lastScrollTop && scrollTop > 30) {
                           header.classList.add('hidden');
-                        } 
-                        // Скролл вверх
-                        else if (scrollTop < lastScrollTop) {
+                        } else if (scrollTop < lastScrollTop) {
                           header.classList.remove('hidden');
                         }
                         
-                        // Если в самом верху - показываем
                         if (scrollTop < 5) {
                           header.classList.remove('hidden');
                         }

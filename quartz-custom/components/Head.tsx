@@ -264,7 +264,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 9. ФИНАЛЬНЫЙ СКРИПТ (убирает блокировку, SPA-поддержка) */}
+        {/* 9. ФИНАЛЬНЫЙ СКРИПТ - ТОЛЬКО УБИРАЕТ БЛОКИРОВКУ И SPA */}
         <script>{`
           (function(){
             // Убираем блокировку переходов после загрузки
@@ -283,7 +283,8 @@ export default (() => {
               window.requestAnimationFrame(clean);
             }
             
-            // Восстанавливаем тему при SPA-навигации
+            // ВАЖНО: НЕТ КОДА ДЛЯ УСТАНОВКИ ТЕМЫ ПРИ ЗАГРУЗКЕ!
+            // Только для SPA-навигации
             document.addEventListener('nav',function(){
               try{
                 var t=localStorage.getItem('saved-theme');

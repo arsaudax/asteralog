@@ -73,8 +73,7 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ С ЗАЩИТОЙ
-             Проверено: тема тёмная, логи отключены
+             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ С МОБИЛЬНОЙ ВЁРСТКОЙ
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -91,36 +90,30 @@ export default (() => {
               (function() {
                 const html = document.documentElement;
                 
-                // 1. Устанавливаем тёмную тему
+                // Устанавливаем тёмную тему
                 html.setAttribute('saved-theme', 'dark');
                 html.style.backgroundColor = '#1a1c1e';
                 html.style.color = '#d4d4d4';
                 html.classList.add('site-garden', 'no-transitions');
                 
-                // 2. Защита от переопределения (без логов)
+                // Защита от переопределения (без логов)
                 let counter = 0;
                 const interval = setInterval(() => {
                   counter++;
                   
-                  // Проверяем и восстанавливаем атрибут
                   if (html.getAttribute('saved-theme') !== 'dark') {
                     html.setAttribute('saved-theme', 'dark');
                   }
-                  
-                  // Проверяем и восстанавливаем inline-стили
                   if (html.style.backgroundColor !== '#1a1c1e') {
                     html.style.backgroundColor = '#1a1c1e';
                   }
                   if (html.style.color !== '#d4d4d4') {
                     html.style.color = '#d4d4d4';
                   }
-                  
-                  // Проверяем и восстанавливаем класс
                   if (!html.classList.contains('no-transitions')) {
                     html.classList.add('no-transitions');
                   }
                   
-                  // Останавливаем после 100 проверок (примерно 1 секунда)
                   if (counter > 100) {
                     clearInterval(interval);
                   }
@@ -135,8 +128,9 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS */}
+        {/* 4. КРИТИЧЕСКИЙ CSS (включая мобильные стили) */}
         <style>{`
+          /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
           html.no-transitions *::before,
           html.no-transitions *::after {
@@ -175,6 +169,192 @@ export default (() => {
           
           #quartz-root {
             min-height: 100vh;
+          }
+
+          /* ===== МОБИЛЬНЫЕ СТИЛИ (до 500px) ===== */
+          @media (max-width: 500px) {
+            .left.sidebar {
+              display: grid;
+              grid-template-columns: 1fr 40px 40px;
+              grid-template-rows: auto auto auto auto;
+              gap: 8px;
+              padding: 10px 12px;
+              margin: 0;
+              position: sticky;
+              top: 0;
+              z-index: 20;
+              background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+              backdrop-filter: blur(6px);
+              border-bottom: 1px solid var(--border-color);
+            }
+            
+            .left .page-title {
+              grid-column: 1 / -1;
+              grid-row: 1;
+              display: flex !important;
+              align-items: center !important;
+              gap: 12px !important;
+              margin: 0 !important;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+            
+            .left .page-logo {
+              width: 64px !important;
+              height: 64px !important;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid var(--border-color);
+              flex-shrink: 0;
+              display: block !important;
+            }
+            
+            .left .page-title-link {
+              font-size: 20px;
+              font-weight: 600;
+              color: var(--link-color);
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            
+            .spacer.mobile-only {
+              grid-column: 1 / -1;
+              grid-row: 2;
+              display: block !important;
+              height: 12px !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+            
+            .left .search {
+              display: contents !important;
+            }
+            
+            .left .search-button {
+              grid-column: 2 !important;
+              grid-row: 1 !important;
+              width: 40px;
+              height: 40px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 50%;
+              padding: 0;
+              background: var(--bg-secondary);
+              border: 1px solid var(--border-color);
+              z-index: 2;
+            }
+            
+            .left .search-button p {
+              display: none;
+            }
+            
+            .left .search-button svg {
+              width: 20px;
+              height: 20px;
+              color: var(--link-color);
+            }
+            
+            .left .darkmode {
+              grid-column: 3 !important;
+              grid-row: 1 !important;
+              justify-self: end;
+              z-index: 2;
+            }
+            
+            .left .darkmode button {
+              width: 40px;
+              height: 40px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 50%;
+              padding: 0;
+              background: var(--bg-secondary);
+              border: 1px solid var(--border-color);
+            }
+            
+            .left .darkmode button span {
+              display: none;
+            }
+            
+            .left .darkmode button svg {
+              width: 20px;
+              height: 20px;
+              color: var(--link-color);
+            }
+            
+            .left .search .search-container {
+              grid-column: 1 / -1;
+              grid-row: 3;
+              width: 100%;
+            }
+            
+            .left .search input {
+              width: 100%;
+              padding: 10px 12px;
+              border-radius: 8px;
+              border: 1px solid var(--border-color);
+              background: var(--bg-secondary);
+              color: var(--text-primary);
+              font-size: 16px;
+            }
+            
+            .left .search input:focus {
+              border-color: var(--link-color);
+              outline: none;
+              box-shadow: 0 0 0 3px var(--highlight);
+            }
+            
+            .right {
+              display: flex;
+              flex-direction: column;
+              gap: 0 !important;
+              padding: 12px;
+            }
+            
+            .right .graph,
+            .right .backlinks {
+              display: block;
+              padding: 8px 0 !important;
+            }
+            
+            .right .toc,
+            .right .tag-list {
+              display: none;
+            }
+            
+            [data-site-type="blog"] .right .tag-list,
+            [data-site-type="blog"] .right .archive-link-container {
+              display: block;
+              padding: 8px 0 !important;
+            }
+            
+            [data-site-type="blog"] .right .graph,
+            [data-site-type="blog"] .right .backlinks,
+            [data-site-type="blog"] .right .toc,
+            [data-site-type="blog"] .right .recent-notes {
+              display: none;
+            }
+            
+            .right h3 {
+              margin-bottom: 4px !important;
+              border-bottom: none !important;
+              font-size: 0.9rem;
+            }
+            
+            .explorer {
+              display: none !important;
+            }
+          }
+
+          /* ===== СТИЛИ ДЛЯ ЭКРАНОВ ДО 800px ===== */
+          @media (max-width: 800px) {
+            .explorer {
+              display: none !important;
+            }
           }
         `}</style>
 

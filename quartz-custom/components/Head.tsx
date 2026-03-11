@@ -72,14 +72,12 @@ export default (() => {
 
     return (
       <head>
-        {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ — ВСЁ РАБОТАЕТ!
-        ==================================================== */}
-        
+        {/* 1. МИНИМАЛЬНЫЕ META */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ (ВАШ РАБОЧИЙ) */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
@@ -91,13 +89,14 @@ export default (() => {
                 html.style.color = '#d4d4d4';
                 html.classList.add('site-garden', 'no-transitions');
                 
+                // Лёгкая защита от переопределения (100ms)
                 let counter = 0;
                 const interval = setInterval(() => {
                   counter++;
                   if (html.getAttribute('saved-theme') !== 'dark') {
                     html.setAttribute('saved-theme', 'dark');
                   }
-                  if (counter > 100) clearInterval(interval);
+                  if (counter > 10) clearInterval(interval); // 100ms
                 }, 10);
               })();
             `
@@ -108,8 +107,9 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
+        {/* 3. ТОЛЬКО НЕОБХОДИМЫЕ CSS-ПРАВКИ */}
         <style>{`
-          /* ===== БАЗОВЫЕ СТИЛИ ===== */
+          /* ===== БАЗОВЫЕ СТИЛИ (БЕЗ ИЗМЕНЕНИЙ) ===== */
           html.no-transitions *,
           html.no-transitions *::before,
           html.no-transitions *::after {
@@ -150,146 +150,35 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
+          /* ===== ТОЧЕЧНЫЕ ПРАВКИ (ТОЛЬКО НУЖНОЕ) ===== */
           @media (max-width: 500px) {
-            .left.sidebar {
-              position: sticky !important;
-              top: 0 !important;
-              z-index: 999999 !important;
-              
-              display: flex !important;
-              align-items: center !important;
-              justify-content: space-between !important;
-              
-              padding: 10px 20px 15px 20px !important;
-              
-              background: rgba(26, 28, 30, 0.85) !important;
-              backdrop-filter: blur(12px) !important;
-              border-bottom: 1px solid var(--border-color) !important;
-              
-              transform: translateY(0) !important;
-              transition: transform 0.3s ease-in-out !important;
-              box-sizing: border-box !important;
-              width: 100% !important;
-            }
-            
-            html[saved-theme="light"] .left.sidebar {
-              background: rgba(249, 247, 244, 0.85) !important;
-            }
-            
-            .left.sidebar.hidden {
-              transform: translateY(-100%) !important;
-            }
-            
-            /* Логотип и текст */
+            /* Расстояние между кругом и текстом */
             .page-title {
-              display: flex !important;
-              align-items: center !important;
-              gap: 24px !important;
-              margin: 0 !important;
-              padding: 0 !important;
+              gap: 20px !important;
             }
             
-            .page-logo {
-              width: 36px !important;
-              height: 36px !important;
-              min-width: 36px !important;
-              border-radius: 50% !important;
-              object-fit: cover !important;
-              border: 2px solid var(--border-color) !important;
-            }
-            
-            .page-title-link {
-              font-size: 18px !important;
-              font-weight: 600 !important;
-              color: var(--link-color) !important;
-              line-height: 36px !important;
-              text-decoration: none !important;
-              white-space: nowrap !important;
-              overflow: hidden !important;
-              text-overflow: ellipsis !important;
-            }
-            
-            /* Контейнер для кнопок */
-            .button-container {
-              display: flex !important;
-              align-items: center !important;
-              gap: 1px !important;
-              flex-shrink: 0 !important;
-            }
-            
-            /* Кнопка поиска */
-            .search-button {
-              width: 40px !important;
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              border-radius: 10px !important;
-              background: var(--bg-secondary) !important;
-              border: 1px solid var(--border-color) !important;
-              cursor: pointer !important;
-              padding: 0 !important;
-            }
-            
-            .search-button svg {
-              width: 20px !important;
-              height: 20px !important;
-              color: var(--link-color) !important;
-            }
-            
-            /* Кнопка темы */
-            .darkmode {
-              width: 40px !important;
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              background: transparent !important;
-              border: none !important;
-              cursor: pointer !important;
-              padding: 0 !important;
-            }
-            
-            .darkmode svg {
-              width: 22px !important;
-              height: 22px !important;
-              color: var(--link-color) !important;
-              fill: var(--link-color) !important;
-            }
-            
-            /* Переключение иконок темы */
-            html[saved-theme="dark"] .darkmode .dayIcon {
-              display: none !important;
-            }
-            
-            html[saved-theme="dark"] .darkmode .nightIcon {
-              display: block !important;
-            }
-            
-            html[saved-theme="light"] .darkmode .dayIcon {
-              display: block !important;
-            }
-            
-            html[saved-theme="light"] .darkmode .nightIcon {
-              display: none !important;
-            }
-            
+            /* Убираем лишний спейсер */
             .spacer.mobile-only {
               display: none !important;
             }
-          }
-          
-          @media (max-width: 800px) {
-            .explorer {
-              display: none !important;
+            
+            /* Кнопка темы без рамки */
+            .darkmode button {
+              background: transparent !important;
+              border: none !important;
+            }
+            
+            /* Нижний отступ панели */
+            .left.sidebar {
+              padding-bottom: 15px !important;
             }
           }
         `}</style>
 
+        {/* 4. ШРИФТЫ И РЕСУРСЫ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
+
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
           <>
             <link rel="preload" as="style" href={`${googleFontHref(cfg.theme)}&display=swap`} />
@@ -309,7 +198,7 @@ export default (() => {
           </>
         )}
 
-        {/* Open Graph мета-теги */}
+        {/* 5. OPEN GRAPH META */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -318,7 +207,7 @@ export default (() => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        
+
         {!usesCustomOgImage && (
           <>
             <meta property="og:image" content={ogImageDefaultPath} />
@@ -327,7 +216,7 @@ export default (() => {
             <meta property="og:image:type" content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`} />
           </>
         )}
-        
+
         {cfg.baseUrl && (
           <>
             <meta property="twitter:domain" content={cfg.baseUrl} />
@@ -336,45 +225,52 @@ export default (() => {
           </>
         )}
 
+        {/* 6. РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js.filter((res) => res.loadTime === "beforeDOMReady").map((res) => JSResourceToScriptElement(res, true))}
         {additionalHead.map((res) => typeof res === "function" ? res(fileData) : res)}
 
+        {/* 7. ФИНАЛЬНЫЙ СКРИПТ (СКРОЛЛ-ПОВЕДЕНИЕ) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                // Очистка блокировки переходов
                 const clean = () => {
                   const html = document.documentElement;
                   html.classList.remove('no-transitions');
                   html.style.backgroundColor = '';
                   html.style.color = '';
                 };
+                
                 if (document.readyState === 'loading') {
                   window.addEventListener('DOMContentLoaded', () => requestAnimationFrame(clean), { once: true });
                 } else {
                   requestAnimationFrame(clean);
                 }
                 
+                // Скролл-поведение (Medium/Quackit)
                 if (window.innerWidth <= 500) {
-                  let lastScrollTop = 0;
+                  let lastScroll = 0;
                   const header = document.querySelector('.left.sidebar');
+                  const headerHeight = 70;
+                  const threshold = 10;
                   
                   if (header) {
                     window.addEventListener('scroll', () => {
-                      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                      const currentScroll = window.scrollY;
                       
-                      if (currentScrollTop > lastScrollTop && currentScrollTop > 50) {
+                      if (currentScroll > lastScroll && currentScroll > headerHeight) {
                         header.classList.add('hidden');
-                      } else if (currentScrollTop < lastScrollTop) {
+                      } else if (currentScroll < lastScroll) {
                         header.classList.remove('hidden');
                       }
                       
-                      if (currentScrollTop < 10) {
+                      if (currentScroll < threshold) {
                         header.classList.remove('hidden');
                       }
                       
-                      lastScrollTop = currentScrollTop;
+                      lastScroll = currentScroll;
                     });
                   }
                 }

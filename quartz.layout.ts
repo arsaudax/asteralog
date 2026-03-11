@@ -91,7 +91,8 @@ export const gardenContentPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+    // ИСПРАВЛЕНО: убрали DesktopOnly, оставили просто Explorer
+    Component.Explorer(explorerConfig),
   ],
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
@@ -113,7 +114,8 @@ export const gardenListPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+    // ИСПРАВЛЕНО: убрали DesktopOnly
+    Component.Explorer(explorerConfig),
   ],
   right: [],
 }
@@ -148,7 +150,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    // Ссылка на архив в правой панели
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
@@ -161,7 +162,6 @@ export const blogContentPageLayout: PageLayout = {
     }),
   ],
   afterBody: [
-    // Главная страница - 5 последних постов
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 5,
@@ -171,7 +171,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
-    // Ссылка на архив под лентой на главной
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         text: "Все записи →📚",
@@ -181,7 +180,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
-    // Архив - все посты
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 1000,
@@ -191,7 +189,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'archive'
       }
     }),
-    // Скрипт восстановления темы для SPA-навигации
     CustomComponent.ThemeRestoreScript(),
   ],
 }
@@ -203,7 +200,6 @@ export const blogListPageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на архив в списках тегов
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
@@ -214,7 +210,6 @@ export const blogListPageLayout: PageLayout = {
         return props.fileData.slug?.startsWith('tags/') || false
       }
     }),
-    // Скрипт восстановления темы для SPA-навигации
     CustomComponent.ThemeRestoreScript(),
   ],
 }

@@ -78,43 +78,45 @@ export default (() => {
 
     /* ----------------------------
        Theme bootstrap script
-       ---------------------------- */
+       Приоритет:
+       1. localStorage (сохранённый выбор пользователя)
+       2. dark (художественное решение автора)
+       Системные настройки ИГНОРИРУЮТСЯ в инкогнито
+    ---------------------------- */
 
     const themeBootstrap = `
 (function(){
   try{
     const html = document.documentElement
 
-    // 1. Определяем тему
-    let theme = 'dark'
+    // По умолчанию - тёмная тема (из конфига)
+    let theme = '${cfg.theme.defaultTheme}'
 
     try{
       const saved = localStorage.getItem('saved-theme')
-
+      // Если есть сохранённая тема - используем её
       if(saved === 'dark' || saved === 'light'){
         theme = saved
-      }else{
-        theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light'
       }
+      // Если нет сохранённой - оставляем тему по умолчанию (dark)
+      // Системные настройки НЕ влияют
     }catch(e){
-      theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
+      // localStorage недоступен (инкогнито)
+      // Оставляем тему по умолчанию (dark)
     }
 
-    // 2. Устанавливаем ТОЛЬКО saved-theme
+    // Устанавливаем атрибут для CSS
     html.setAttribute('saved-theme', theme)
 
-    // 3. Inline-стили для первого кадра
+    // Inline-стили для первого кадра (без FOUC)
     html.style.backgroundColor = theme === 'dark' ? '${colors.dark.bg}' : '${colors.light.bg}'
     html.style.color = theme === 'dark' ? '${colors.dark.text}' : '${colors.light.text}'
 
-    // 4. Блокируем переходы
+    // Блокируем переходы на время загрузки
     html.classList.add('no-transitions')
 
   }catch(e){
+    // Фатальный fallback - тёмная тема
     document.documentElement.style.backgroundColor = '${colors.dark.bg}'
     document.documentElement.style.color = '${colors.dark.text}'
     document.documentElement.classList.add('no-transitions')
@@ -153,13 +155,14 @@ export default (() => {
     }catch(e){}
   })
 
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-    try{
-      if(!localStorage.getItem('saved-theme')){
-        const newTheme = e.matches ? 'dark' : 'light'
-        document.documentElement.setAttribute('saved-theme', newTheme)
+  // Следим за изменениями в localStorage (если тема меняется в другой вкладке)
+  window.addEventListener('storage', function(e) {
+    if(e.key === 'saved-theme') {
+      const theme = e.newValue
+      if(theme === 'dark' || theme === 'light') {
+        document.documentElement.setAttribute('saved-theme', theme)
       }
-    }catch(e){}
+    }
   })
 })();`
 
@@ -221,12 +224,12 @@ body {
         <meta name="generator" content="Quartz" />
         <link rel="icon" href={iconPath} />
 
-        {/* 1. THEME BOOTSTRAP */}
+        {/* 1. THEME BOOTSTRAP - выполняется до любого рендера */}
         <script
           dangerouslySetInnerHTML={{ __html: themeBootstrap }}
         />
 
-        {/* 2. CRITICAL CSS */}
+        {/* 2. CRITICAL CSS - гарантирует правильные цвета */}
         <style
           dangerouslySetInnerHTML={{ __html: criticalCSS }}
         />
@@ -239,7 +242,7 @@ body {
           crossOrigin="anonymous"
         />
 
-        {/* FONTS */}
+        {/* FONTS - оптимизированная загрузка */}
         {cfg.theme.cdnCaching &&
           cfg.theme.fontOrigin === "googleFonts" && (
             <>
@@ -336,7 +339,7 @@ body {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 3. FINAL SCRIPT */}
+        {/* 3. FINAL SCRIPT - убирает блокировку, добавляет SPA-поддержку */}
         <script
           dangerouslySetInnerHTML={{ __html: themeFinalize }}
         />

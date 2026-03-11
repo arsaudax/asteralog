@@ -73,11 +73,8 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ЭТАЛОННАЯ РЕАЛИЗАЦИЯ ИЗ PRODUCTION-КЕЙСОВ
+             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
              Источники: joshwcomeau.com, bram.us, overreacted.io
-             
-             ВАЖНО: ТОЛЬКО meta и скрипт до CSS!
-             Ничего лишнего до критического скрипта!
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META - только то, что нужно для работы */}
@@ -85,43 +82,55 @@ export default (() => {
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ГАРАНТИРОВАННОЕ ВЫПОЛНЕНИЕ */}
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ИСПРАВЛЕННАЯ ВЕРСИЯ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Прямое выполнение, без функций, максимально быстро
-              var d=document.documentElement;
-              
-              // Тема по умолчанию - тёмная
-              var t='dark';
-              
-              // Проверяем localStorage (безопасно)
-              try {
-                var s=localStorage.getItem('saved-theme');
-                if(s==='light') t='light';
-              } catch(e){}
-              
-              // Класс сайта
-              if(window.location.hostname.indexOf('blog')>-1){
-                d.classList.add('site-blog');
-              } else {
-                d.classList.add('site-garden');
-              }
-              
-              // Устанавливаем атрибут
-              d.setAttribute('saved-theme', t);
-              
-              // Inline-стили для первого кадра
-              if(t==='dark'){
-                d.style.backgroundColor='#1a1c1e';
-                d.style.color='#d4d4d4';
-              } else {
-                d.style.backgroundColor='#f9f7f4';
-                d.style.color='#2b2b2b';
-              }
-              
-              // Блокируем переходы
-              d.classList.add('no-transitions');
+              (function() {
+                try {
+                  const html = document.documentElement;
+                  // --- ТЕМА ПО УМОЛЧАНИЮ ИЗ КОНФИГА QUARTZ ---
+                  let theme = '${cfg.theme.defaultTheme}';
+
+                  // Безопасно проверяем localStorage
+                  try {
+                    const saved = localStorage.getItem('saved-theme');
+                    if (saved === 'dark' || saved === 'light') {
+                      theme = saved;
+                    }
+                  } catch (e) {}
+
+                  // Класс сайта по hostname
+                  if (window.location.hostname.includes('blog')) {
+                    html.classList.add('site-blog');
+                  } else {
+                    html.classList.add('site-garden');
+                  }
+
+                  // Устанавливаем атрибут для CSS
+                  html.setAttribute('saved-theme', theme);
+
+                  // Inline-стили для первого кадра (гарантия)
+                  if (theme === 'dark') {
+                    html.style.backgroundColor = '#1a1c1e';
+                    html.style.color = '#d4d4d4';
+                  } else {
+                    html.style.backgroundColor = '#f9f7f4';
+                    html.style.color = '#2b2b2b';
+                  }
+
+                  // Блокируем переходы
+                  html.classList.add('no-transitions');
+
+                } catch (e) {
+                  // Фатальный fallback - тёмная тема
+                  const html = document.documentElement;
+                  html.setAttribute('saved-theme', 'dark');
+                  html.style.backgroundColor = '#1a1c1e';
+                  html.style.color = '#d4d4d4';
+                  html.classList.add('no-transitions');
+                }
+              })();
             `
           }}
         />
@@ -131,7 +140,7 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS (Bram.us) */}
+        {/* 4. КРИТИЧЕСКИЙ CSS */}
         <style>{`
           html.no-transitions *,
           html.no-transitions *::before,
@@ -174,7 +183,7 @@ export default (() => {
           }
         `}</style>
 
-        {/* 5. ПРЕКОННЕКТ ДЛЯ ШРИФТОВ (оптимизация) */}
+        {/* 5. ПРЕКОННЕКТ ДЛЯ ШРИФТОВ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
@@ -262,19 +271,19 @@ export default (() => {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              (function(){
-                var clean=function(){
-                  var h=document.documentElement;
-                  h.classList.remove('no-transitions');
-                  h.style.backgroundColor='';
-                  h.style.color='';
+              (function() {
+                const clean = function() {
+                  const html = document.documentElement;
+                  html.classList.remove('no-transitions');
+                  html.style.backgroundColor = '';
+                  html.style.color = '';
                 };
                 
-                if(document.readyState==='loading'){
-                  window.addEventListener('DOMContentLoaded',function(){
+                if (document.readyState === 'loading') {
+                  window.addEventListener('DOMContentLoaded', function() {
                     window.requestAnimationFrame(clean);
-                  },{once:true});
-                }else{
+                  }, { once: true });
+                } else {
                   window.requestAnimationFrame(clean);
                 }
               })();

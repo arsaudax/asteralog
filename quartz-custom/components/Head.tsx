@@ -73,12 +73,13 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ — С МИКРО-ФИКСАМИ
+             ФИНАЛЬНАЯ ВЕРСИЯ — С ПОДДЕРЖКОЙ SPA-НАВИГАЦИИ
              ✅ Тёмная тема
-             ✅ Круг 64px и текст в ряд (через flex в ссылке)
+             ✅ Круг 64px и текст в ряд
              ✅ Fixed + transform + will-change
              ✅ Правильный селектор .sidebar.left
              ✅ Passive scroll listener
+             ✅ Реинициализация после SPA-переходов
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -404,19 +405,19 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ =====
-                function initHeader() {
+                // ===== МОБИЛЬНЫЙ HEADER С ПОДДЕРЖКОЙ SPA =====
+                function initMobileHeader() {
                   const header = document.querySelector('.sidebar.left');
-                  if (!header) {
-                    requestAnimationFrame(initHeader);
-                    return;
-                  }
+                  if (!header) return;
+                  
+                  // Сбрасываем состояние при инициализации
+                  header.classList.remove('hidden');
                   
                   let lastScroll = 0;
                   const headerHeight = 70;
                   const delta = 5;
                   
-                  window.addEventListener('scroll', () => {
+                  function handleScroll() {
                     const currentScroll = window.scrollY;
                     
                     if (Math.abs(currentScroll - lastScroll) <= delta) return;
@@ -432,12 +433,22 @@ export default (() => {
                     }
                     
                     lastScroll = currentScroll;
-                  }, { passive: true });
+                  }
+                  
+                  window.addEventListener('scroll', handleScroll, { passive: true });
                 }
                 
+                // Инициализация при загрузке
                 if (window.innerWidth <= 500) {
-                  initHeader();
+                  initMobileHeader();
                 }
+                
+                // Реинициализация после SPA-навигации
+                document.addEventListener('nav', () => {
+                  if (window.innerWidth <= 500) {
+                    initMobileHeader();
+                  }
+                });
               })();
             `
           }}

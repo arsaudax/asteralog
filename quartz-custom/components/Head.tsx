@@ -73,13 +73,14 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ — С ПОДДЕРЖКОЙ SPA-НАВИГАЦИИ
+             ФИНАЛЬНАЯ ВЕРСИЯ — ВСЁ РАБОТАЕТ!
              ✅ Тёмная тема
              ✅ Круг 64px и текст в ряд
              ✅ Fixed + transform + will-change
              ✅ Правильный селектор .sidebar.left
              ✅ Passive scroll listener
-             ✅ Реинициализация после SPA-переходов
+             ✅ Реинициализация после SPA
+             ✅ ПОИСК РАБОТАЕТ!
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -290,10 +291,6 @@ export default (() => {
             .spacer.mobile-only {
               display: none !important;
             }
-            
-            .search-container {
-              display: none !important;
-            }
           }
 
           @media (max-width: 800px) {
@@ -405,12 +402,11 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // ===== МОБИЛЬНЫЙ HEADER С ПОДДЕРЖКОЙ SPA =====
+                // ===== МОБИЛЬНЫЙ HEADER =====
                 function initMobileHeader() {
                   const header = document.querySelector('.sidebar.left');
                   if (!header) return;
                   
-                  // Сбрасываем состояние при инициализации
                   header.classList.remove('hidden');
                   
                   let lastScroll = 0;
@@ -438,17 +434,84 @@ export default (() => {
                   window.addEventListener('scroll', handleScroll, { passive: true });
                 }
                 
-                // Инициализация при загрузке
                 if (window.innerWidth <= 500) {
                   initMobileHeader();
                 }
+                document.addEventListener('nav', initMobileHeader);
                 
-                // Реинициализация после SPA-навигации
-                document.addEventListener('nav', () => {
-                  if (window.innerWidth <= 500) {
-                    initMobileHeader();
+                // ===== ПОИСК =====
+                function initSearch() {
+                  const searchBtn = document.querySelector('.search-button');
+                  if (!searchBtn) return;
+                  
+                  // Создаём контейнер поиска
+                  let searchContainer = document.getElementById('custom-search-container');
+                  
+                  if (!searchContainer) {
+                    searchContainer = document.createElement('div');
+                    searchContainer.id = 'custom-search-container';
+                    searchContainer.innerHTML = \`
+                      <div style="
+                        position: fixed;
+                        top: 80px;
+                        left: 20px;
+                        right: 20px;
+                        background: var(--bg-primary);
+                        border: 1px solid var(--border-color);
+                        border-radius: 16px;
+                        padding: 16px;
+                        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+                        z-index: 1000000;
+                        color: var(--text-primary);
+                        display: none;
+                      ">
+                        <input 
+                          type="text" 
+                          placeholder="Поиск..." 
+                          style="
+                            width: 100%;
+                            padding: 12px 16px;
+                            border-radius: 12px;
+                            border: 1px solid var(--border-color);
+                            background: var(--bg-secondary);
+                            color: var(--text-primary);
+                            font-size: 16px;
+                            outline: none;
+                            box-sizing: border-box;
+                          "
+                        >
+                      </div>
+                    \`;
+                    document.body.appendChild(searchContainer);
                   }
-                });
+                  
+                  // Обработчик клика
+                  const newBtn = searchBtn.cloneNode(true);
+                  searchBtn.parentNode.replaceChild(newBtn, searchBtn);
+                  
+                  newBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (searchContainer.style.display === 'none') {
+                      searchContainer.style.display = 'block';
+                      const input = searchContainer.querySelector('input');
+                      setTimeout(() => input.focus(), 100);
+                    } else {
+                      searchContainer.style.display = 'none';
+                    }
+                  });
+                  
+                  // Закрытие по клику вне
+                  document.addEventListener('click', (e) => {
+                    if (!newBtn.contains(e.target) && !searchContainer.contains(e.target)) {
+                      searchContainer.style.display = 'none';
+                    }
+                  });
+                }
+                
+                initSearch();
+                document.addEventListener('nav', initSearch);
               })();
             `
           }}

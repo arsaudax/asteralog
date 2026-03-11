@@ -74,7 +74,7 @@ export default (() => {
       <head>
         {/* ====================================================
              ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ 
-             С МОБИЛЬНОЙ ВЁРСТКОЙ И !important
+             С МОБИЛЬНОЙ ВЁРСТКОЙ И СКРОЛЛ-ПОВЕДЕНИЕМ
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -172,16 +172,16 @@ export default (() => {
             min-height: 100vh;
           }
 
-                    /* ===== МОБИЛЬНЫЕ СТИЛИ С !important ===== */
+          /* ===== МОБИЛЬНЫЕ СТИЛИ С !important ===== */
           @media (max-width: 500px) {
             .left.sidebar {
               display: grid !important;
               grid-template-columns: 1fr 40px 40px !important;
               grid-template-rows: auto !important;
               gap: 4px !important;
-              padding: 8px 16px !important;  /* увеличил боковые отступы для выравнивания с текстом */
+              padding: 8px 16px !important;
               margin: 0 !important;
-              position: fixed !important;  /* fixed вместо sticky */
+              position: fixed !important;
               top: 0 !important;
               left: 0 !important;
               right: 0 !important;
@@ -296,9 +296,16 @@ export default (() => {
               display: none !important;
             }
             
-            /* Добавляем отступ для контента, чтобы не перекрывался панелью */
+            /* Добавляем отступ для контента */
             .page {
-              padding-top: 60px !important;  /* высота панели + небольшой отступ */
+              padding-top: 60px !important;
+            }
+          }
+
+          /* ===== СТИЛИ ДЛЯ ЭКРАНОВ ДО 800px ===== */
+          @media (max-width: 800px) {
+            .explorer {
+              display: none !important;
             }
           }
         `}</style>
@@ -386,11 +393,12 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - УБИРАЕТ БЛОКИРОВКУ ПЕРЕХОДОВ */}
+        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - УБИРАЕТ БЛОКИРОВКУ И ДОБАВЛЯЕТ СКРОЛЛ-ПОВЕДЕНИЕ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                // Очистка блокировки переходов
                 const clean = function() {
                   const html = document.documentElement;
                   html.classList.remove('no-transitions');
@@ -404,6 +412,32 @@ export default (() => {
                   }, { once: true });
                 } else {
                   window.requestAnimationFrame(clean);
+                }
+                
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ ДЛЯ МОБИЛЬНОЙ ПАНЕЛИ =====
+                if (window.innerWidth <= 500) {
+                  let lastScrollTop = 0;
+                  const header = document.querySelector('.left.sidebar');
+                  
+                  window.addEventListener('scroll', function() {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                    // Скролл вниз
+                    if (scrollTop > lastScrollTop && scrollTop > 50) {
+                      header.classList.add('hidden');
+                    } 
+                    // Скролл вверх
+                    else if (scrollTop < lastScrollTop) {
+                      header.classList.remove('hidden');
+                    }
+                    
+                    // Если в самом верху - показываем
+                    if (scrollTop < 10) {
+                      header.classList.remove('hidden');
+                    }
+                    
+                    lastScrollTop = scrollTop;
+                  });
                 }
               })();
             `

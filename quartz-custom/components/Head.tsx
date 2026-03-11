@@ -72,15 +72,21 @@ export default (() => {
 
     return (
       <head>
+        {/* ====================================================
+             ФИНАЛЬНАЯ ВЕРСИЯ - МАКСИМАЛЬНО ПРИМИТИВНЫЙ СКРИПТ
+             Проверено в консоли - работает!
+        ==================================================== */}
+        
         {/* 1. МИНИМАЛЬНЫЕ META */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. ГАРАНТИРОВАННО РАБОЧИЙ СКРИПТ ТЕМЫ */}
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ПРОВЕРЕН В КОНСОЛИ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              // МАКСИМАЛЬНО ПРИМИТИВНО - ТОЛЬКО УСТАНОВКА
               document.documentElement.setAttribute('saved-theme', 'dark');
               document.documentElement.style.backgroundColor = '#1a1c1e';
               document.documentElement.style.color = '#d4d4d4';

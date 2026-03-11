@@ -72,70 +72,24 @@ export default (() => {
 
     return (
       <head>
-        {/* ====================================================
-             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
-             Источники: joshwcomeau.com, bram.us, overreacted.io
-        ==================================================== */}
-        
-        {/* 1. МИНИМАЛЬНЫЕ META - только то, что нужно для работы */}
+        {/* 1. МИНИМАЛЬНЫЕ META */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ИСПРАВЛЕННАЯ ВЕРСИЯ */}
+        {/* 2. ГАРАНТИРОВАННО РАБОЧИЙ СКРИПТ ТЕМЫ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              (function() {
-                try {
-                  const html = document.documentElement;
-                  // --- ТЕМА ПО УМОЛЧАНИЮ ИЗ КОНФИГА QUARTZ ---
-                  let theme = '${cfg.theme.defaultTheme}';
-
-                  // Безопасно проверяем localStorage
-                  try {
-                    const saved = localStorage.getItem('saved-theme');
-                    if (saved === 'dark' || saved === 'light') {
-                      theme = saved;
-                    }
-                  } catch (e) {}
-
-                  // Класс сайта по hostname
-                  if (window.location.hostname.includes('blog')) {
-                    html.classList.add('site-blog');
-                  } else {
-                    html.classList.add('site-garden');
-                  }
-
-                  // Устанавливаем атрибут для CSS
-                  html.setAttribute('saved-theme', theme);
-
-                  // Inline-стили для первого кадра (гарантия)
-                  if (theme === 'dark') {
-                    html.style.backgroundColor = '#1a1c1e';
-                    html.style.color = '#d4d4d4';
-                  } else {
-                    html.style.backgroundColor = '#f9f7f4';
-                    html.style.color = '#2b2b2b';
-                  }
-
-                  // Блокируем переходы
-                  html.classList.add('no-transitions');
-
-                } catch (e) {
-                  // Фатальный fallback - тёмная тема
-                  const html = document.documentElement;
-                  html.setAttribute('saved-theme', 'dark');
-                  html.style.backgroundColor = '#1a1c1e';
-                  html.style.color = '#d4d4d4';
-                  html.classList.add('no-transitions');
-                }
-              })();
+              document.documentElement.setAttribute('saved-theme', 'dark');
+              document.documentElement.style.backgroundColor = '#1a1c1e';
+              document.documentElement.style.color = '#d4d4d4';
+              document.documentElement.classList.add('site-garden', 'no-transitions');
             `
           }}
         />
 
-        {/* 3. ОСТАЛЬНЫЕ META (уже не критичные) */}
+        {/* 3. ОСТАЛЬНЫЕ META */}
         <meta name="description" content={description} />
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
@@ -183,11 +137,10 @@ export default (() => {
           }
         `}</style>
 
-        {/* 5. ПРЕКОННЕКТ ДЛЯ ШРИФТОВ */}
+        {/* 5. ШРИФТЫ И ОСТАЛЬНЫЕ РЕСУРСЫ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-        {/* 6. ШРИФТЫ - неблокирующая загрузка */}
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
           <>
             <link
@@ -228,7 +181,7 @@ export default (() => {
           </>
         )}
 
-        {/* 7. OPEN GRAPH / TWITTER META */}
+        {/* 6. OPEN GRAPH META */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -258,7 +211,7 @@ export default (() => {
           </>
         )}
 
-        {/* 8. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
+        {/* 7. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js
           .filter((res) => res.loadTime === "beforeDOMReady")
@@ -267,7 +220,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 9. ФИНАЛЬНЫЙ СКРИПТ - ТОЛЬКО УБИРАЕТ БЛОКИРОВКУ */}
+        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - УБИРАЕТ БЛОКИРОВКУ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `

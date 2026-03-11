@@ -20,53 +20,53 @@ const baseConfig = {
   defaultDateType: "created",
 }
 
-// Цвета для сада - ТОЛЬКО ДЛЯ QUARTZ
+// Цвета для сада
 const gardenColors = {
   lightMode: {
-    light: "#1a1c1e",        // меняем на тёмный фон
-    lightgray: "#2e3235",     // второстепенный фон
+    light: "#f9f7f4",        // светлый фон
+    lightgray: "#e5e5e5",     // светлый серый для карточек
+    gray: "#9a9a9a",          // muted текст
+    darkgray: "#4a4a49",      // второстепенный текст
+    dark: "#2b2b2b",          // основной текст
+    secondary: "#ab7d4c",     // ссылки
+    tertiary: "#7c5736",      // ссылки при наведении
+    highlight: "rgba(162, 132, 94, 0.15)",
+    textHighlight: "#fff23688",
+  },
+  darkMode: {
+    light: "#1a1c1e",        // тёмный фон
+    lightgray: "#2e3235",     // тёмно-серый для карточек
     gray: "#4a4f54",          // границы
     darkgray: "#d4d4d4",      // основной текст
     dark: "#ffffff",          // заголовки
     secondary: "#b5977a",     // ссылки
     tertiary: "#d4b69b",      // ссылки при наведении
-    highlight: "rgba(181, 151, 122, 0.15)", // выделение
-    textHighlight: "#2e2a24",
-  },
-  darkMode: {
-    light: "#1a1c1e",
-    lightgray: "#2e3235",
-    gray: "#4a4f54",
-    darkgray: "#d4d4d4",
-    dark: "#ffffff",
-    secondary: "#b5977a",
-    tertiary: "#d4b69b",
     highlight: "rgba(181, 151, 122, 0.15)",
     textHighlight: "#2e2a24",
   },
 }
 
-// Цвета для блога - ТОЛЬКО ДЛЯ QUARTZ
+// Цвета для блога
 const blogColors = {
   lightMode: {
-    light: "#1a1c1e",        // тоже тёмный фон
-    lightgray: "#2e3235",
-    gray: "#4a4f54",
-    darkgray: "#d4d4d4",
-    dark: "#ffffff",
-    secondary: "#b5977a",
-    tertiary: "#d4b69b",
-    highlight: "rgba(181, 151, 122, 0.15)",
-    textHighlight: "#2e2a24",
+    light: "#ffffff",        // чисто белый фон
+    lightgray: "#f0f0f0",     // светлый серый
+    gray: "#9a9a9a",          // muted текст
+    darkgray: "#666666",      // второстепенный текст
+    dark: "#333333",          // основной текст
+    secondary: "#ab7d4c",     // ссылки
+    tertiary: "#7c5736",      // ссылки при наведении
+    highlight: "rgba(162, 132, 94, 0.1)",
+    textHighlight: "#fff23688",
   },
   darkMode: {
-    light: "#1a1c1e",
-    lightgray: "#2e3235",
-    gray: "#4a4f54",
-    darkgray: "#d4d4d4",
-    dark: "#ffffff",
-    secondary: "#b5977a",
-    tertiary: "#d4b69b",
+    light: "#1a1c1e",        // тёмный фон
+    lightgray: "#2e3235",     // тёмно-серый
+    gray: "#4a4f54",          // границы
+    darkgray: "#d4d4d4",      // основной текст
+    dark: "#ffffff",          // заголовки
+    secondary: "#b5977a",     // ссылки
+    tertiary: "#d4b69b",      // ссылки при наведении
     highlight: "rgba(181, 151, 122, 0.15)",
     textHighlight: "#2e2a24",
   },
@@ -79,7 +79,7 @@ const config: QuartzConfig = {
     ...baseConfig,
     baseUrl: process.env.BASE_URL || '',
     theme: {
-      defaultTheme: "dark",  // принудительно тёмная тема
+      defaultTheme: "dark",
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
@@ -87,7 +87,7 @@ const config: QuartzConfig = {
         body: "Inter",
         code: "JetBrains Mono",
       },
-      colors: colors,  // Quartz нужны цвета
+      colors: colors,
     },
   },
   plugins: {

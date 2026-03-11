@@ -73,7 +73,8 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ С МОБИЛЬНОЙ ВЁРСТКОЙ
+             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ 
+             С МОБИЛЬНОЙ ВЁРСТКОЙ И !important
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -128,7 +129,7 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS (включая мобильные стили) */}
+        {/* 4. КРИТИЧЕСКИЙ CSS (с мобильными стилями и !important) */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
@@ -171,57 +172,57 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ (до 500px) ===== */
+          /* ===== МОБИЛЬНЫЕ СТИЛИ С !important ===== */
           @media (max-width: 500px) {
             .left.sidebar {
-              display: grid;
-              grid-template-columns: 1fr 40px 40px;
-              grid-template-rows: auto auto auto auto;
-              gap: 8px;
-              padding: 10px 12px;
-              margin: 0;
-              position: sticky;
-              top: 0;
-              z-index: 20;
-              background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
-              backdrop-filter: blur(6px);
-              border-bottom: 1px solid var(--border-color);
+              display: grid !important;
+              grid-template-columns: 1fr 40px 40px !important;
+              grid-template-rows: auto auto auto auto !important;
+              gap: 8px !important;
+              padding: 10px 12px !important;
+              margin: 0 !important;
+              position: sticky !important;
+              top: 0 !important;
+              z-index: 20 !important;
+              background: color-mix(in srgb, var(--bg-primary) 92%, transparent) !important;
+              backdrop-filter: blur(6px) !important;
+              border-bottom: 1px solid var(--border-color) !important;
             }
             
             .left .page-title {
-              grid-column: 1 / -1;
-              grid-row: 1;
+              grid-column: 1 / -1 !important;
+              grid-row: 1 !important;
               display: flex !important;
               align-items: center !important;
               gap: 12px !important;
               margin: 0 !important;
-              overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
+              overflow: hidden !important;
+              white-space: nowrap !important;
+              text-overflow: ellipsis !important;
             }
             
             .left .page-logo {
               width: 64px !important;
               height: 64px !important;
-              border-radius: 50%;
-              object-fit: cover;
-              border: 2px solid var(--border-color);
-              flex-shrink: 0;
+              border-radius: 50% !important;
+              object-fit: cover !important;
+              border: 2px solid var(--border-color) !important;
+              flex-shrink: 0 !important;
               display: block !important;
             }
             
             .left .page-title-link {
-              font-size: 20px;
-              font-weight: 600;
-              color: var(--link-color);
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
+              font-size: 20px !important;
+              font-weight: 600 !important;
+              color: var(--link-color) !important;
+              white-space: nowrap !important;
+              overflow: hidden !important;
+              text-overflow: ellipsis !important;
             }
             
             .spacer.mobile-only {
-              grid-column: 1 / -1;
-              grid-row: 2;
+              grid-column: 1 / -1 !important;
+              grid-row: 2 !important;
               display: block !important;
               height: 12px !important;
               margin: 0 !important;
@@ -235,100 +236,100 @@ export default (() => {
             .left .search-button {
               grid-column: 2 !important;
               grid-row: 1 !important;
-              width: 40px;
-              height: 40px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 50%;
-              padding: 0;
-              background: var(--bg-secondary);
-              border: 1px solid var(--border-color);
-              z-index: 2;
+              width: 40px !important;
+              height: 40px !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              border-radius: 50% !important;
+              padding: 0 !important;
+              background: var(--bg-secondary) !important;
+              border: 1px solid var(--border-color) !important;
+              z-index: 2 !important;
             }
             
             .left .search-button p {
-              display: none;
+              display: none !important;
             }
             
             .left .search-button svg {
-              width: 20px;
-              height: 20px;
-              color: var(--link-color);
+              width: 20px !important;
+              height: 20px !important;
+              color: var(--link-color) !important;
             }
             
             .left .darkmode {
               grid-column: 3 !important;
               grid-row: 1 !important;
-              justify-self: end;
-              z-index: 2;
+              justify-self: end !important;
+              z-index: 2 !important;
             }
             
             .left .darkmode button {
-              width: 40px;
-              height: 40px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 50%;
-              padding: 0;
-              background: var(--bg-secondary);
-              border: 1px solid var(--border-color);
+              width: 40px !important;
+              height: 40px !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              border-radius: 50% !important;
+              padding: 0 !important;
+              background: var(--bg-secondary) !important;
+              border: 1px solid var(--border-color) !important;
             }
             
             .left .darkmode button span {
-              display: none;
+              display: none !important;
             }
             
             .left .darkmode button svg {
-              width: 20px;
-              height: 20px;
-              color: var(--link-color);
+              width: 20px !important;
+              height: 20px !important;
+              color: var(--link-color) !important;
             }
             
             .left .search .search-container {
-              grid-column: 1 / -1;
-              grid-row: 3;
-              width: 100%;
+              grid-column: 1 / -1 !important;
+              grid-row: 3 !important;
+              width: 100% !important;
             }
             
             .left .search input {
-              width: 100%;
-              padding: 10px 12px;
-              border-radius: 8px;
-              border: 1px solid var(--border-color);
-              background: var(--bg-secondary);
-              color: var(--text-primary);
-              font-size: 16px;
+              width: 100% !important;
+              padding: 10px 12px !important;
+              border-radius: 8px !important;
+              border: 1px solid var(--border-color) !important;
+              background: var(--bg-secondary) !important;
+              color: var(--text-primary) !important;
+              font-size: 16px !important;
             }
             
             .left .search input:focus {
-              border-color: var(--link-color);
-              outline: none;
-              box-shadow: 0 0 0 3px var(--highlight);
+              border-color: var(--link-color) !important;
+              outline: none !important;
+              box-shadow: 0 0 0 3px var(--highlight) !important;
             }
             
             .right {
-              display: flex;
-              flex-direction: column;
+              display: flex !important;
+              flex-direction: column !important;
               gap: 0 !important;
-              padding: 12px;
+              padding: 12px !important;
             }
             
             .right .graph,
             .right .backlinks {
-              display: block;
+              display: block !important;
               padding: 8px 0 !important;
             }
             
             .right .toc,
             .right .tag-list {
-              display: none;
+              display: none !important;
             }
             
             [data-site-type="blog"] .right .tag-list,
             [data-site-type="blog"] .right .archive-link-container {
-              display: block;
+              display: block !important;
               padding: 8px 0 !important;
             }
             
@@ -336,13 +337,13 @@ export default (() => {
             [data-site-type="blog"] .right .backlinks,
             [data-site-type="blog"] .right .toc,
             [data-site-type="blog"] .right .recent-notes {
-              display: none;
+              display: none !important;
             }
             
             .right h3 {
               margin-bottom: 4px !important;
               border-bottom: none !important;
-              font-size: 0.9rem;
+              font-size: 0.9rem !important;
             }
             
             .explorer {

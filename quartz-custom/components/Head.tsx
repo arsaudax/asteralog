@@ -70,186 +70,119 @@ export default (() => {
     const ogImageDefaultPath =
       `https://${cfg.baseUrl}/static/og-image.png`
 
-    // Цвета темы
-    const colors = {
-      dark: { bg: '#1a1c1e', text: '#d4d4d4' },
-      light: { bg: '#f9f7f4', text: '#2b2b2b' }
-    }
-
-    /* ----------------------------
-       PRODUCTION THEME BOOTSTRAP
-       Спецификация: блокирует рендер до выполнения
-       Источник: Tailwind, overreacted.io, joshwcomeau.com
-       ВАЖНО: этот скрипт должен быть ПЕРВЫМ в head
-    ---------------------------- */
-
-    const themeBootstrap = `
-<script blocking="render">
-  (function() {
-    try {
-      // Максимально примитивно - никаких функций высшего порядка
-      var saved = null;
-      try {
-        saved = localStorage.getItem('saved-theme');
-      } catch(e) {}
-      
-      // Определяем тему: приоритет у сохранённой, иначе тёмная
-      var theme = saved === 'light' ? 'light' : 'dark';
-      
-      // Добавляем класс сайта по hostname
-      if (window.location.hostname.indexOf('blog') > -1) {
-        document.documentElement.classList.add('site-blog');
-      } else {
-        document.documentElement.classList.add('site-garden');
-      }
-      
-      // Устанавливаем атрибут для CSS
-      document.documentElement.setAttribute('saved-theme', theme);
-      
-      // Inline-стили для первого кадра (гарантия)
-      if (theme === 'dark') {
-        document.documentElement.style.backgroundColor = '#1a1c1e';
-        document.documentElement.style.color = '#d4d4d4';
-      } else {
-        document.documentElement.style.backgroundColor = '#f9f7f4';
-        document.documentElement.style.color = '#2b2b2b';
-      }
-      
-      // Блокируем переходы на время загрузки
-      document.documentElement.classList.add('no-transitions');
-      
-    } catch(e) {
-      // Фатальный fallback - тёмная тема
-      document.documentElement.setAttribute('saved-theme', 'dark');
-      document.documentElement.style.backgroundColor = '#1a1c1e';
-      document.documentElement.style.color = '#d4d4d4';
-      document.documentElement.classList.add('no-transitions');
-    }
-  })();
-</script>`;
-
-    /* ----------------------------
-       Final hydration script
-       ---------------------------- */
-
-    const themeFinalize = `
-<script>
-  (function() {
-    // Убираем блокировку переходов после загрузки
-    var clean = function() {
-      var html = document.documentElement;
-      html.classList.remove('no-transitions');
-      html.style.backgroundColor = '';
-      html.style.color = '';
-    };
-    
-    if (document.readyState === 'loading') {
-      window.addEventListener('DOMContentLoaded', function() {
-        window.requestAnimationFrame(clean);
-      }, { once: true });
-    } else {
-      window.requestAnimationFrame(clean);
-    }
-    
-    // Восстанавливаем тему при SPA-навигации
-    document.addEventListener('nav', function() {
-      try {
-        var theme = localStorage.getItem('saved-theme');
-        if (theme === 'dark' || theme === 'light') {
-          document.documentElement.setAttribute('saved-theme', theme);
-        }
-      } catch(e) {}
-    });
-    
-    // Следим за изменениями в localStorage (другие вкладки)
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'saved-theme') {
-        var theme = e.newValue;
-        if (theme === 'dark' || theme === 'light') {
-          document.documentElement.setAttribute('saved-theme', theme);
-        }
-      }
-    });
-  })();
-</script>`;
-
-    /* ----------------------------
-       Critical CSS
-       ---------------------------- */
-
-    const criticalCSS = `
-<style>
-html.no-transitions *,
-html.no-transitions *::before,
-html.no-transitions *::after {
-  transition: none !important;
-  animation: none !important;
-}
-
-html[saved-theme="dark"] {
-  background-color: #1a1c1e;
-  color: #d4d4d4;
-}
-
-html[saved-theme="dark"] body,
-html[saved-theme="dark"] #quartz-root,
-html[saved-theme="dark"] #quartz-body {
-  background-color: #1a1c1e !important;
-  color: #d4d4d4 !important;
-}
-
-html[saved-theme="light"] {
-  background-color: #f9f7f4;
-  color: #2b2b2b;
-}
-
-html[saved-theme="light"] body,
-html[saved-theme="light"] #quartz-root,
-html[saved-theme="light"] #quartz-body {
-  background-color: #f9f7f4 !important;
-  color: #2b2b2b !important;
-}
-
-body {
-  background: inherit;
-  color: inherit;
-}
-
-#quartz-root {
-  min-height: 100vh;
-}
-</style>
-`;
-
     return (
       <head>
-        {/* ====================================================
-             ВАЖНО: ПОРЯДОК ИМЕЕТ ЗНАЧЕНИЕ!
-             Критический скрипт должен быть ПЕРВЫМ после базовых meta,
-             чтобы заблокировать рендер до установки темы.
-        ==================================================== */}
-        
         {/* 0. АБСОЛЮТНЫЙ МИНИМУМ ДЛЯ РАБОТЫ СТРАНИЦЫ */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 1. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ПЕРВЫЙ! */}
-        <div dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+        {/* ====================================================
+             ВАЖНО: ПЕРВЫЙ СКРИПТ - КРИТИЧЕСКИЙ ДЛЯ ТЕМЫ
+             Вставляем как прямой тег <script>, НЕ через div
+        ==================================================== */}
+        <script
+          blocking="render"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  // Максимально примитивно - без функций высшего порядка
+                  var saved = null;
+                  try {
+                    saved = localStorage.getItem('saved-theme');
+                  } catch(e) {}
+                  
+                  // Определяем тему: приоритет у сохранённой, иначе тёмная
+                  var theme = saved === 'light' ? 'light' : 'dark';
+                  
+                  // Добавляем класс сайта по hostname
+                  if (window.location.hostname.indexOf('blog') > -1) {
+                    document.documentElement.classList.add('site-blog');
+                  } else {
+                    document.documentElement.classList.add('site-garden');
+                  }
+                  
+                  // Устанавливаем атрибут для CSS
+                  document.documentElement.setAttribute('saved-theme', theme);
+                  
+                  // Inline-стили для первого кадра
+                  if (theme === 'dark') {
+                    document.documentElement.style.backgroundColor = '#1a1c1e';
+                    document.documentElement.style.color = '#d4d4d4';
+                  } else {
+                    document.documentElement.style.backgroundColor = '#f9f7f4';
+                    document.documentElement.style.color = '#2b2b2b';
+                  }
+                  
+                  // Блокируем переходы на время загрузки
+                  document.documentElement.classList.add('no-transitions');
+                  
+                } catch(e) {
+                  // Фатальный fallback - тёмная тема
+                  document.documentElement.setAttribute('saved-theme', 'dark');
+                  document.documentElement.style.backgroundColor = '#1a1c1e';
+                  document.documentElement.style.color = '#d4d4d4';
+                  document.documentElement.classList.add('no-transitions');
+                }
+              })();
+            `
+          }}
+        />
 
-        {/* 2. ОСТАЛЬНЫЕ META (не критичные для первого кадра) */}
+        {/* ОСТАЛЬНЫЕ META */}
         <meta name="description" content={description} />
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 3. КРИТИЧЕСКИЙ CSS - минимальные стили */}
-        <div dangerouslySetInnerHTML={{ __html: criticalCSS }} />
+        {/* КРИТИЧЕСКИЙ CSS */}
+        <style>{`
+          html.no-transitions *,
+          html.no-transitions *::before,
+          html.no-transitions *::after {
+            transition: none !important;
+            animation: none !important;
+          }
 
-        {/* 4. ПРЕКОННЕКТ ДЛЯ ШРИФТОВ */}
+          html[saved-theme="dark"] {
+            background-color: #1a1c1e;
+            color: #d4d4d4;
+          }
+
+          html[saved-theme="dark"] body,
+          html[saved-theme="dark"] #quartz-root,
+          html[saved-theme="dark"] #quartz-body {
+            background-color: #1a1c1e !important;
+            color: #d4d4d4 !important;
+          }
+
+          html[saved-theme="light"] {
+            background-color: #f9f7f4;
+            color: #2b2b2b;
+          }
+
+          html[saved-theme="light"] body,
+          html[saved-theme="light"] #quartz-root,
+          html[saved-theme="light"] #quartz-body {
+            background-color: #f9f7f4 !important;
+            color: #2b2b2b !important;
+          }
+
+          body {
+            background: inherit;
+            color: inherit;
+          }
+
+          #quartz-root {
+            min-height: 100vh;
+          }
+        `}</style>
+
+        {/* ПРЕКОННЕКТ ДЛЯ ШРИФТОВ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-        {/* 5. ШРИФТЫ - неблокирующая загрузка */}
+        {/* ШРИФТЫ */}
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
           <>
             <link
@@ -290,7 +223,7 @@ body {
           </>
         )}
 
-        {/* 6. OPEN GRAPH / TWITTER META */}
+        {/* OPEN GRAPH META */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -320,7 +253,7 @@ body {
           </>
         )}
 
-        {/* 7. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
+        {/* ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js
           .filter((res) => res.loadTime === "beforeDOMReady")
@@ -329,8 +262,45 @@ body {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - убирает блокировку, SPA-поддержка */}
-        <div dangerouslySetInnerHTML={{ __html: themeFinalize }} />
+        {/* ФИНАЛЬНЫЙ СКРИПТ */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              var clean = function() {
+                var html = document.documentElement;
+                html.classList.remove('no-transitions');
+                html.style.backgroundColor = '';
+                html.style.color = '';
+              };
+              
+              if (document.readyState === 'loading') {
+                window.addEventListener('DOMContentLoaded', function() {
+                  window.requestAnimationFrame(clean);
+                }, { once: true });
+              } else {
+                window.requestAnimationFrame(clean);
+              }
+              
+              document.addEventListener('nav', function() {
+                try {
+                  var theme = localStorage.getItem('saved-theme');
+                  if (theme === 'dark' || theme === 'light') {
+                    document.documentElement.setAttribute('saved-theme', theme);
+                  }
+                } catch(e) {}
+              });
+              
+              window.addEventListener('storage', function(e) {
+                if (e.key === 'saved-theme') {
+                  var theme = e.newValue;
+                  if (theme === 'dark' || theme === 'light') {
+                    document.documentElement.setAttribute('saved-theme', theme);
+                  }
+                }
+              });
+            })();
+          `
+        }} />
 
       </head>
     )

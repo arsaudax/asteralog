@@ -73,8 +73,8 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ЗАЩИЩЁННАЯ ВЕРСИЯ
-             Скрипт блокирует рендер и защищает тему от переопределения
+             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
+             Скрипт блокирует рендер и устанавливает тёмную тему
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -82,84 +82,16 @@ export default (() => {
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ С БЛОКИРОВКОЙ РЕНДЕРА И ЗАЩИТОЙ */}
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ С БЛОКИРОВКОЙ РЕНДЕРА */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
-              // МАКСИМАЛЬНО АГРЕССИВНО - ПЕРЕОПРЕДЕЛЯЕМ ВСЁ
-              (function() {
-                const html = document.documentElement;
-                
-                // 1. Устанавливаем тёмную тему
-                html.setAttribute('saved-theme', 'dark');
-                
-                // 2. Inline-стили для первого кадра
-                html.style.backgroundColor = '#1a1c1e';
-                html.style.color = '#d4d4d4';
-                
-                // 3. Добавляем классы
-                html.classList.add('site-garden', 'no-transitions');
-                
-                // 4. ПЕРЕОПРЕДЕЛЯЕМ setAttribute для защиты от переопределения
-                const originalSetAttribute = html.setAttribute;
-                html.setAttribute = function(name, value) {
-                  // Если кто-то пытается установить светлую тему - блокируем
-                  if (name === 'saved-theme' && value === 'light') {
-                    console.warn('🛡️ Заблокирована попытка установить светлую тему');
-                    return originalSetAttribute.call(this, name, 'dark');
-                  }
-                  // В остальных случаях пропускаем
-                  return originalSetAttribute.call(this, name, value);
-                };
-                
-                // 5. Защита от переопределения через style
-                const originalSetProperty = CSSStyleDeclaration.prototype.setProperty;
-                CSSStyleDeclaration.prototype.setProperty = function(property, value, priority) {
-                  // Если кто-то пытается переопределить цвета темы
-                  if (property === 'background-color' || property === 'color') {
-                    console.warn('🛡️ Заблокировано изменение цвета через CSSOM');
-                    return;
-                  }
-                  return originalSetProperty.call(this, property, value, priority);
-                };
-                
-                // 6. Интервал проверки (каждые 10мс в первую секунду)
-                let counter = 0;
-                const interval = setInterval(() => {
-                  counter++;
-                  
-                  // Проверяем атрибут
-                  if (html.getAttribute('saved-theme') !== 'dark') {
-                    console.warn('🛡️ Восстанавливаем атрибут темы');
-                    html.setAttribute('saved-theme', 'dark');
-                  }
-                  
-                  // Проверяем inline-стили
-                  if (html.style.backgroundColor !== '#1a1c1e' || html.style.color !== '#d4d4d4') {
-                    console.warn('🛡️ Восстанавливаем inline-стили');
-                    html.style.backgroundColor = '#1a1c1e';
-                    html.style.color = '#d4d4d4';
-                  }
-                  
-                  // Проверяем класс
-                  if (!html.classList.contains('no-transitions')) {
-                    console.warn('🛡️ Восстанавливаем класс no-transitions');
-                    html.classList.add('no-transitions');
-                  }
-                  
-                  // Останавливаем через 100 проверок (примерно 1 секунда)
-                  if (counter > 100) {
-                    clearInterval(interval);
-                    console.log('🛡️ Защита отключена - страница загружена');
-                    
-                    // Восстанавливаем оригинальный setAttribute
-                    setTimeout(() => {
-                      html.setAttribute = originalSetAttribute;
-                    }, 100);
-                  }
-                }, 10);
-              })();
+              // УСТАНАВЛИВАЕМ ТЁМНУЮ ТЕМУ ДО РЕНДЕРА
+              document.documentElement.setAttribute('saved-theme', 'dark');
+              document.documentElement.style.backgroundColor = '#1a1c1e';
+              document.documentElement.style.color = '#d4d4d4';
+              document.documentElement.classList.add('site-garden', 'no-transitions');
             `
           }}
         />

@@ -74,15 +74,12 @@ export default (() => {
       <head>
         {/* ====================================================
              ФИНАЛЬНАЯ ВЕРСИЯ — ВСЁ РАБОТАЕТ!
-             Круг → надпись (20px), нижний отступ 15px
         ==================================================== */}
         
-        {/* 1. МИНИМАЛЬНЫЕ META */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ С БЛОКИРОВКОЙ РЕНДЕРА И ЗАЩИТОЙ */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
@@ -107,12 +104,10 @@ export default (() => {
           }}
         />
 
-        {/* 3. ОСТАЛЬНЫЕ META */}
         <meta name="description" content={description} />
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS — ФИНАЛЬНАЯ ВЕРСИЯ */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
@@ -155,7 +150,7 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ — ФИНАЛ ===== */
+          /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
           @media (max-width: 500px) {
             .left.sidebar {
               position: sticky !important;
@@ -166,7 +161,7 @@ export default (() => {
               align-items: center !important;
               justify-content: space-between !important;
               
-              padding: 10px 20px 15px 20px !important; /* увеличен нижний отступ */
+              padding: 10px 20px 15px 20px !important;
               
               background: rgba(26, 28, 30, 0.85) !important;
               backdrop-filter: blur(12px) !important;
@@ -186,45 +181,44 @@ export default (() => {
               transform: translateY(-100%) !important;
             }
             
-            /* Левая часть: круг → надпись */
-            .left-part {
+            /* Логотип и текст */
+            .page-title {
               display: flex !important;
               align-items: center !important;
-              gap: 20px !important;
-              flex: 1 !important;
+              gap: 24px !important;
+              margin: 0 !important;
+              padding: 0 !important;
             }
             
             .page-logo {
-              width: 40px !important;
-              height: 40px !important;
-              min-width: 40px !important;
+              width: 36px !important;
+              height: 36px !important;
+              min-width: 36px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
-              display: block !important;
-              flex-shrink: 0 !important;
             }
             
             .page-title-link {
               font-size: 18px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
-              line-height: 40px !important;
+              line-height: 36px !important;
+              text-decoration: none !important;
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
-              text-decoration: none !important;
-              flex: 1 !important;
             }
             
-            /* Правая часть: кнопки */
-            .right-part {
+            /* Контейнер для кнопок */
+            .button-container {
               display: flex !important;
               align-items: center !important;
-              gap: 8px !important;
+              gap: 1px !important;
               flex-shrink: 0 !important;
             }
             
+            /* Кнопка поиска */
             .search-button {
               width: 40px !important;
               height: 40px !important;
@@ -238,25 +232,19 @@ export default (() => {
               padding: 0 !important;
             }
             
-            .search-button:hover {
-              background: var(--highlight) !important;
-              border-color: var(--link-color) !important;
-            }
-            
             .search-button svg {
               width: 20px !important;
               height: 20px !important;
               color: var(--link-color) !important;
-              display: block !important;
             }
             
+            /* Кнопка темы */
             .darkmode {
               width: 40px !important;
               height: 40px !important;
               display: flex !important;
               align-items: center !important;
               justify-content: center !important;
-              border-radius: 10px !important;
               background: transparent !important;
               border: none !important;
               cursor: pointer !important;
@@ -267,47 +255,41 @@ export default (() => {
               width: 22px !important;
               height: 22px !important;
               color: var(--link-color) !important;
+              fill: var(--link-color) !important;
+            }
+            
+            /* Переключение иконок темы */
+            html[saved-theme="dark"] .darkmode .dayIcon {
+              display: none !important;
+            }
+            
+            html[saved-theme="dark"] .darkmode .nightIcon {
               display: block !important;
             }
             
-            .search-container {
+            html[saved-theme="light"] .darkmode .dayIcon {
+              display: block !important;
+            }
+            
+            html[saved-theme="light"] .darkmode .nightIcon {
               display: none !important;
-              position: absolute !important;
-              top: calc(100% + 8px) !important;
-              left: 0 !important;
-              right: 0 !important;
-              background: var(--bg-primary) !important;
-              border: 1px solid var(--border-color) !important;
-              border-radius: 12px !important;
-              padding: 12px !important;
-              box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-              z-index: 1000000 !important;
             }
             
-            .search.active .search-container { display: block !important; }
-            
-            .search-container input {
-              width: 100% !important;
-              padding: 10px !important;
-              border-radius: 8px !important;
-              border: 1px solid var(--border-color) !important;
-              background: var(--bg-secondary) !important;
-              color: var(--text-primary) !important;
-              font-size: 16px !important;
-              outline: none !important;
+            .spacer.mobile-only {
+              display: none !important;
             }
-            
-            .spacer.mobile-only { display: none !important; }
           }
           
           @media (max-width: 800px) {
-            .explorer { display: none !important; }
+            .explorer {
+              display: none !important;
+            }
           }
         `}</style>
 
-        {/* 5. ШРИФТЫ И ОСТАЛЬНЫЕ РЕСУРСЫ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
           <>
             <link rel="preload" as="style" href={`${googleFontHref(cfg.theme)}&display=swap`} />
@@ -327,7 +309,7 @@ export default (() => {
           </>
         )}
 
-        {/* 6. OPEN GRAPH META */}
+        {/* Open Graph мета-теги */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -336,6 +318,7 @@ export default (() => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
+        
         {!usesCustomOgImage && (
           <>
             <meta property="og:image" content={ogImageDefaultPath} />
@@ -344,6 +327,7 @@ export default (() => {
             <meta property="og:image:type" content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`} />
           </>
         )}
+        
         {cfg.baseUrl && (
           <>
             <meta property="twitter:domain" content={cfg.baseUrl} />
@@ -352,17 +336,14 @@ export default (() => {
           </>
         )}
 
-        {/* 7. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js.filter((res) => res.loadTime === "beforeDOMReady").map((res) => JSResourceToScriptElement(res, true))}
         {additionalHead.map((res) => typeof res === "function" ? res(fileData) : res)}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // Очистка блокировки переходов
                 const clean = () => {
                   const html = document.documentElement;
                   html.classList.remove('no-transitions');
@@ -375,49 +356,23 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // Поиск
-                const searchButton = document.querySelector('.search-button');
-                const searchEl = document.querySelector('.search');
-                if (searchButton && searchEl) {
-                  searchButton.addEventListener('click', (e) => {
-                    e.preventDefault(); e.stopPropagation();
-                    searchEl.classList.toggle('active');
-                    if (searchEl.classList.contains('active')) {
-                      setTimeout(() => searchEl.querySelector('input')?.focus(), 100);
-                    }
-                  });
-                  document.addEventListener('click', (e) => {
-                    if (!searchEl.contains(e.target) && searchEl.classList.contains('active')) {
-                      searchEl.classList.remove('active');
-                    }
-                  });
-                  document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && searchEl.classList.contains('active')) {
-                      searchEl.classList.remove('active');
-                    }
-                  });
-                }
-                
-                // Скролл
                 if (window.innerWidth <= 500) {
                   let lastScrollTop = 0;
                   const header = document.querySelector('.left.sidebar');
-                  const headerHeight = header ? header.offsetHeight : 70;
-                  const scrollDelta = 5;
                   
                   if (header) {
                     window.addEventListener('scroll', () => {
                       const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
                       
-                      if (Math.abs(lastScrollTop - currentScrollTop) <= scrollDelta) return;
-                      
-                      if (currentScrollTop > lastScrollTop && currentScrollTop > headerHeight) {
+                      if (currentScrollTop > lastScrollTop && currentScrollTop > 50) {
                         header.classList.add('hidden');
                       } else if (currentScrollTop < lastScrollTop) {
                         header.classList.remove('hidden');
                       }
                       
-                      if (currentScrollTop <= 5) header.classList.remove('hidden');
+                      if (currentScrollTop < 10) {
+                        header.classList.remove('hidden');
+                      }
                       
                       lastScrollTop = currentScrollTop;
                     });

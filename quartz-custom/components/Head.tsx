@@ -203,7 +203,7 @@ export default (() => {
             .page-title {
               display: flex !important;
               align-items: center !important;
-              gap: 8px !important;
+              gap: 12px !important;
               margin: 0 !important;
               padding: 0 !important;
               flex-shrink: 1 !important;
@@ -211,8 +211,12 @@ export default (() => {
             }
             
             .page-logo {
-              width: 32px !important;
-              height: 32px !important;
+              width: 52px !important;
+              height: 52px !important;
+              min-width: 52px !important;
+              max-width: 52px !important;
+              min-height: 52px !important;
+              max-height: 52px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
@@ -221,10 +225,10 @@ export default (() => {
             }
             
             .page-title-link {
-              font-size: 17px !important;
+              font-size: 18px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
-              line-height: 1.2 !important;
+              line-height: 1.3 !important;
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;

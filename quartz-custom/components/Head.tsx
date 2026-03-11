@@ -413,7 +413,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - С ОТЛАДКОЙ СКРОЛЛ-ПОВЕДЕНИЯ */}
+                {/* 8. ФИНАЛЬНЫЙ СКРИПТ - С ОЖИДАНИЕМ ЗАГРУЗКИ DOM */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -434,45 +434,47 @@ export default (() => {
                   window.requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С ОТЛАДКОЙ =====
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С ОЖИДАНИЕМ ЗАГРУЗКИ DOM =====
                 if (window.innerWidth <= 500) {
-                  let lastScrollTop = 0;
-                  const header = document.querySelector('.left.sidebar');
-                  
-                  if (header) {
-                    console.log('✅ Мобильный хедер найден, скролл-поведение активировано');
-                    console.log('Начальное состояние:', header.className);
+                  // Функция инициализации
+                  function initScrollBehavior() {
+                    const header = document.querySelector('.left.sidebar');
                     
-                    window.addEventListener('scroll', function() {
-                      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    if (header) {
+                      console.log('✅ Мобильный хедер найден, скролл-поведение активировано');
                       
-                      console.log('scrollTop:', scrollTop, 'lastScrollTop:', lastScrollTop);
-                      
-                      // Скролл вниз
-                      if (scrollTop > lastScrollTop && scrollTop > 30) {
-                        header.classList.add('hidden');
-                        console.log('🔼 Скрываем панель, классы теперь:', header.className);
-                      } 
-                      // Скролл вверх
-                      else if (scrollTop < lastScrollTop) {
-                        header.classList.remove('hidden');
-                        console.log('🔽 Показываем панель, классы теперь:', header.className);
-                      }
-                      
-                      // Если в самом верху - показываем
-                      if (scrollTop < 5) {
-                        header.classList.remove('hidden');
-                        console.log('🏠 Вверху страницы - показываем панель, классы:', header.className);
-                      }
-                      
-                      lastScrollTop = scrollTop;
-                    });
-                  } else {
-                    console.log('❌ Мобильный хедер НЕ НАЙДЕН');
-                    console.log('Селектор .left.sidebar не нашёл элементов на странице');
+                      let lastScrollTop = 0;
+                      window.addEventListener('scroll', function() {
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        
+                        // Скролл вниз
+                        if (scrollTop > lastScrollTop && scrollTop > 30) {
+                          header.classList.add('hidden');
+                        } 
+                        // Скролл вверх
+                        else if (scrollTop < lastScrollTop) {
+                          header.classList.remove('hidden');
+                        }
+                        
+                        // Если в самом верху - показываем
+                        if (scrollTop < 5) {
+                          header.classList.remove('hidden');
+                        }
+                        
+                        lastScrollTop = scrollTop;
+                      });
+                    } else {
+                      console.log('❌ Мобильный хедер НЕ НАЙДЕН, пробуем через 100мс');
+                      setTimeout(initScrollBehavior, 100);
+                    }
                   }
-                } else {
-                  console.log('📱 Не мобильное устройство (ширина > 500px)');
+                  
+                  // Запускаем после загрузки DOM
+                  if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initScrollBehavior);
+                  } else {
+                    initScrollBehavior();
+                  }
                 }
               })();
             `

@@ -80,6 +80,7 @@ export default (() => {
        PRODUCTION THEME BOOTSTRAP
        Спецификация: блокирует рендер до выполнения
        Источник: Tailwind, overreacted.io, joshwcomeau.com
+       ВАЖНО: этот скрипт должен быть ПЕРВЫМ в head
     ---------------------------- */
 
     const themeBootstrap = `
@@ -222,25 +223,33 @@ body {
 
     return (
       <head>
-        {/* БАЗОВЫЕ META - минимально необходимые */}
+        {/* ====================================================
+             ВАЖНО: ПОРЯДОК ИМЕЕТ ЗНАЧЕНИЕ!
+             Критический скрипт должен быть ПЕРВЫМ после базовых meta,
+             чтобы заблокировать рендер до установки темы.
+        ==================================================== */}
+        
+        {/* 0. АБСОЛЮТНЫЙ МИНИМУМ ДЛЯ РАБОТЫ СТРАНИЦЫ */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-        <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
-        <meta name="description" content={description} />
-        <link rel="icon" href={iconPath} />
 
-        {/* 1. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - блокирует рендер */}
+        {/* 1. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ПЕРВЫЙ! */}
         <div dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
 
-        {/* 2. КРИТИЧЕСКИЙ CSS - минимальные стили */}
+        {/* 2. ОСТАЛЬНЫЕ META (не критичные для первого кадра) */}
+        <meta name="description" content={description} />
+        <link rel="icon" href={iconPath} />
+        <meta name="color-scheme" content="dark light" />
+
+        {/* 3. КРИТИЧЕСКИЙ CSS - минимальные стили */}
         <div dangerouslySetInnerHTML={{ __html: criticalCSS }} />
 
-        {/* 3. ПРЕКОННЕКТ ДЛЯ ШРИФТОВ */}
+        {/* 4. ПРЕКОННЕКТ ДЛЯ ШРИФТОВ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-        {/* 4. ШРИФТЫ - неблокирующая загрузка */}
+        {/* 5. ШРИФТЫ - неблокирующая загрузка */}
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
           <>
             <link
@@ -281,7 +290,7 @@ body {
           </>
         )}
 
-        {/* 5. OPEN GRAPH / TWITTER META */}
+        {/* 6. OPEN GRAPH / TWITTER META */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -311,7 +320,7 @@ body {
           </>
         )}
 
-        {/* 6. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
+        {/* 7. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js
           .filter((res) => res.loadTime === "beforeDOMReady")
@@ -320,7 +329,7 @@ body {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 7. ФИНАЛЬНЫЙ СКРИПТ - убирает блокировку, SPA-поддержка */}
+        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - убирает блокировку, SPA-поддержка */}
         <div dangerouslySetInnerHTML={{ __html: themeFinalize }} />
 
       </head>

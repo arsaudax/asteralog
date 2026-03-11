@@ -76,6 +76,11 @@ export default (() => {
       light: { bg: '#f9f7f4', text: '#2b2b2b' }
     }
 
+    // ========== МЕСТО ДЛЯ ИЗМЕНЕНИЯ 1 ==========
+    // Определяем класс сайта на основе SITE_TYPE
+    const siteClass = process.env.SITE_TYPE === 'blog' ? 'site-blog' : 'site-garden'
+    // ===========================================
+
     /* ----------------------------
        Theme bootstrap script
        Приоритет:
@@ -88,6 +93,11 @@ export default (() => {
 (function(){
   try{
     const html = document.documentElement
+
+    // ========== МЕСТО ДЛЯ ИЗМЕНЕНИЯ 2 ==========
+    // Добавляем класс сайта (garden или blog)
+    html.classList.add('${siteClass}')
+    // ===========================================
 
     // По умолчанию - тёмная тема (из конфига)
     let theme = '${cfg.theme.defaultTheme}'

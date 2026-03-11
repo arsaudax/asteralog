@@ -78,9 +78,7 @@ export default (() => {
 
     /* ----------------------------
        Theme bootstrap script
-       Приоритет:
-       1. localStorage (сохранённый выбор пользователя)
-       2. dark (художественное решение автора)
+       ВРЕМЕННО: всегда тёмная тема, localStorage игнорируется
     ---------------------------- */
 
     const themeBootstrap = `
@@ -88,30 +86,20 @@ export default (() => {
   try{
     const html = document.documentElement
 
-    // ========== ОПРЕДЕЛЯЕМ САЙТ ПО HOSTNAME ==========
+    // Определяем сайт по hostname
     const isBlog = window.location.hostname.includes('blog');
     html.classList.add(isBlog ? 'site-blog' : 'site-garden');
 
-    // ========== ТЁМНАЯ ТЕМА ПО УМОЛЧАНИЮ ==========
-    let theme = 'dark'  // всегда тёмная, если нет сохранённой
-
-    try{
-      const saved = localStorage.getItem('saved-theme')
-      // Если есть сохранённая тема - используем её
-      if(saved === 'dark' || saved === 'light'){
-        theme = saved
-      }
-      // Если нет сохранённой - оставляем 'dark'
-    }catch(e){
-      // localStorage недоступен (инкогнито) - оставляем 'dark'
-    }
+    // ========== ВРЕМЕННО: ВСЕГДА ТЁМНАЯ ТЕМА ==========
+    // localStorage ПОЛНОСТЬЮ ИГНОРИРУЕТСЯ
+    const theme = 'dark'
 
     // Устанавливаем атрибут для CSS
     html.setAttribute('saved-theme', theme)
 
     // Inline-стили для первого кадра (без FOUC)
-    html.style.backgroundColor = theme === 'dark' ? '${colors.dark.bg}' : '${colors.light.bg}'
-    html.style.color = theme === 'dark' ? '${colors.dark.text}' : '${colors.light.text}'
+    html.style.backgroundColor = '${colors.dark.bg}'
+    html.style.color = '${colors.dark.text}'
 
     // Блокируем переходы на время загрузки
     html.classList.add('no-transitions')

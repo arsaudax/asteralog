@@ -264,7 +264,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 9. ФИНАЛЬНЫЙ СКРИПТ - ТОЛЬКО УБИРАЕТ БЛОКИРОВКУ И SPA */}
+                {/* 9. ФИНАЛЬНЫЙ СКРИПТ - ТОЛЬКО УБИРАЕТ БЛОКИРОВКУ */}
         <script>{`
           (function(){
             // Убираем блокировку переходов после загрузки
@@ -283,26 +283,9 @@ export default (() => {
               window.requestAnimationFrame(clean);
             }
             
-            // ВАЖНО: НЕТ КОДА ДЛЯ УСТАНОВКИ ТЕМЫ ПРИ ЗАГРУЗКЕ!
-            // Только для SPA-навигации
-            document.addEventListener('nav',function(){
-              try{
-                var t=localStorage.getItem('saved-theme');
-                if(t==='dark'||t==='light'){
-                  document.documentElement.setAttribute('saved-theme',t);
-                }
-              }catch(e){}
-            });
+            // ВНИМАНИЕ: НИКАКОГО КОДА ДЛЯ УСТАНОВКИ ТЕМЫ ЗДЕСЬ НЕТ!
+            // Тема уже установлена первым скриптом
             
-            // Следим за изменениями в localStorage (другие вкладки)
-            window.addEventListener('storage',function(e){
-              if(e.key==='saved-theme'){
-                var t=e.newValue;
-                if(t==='dark'||t==='light'){
-                  document.documentElement.setAttribute('saved-theme',t);
-                }
-              }
-            });
           })();
         `}</script>
 

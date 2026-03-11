@@ -74,7 +74,7 @@ export default (() => {
       <head>
         {/* ====================================================
              ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ 
-             С МОБИЛЬНОЙ ВЁРСТКОЙ И СКРОЛЛ-ПОВЕДЕНИЕМ
+             С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ И ОТЛАДКОЙ
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -129,7 +129,7 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS (с мобильными стилями и !important) */}
+        {/* 4. КРИТИЧЕСКИЙ CSS С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
@@ -172,7 +172,7 @@ export default (() => {
             min-height: 100vh;
           }
 
-                    /* ===== МОБИЛЬНЫЕ СТИЛИ С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ ===== */
+          /* ===== МОБИЛЬНЫЕ СТИЛИ С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ ===== */
           @media (max-width: 500px) {
             body .left.sidebar,
             html body .left.sidebar {
@@ -249,10 +249,83 @@ export default (() => {
               display: inline-block !important;
             }
             
+            .spacer.mobile-only {
+              display: none !important;
+            }
+            
+            .left .search {
+              display: contents !important;
+            }
+            
+            .left .search-button {
+              grid-column: 2 !important;
+              grid-row: 1 !important;
+              width: 40px !important;
+              height: 40px !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              border-radius: 50% !important;
+              padding: 0 !important;
+              background: var(--bg-secondary) !important;
+              border: 1px solid var(--border-color) !important;
+              z-index: 2 !important;
+            }
+            
+            .left .search-button p {
+              display: none !important;
+            }
+            
+            .left .search-button svg {
+              width: 20px !important;
+              height: 20px !important;
+              color: var(--link-color) !important;
+            }
+            
+            .left .darkmode {
+              grid-column: 3 !important;
+              grid-row: 1 !important;
+              justify-self: end !important;
+              z-index: 2 !important;
+            }
+            
+            .left .darkmode button {
+              width: 40px !important;
+              height: 40px !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              border-radius: 50% !important;
+              padding: 0 !important;
+              background: var(--bg-secondary) !important;
+              border: 1px solid var(--border-color) !important;
+            }
+            
+            .left .darkmode button span {
+              display: none !important;
+            }
+            
+            .left .darkmode button svg {
+              width: 20px !important;
+              height: 20px !important;
+              color: var(--link-color) !important;
+            }
+            
+            .left .search .search-container {
+              display: none !important;
+            }
+            
             /* Добавляем отступ для контента */
             body .page,
             html body .page {
               padding-top: 65px !important;
+            }
+          }
+
+          /* ===== СТИЛИ ДЛЯ ЭКРАНОВ ДО 800px ===== */
+          @media (max-width: 800px) {
+            .explorer {
+              display: none !important;
             }
           }
         `}</style>
@@ -340,7 +413,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - УБИРАЕТ БЛОКИРОВКУ И ДОБАВЛЯЕТ СКРОЛЛ-ПОВЕДЕНИЕ */}
+        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - С ОТЛАДКОЙ СКРОЛЛ-ПОВЕДЕНИЯ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -361,30 +434,45 @@ export default (() => {
                   window.requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ ДЛЯ МОБИЛЬНОЙ ПАНЕЛИ =====
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С ОТЛАДКОЙ =====
                 if (window.innerWidth <= 500) {
                   let lastScrollTop = 0;
                   const header = document.querySelector('.left.sidebar');
                   
-                  window.addEventListener('scroll', function() {
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                  if (header) {
+                    console.log('✅ Мобильный хедер найден, скролл-поведение активировано');
+                    console.log('Начальное состояние:', header.className);
                     
-                    // Скролл вниз
-                    if (scrollTop > lastScrollTop && scrollTop > 50) {
-                      header.classList.add('hidden');
-                    } 
-                    // Скролл вверх
-                    else if (scrollTop < lastScrollTop) {
-                      header.classList.remove('hidden');
-                    }
-                    
-                    // Если в самом верху - показываем
-                    if (scrollTop < 10) {
-                      header.classList.remove('hidden');
-                    }
-                    
-                    lastScrollTop = scrollTop;
-                  });
+                    window.addEventListener('scroll', function() {
+                      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                      
+                      console.log('scrollTop:', scrollTop, 'lastScrollTop:', lastScrollTop);
+                      
+                      // Скролл вниз
+                      if (scrollTop > lastScrollTop && scrollTop > 30) {
+                        header.classList.add('hidden');
+                        console.log('🔼 Скрываем панель, классы теперь:', header.className);
+                      } 
+                      // Скролл вверх
+                      else if (scrollTop < lastScrollTop) {
+                        header.classList.remove('hidden');
+                        console.log('🔽 Показываем панель, классы теперь:', header.className);
+                      }
+                      
+                      // Если в самом верху - показываем
+                      if (scrollTop < 5) {
+                        header.classList.remove('hidden');
+                        console.log('🏠 Вверху страницы - показываем панель, классы:', header.className);
+                      }
+                      
+                      lastScrollTop = scrollTop;
+                    });
+                  } else {
+                    console.log('❌ Мобильный хедер НЕ НАЙДЕН');
+                    console.log('Селектор .left.sidebar не нашёл элементов на странице');
+                  }
+                } else {
+                  console.log('📱 Не мобильное устройство (ширина > 500px)');
                 }
               })();
             `

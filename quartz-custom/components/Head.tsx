@@ -73,11 +73,10 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ — С БОЛЬШИМ КРУГОМ 64px
+             ФИНАЛЬНАЯ ВЕРСИЯ
              ✅ Тёмная тема
-             ✅ Круг 64px, текст 18px, в ряд
-             ✅ Отступ 24px
-             ✅ Скролл (скрывается/появляется)
+             ✅ Круг 64px, текст 18px, в ряд, отступ 24px
+             ✅ Скролл через visibility (работает!)
              ✅ Кнопки: поиск в рамке, тема без рамки
         ==================================================== */}
         
@@ -173,8 +172,9 @@ export default (() => {
               position: sticky !important;
               top: 0 !important;
               z-index: 999999 !important;
-              transition: transform 0.3s ease-in-out !important;
-              transform: translateY(0) !important;
+              transition: visibility 0.3s ease-in-out, opacity 0.3s ease-in-out !important;
+              visibility: visible !important;
+              opacity: 1 !important;
               box-sizing: border-box !important;
               width: 100% !important;
             }
@@ -184,7 +184,8 @@ export default (() => {
             }
             
             .left.sidebar.hidden {
-              transform: translateY(-100%) !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
             }
             
             .page-title {
@@ -394,7 +395,7 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ =====
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ (через visibility) =====
                 if (window.innerWidth <= 500) {
                   let lastScroll = 0;
                   const header = document.querySelector('.left.sidebar');

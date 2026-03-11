@@ -172,9 +172,10 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ С !important ===== */
+                    /* ===== МОБИЛЬНЫЕ СТИЛИ С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ ===== */
           @media (max-width: 500px) {
-            .left.sidebar {
+            body .left.sidebar,
+            html body .left.sidebar {
               display: grid !important;
               grid-template-columns: 1fr 40px 40px !important;
               grid-template-rows: auto !important;
@@ -185,20 +186,28 @@ export default (() => {
               top: 0 !important;
               left: 0 !important;
               right: 0 !important;
-              z-index: 20 !important;
-              background: color-mix(in srgb, var(--bg-primary) 92%, transparent) !important;
-              backdrop-filter: blur(6px) !important;
+              z-index: 999999 !important;
+              background: color-mix(in srgb, var(--bg-primary) 95%, transparent) !important;
+              backdrop-filter: blur(8px) !important;
+              -webkit-backdrop-filter: blur(8px) !important;
               border-bottom: 1px solid var(--border-color) !important;
               transform: translateY(0) !important;
-              transition: transform 0.3s ease !important;
+              transition: transform 0.2s ease !important;
+              box-shadow: none !important;
+              width: 100% !important;
+              max-width: 100% !important;
+              box-sizing: border-box !important;
             }
             
             /* Класс для скрытой панели */
-            .left.sidebar.hidden {
+            body .left.sidebar.hidden,
+            html body .left.sidebar.hidden {
               transform: translateY(-100%) !important;
+              box-shadow: none !important;
             }
             
-            .left .page-title {
+            body .left .page-title,
+            html body .left .page-title {
               grid-column: 1 !important;
               grid-row: 1 !important;
               display: flex !important;
@@ -206,106 +215,44 @@ export default (() => {
               justify-content: flex-start !important;
               gap: 8px !important;
               margin: 0 !important;
+              padding: 0 !important;
               overflow: hidden !important;
               white-space: nowrap !important;
               text-overflow: ellipsis !important;
+              width: 100% !important;
             }
             
-            .left .page-logo {
+            body .left .page-logo,
+            html body .left .page-logo {
               width: 40px !important;
               height: 40px !important;
+              min-width: 40px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
               flex-shrink: 0 !important;
-              display: block !important;
+              display: inline-block !important;
+              margin: 0 !important;
             }
             
-            .left .page-title-link {
+            body .left .page-title-link,
+            html body .left .page-title-link {
               font-size: 16px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
-            }
-            
-            .spacer.mobile-only {
-              display: none !important;
-            }
-            
-            .left .search {
-              display: contents !important;
-            }
-            
-            .left .search-button {
-              grid-column: 2 !important;
-              grid-row: 1 !important;
-              width: 40px !important;
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              border-radius: 50% !important;
+              line-height: 40px !important;
+              margin: 0 !important;
               padding: 0 !important;
-              background: var(--bg-secondary) !important;
-              border: 1px solid var(--border-color) !important;
-              z-index: 2 !important;
-            }
-            
-            .left .search-button p {
-              display: none !important;
-            }
-            
-            .left .search-button svg {
-              width: 20px !important;
-              height: 20px !important;
-              color: var(--link-color) !important;
-            }
-            
-            .left .darkmode {
-              grid-column: 3 !important;
-              grid-row: 1 !important;
-              justify-self: end !important;
-              z-index: 2 !important;
-            }
-            
-            .left .darkmode button {
-              width: 40px !important;
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              border-radius: 50% !important;
-              padding: 0 !important;
-              background: var(--bg-secondary) !important;
-              border: 1px solid var(--border-color) !important;
-            }
-            
-            .left .darkmode button span {
-              display: none !important;
-            }
-            
-            .left .darkmode button svg {
-              width: 20px !important;
-              height: 20px !important;
-              color: var(--link-color) !important;
-            }
-            
-            .left .search .search-container {
-              display: none !important;
+              display: inline-block !important;
             }
             
             /* Добавляем отступ для контента */
-            .page {
-              padding-top: 60px !important;
-            }
-          }
-
-          /* ===== СТИЛИ ДЛЯ ЭКРАНОВ ДО 800px ===== */
-          @media (max-width: 800px) {
-            .explorer {
-              display: none !important;
+            body .page,
+            html body .page {
+              padding-top: 65px !important;
             }
           }
         `}</style>

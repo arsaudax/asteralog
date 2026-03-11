@@ -15,12 +15,12 @@ html[saved-theme="dark"].site-garden,
   --text-secondary: #b0b0b0;
   --text-muted: #9a9a9a;
   --border-color: #4a4f54;
-  --link-color: #b5977a;
-  --link-hover: #d4b69b;
-  --highlight: rgba(181, 151, 122, 0.15);
+  --link-color: #ab7d4c;      /* ← ЯРКИЙ ЗОЛОТОЙ */
+  --link-hover: #7c5736;       /* ← тёмный золотой для hover */
+  --highlight: rgba(171, 125, 76, 0.15);
 }
 
-/* Светлая тема сада (по умолчанию для сада) */
+/* Светлая тема сада */
 html[saved-theme="light"].site-garden,
 .site-garden html[saved-theme="light"] {
   --bg-primary: #f9f7f4;
@@ -29,16 +29,16 @@ html[saved-theme="light"].site-garden,
   --text-secondary: #4a4a49;
   --text-muted: #9a9a9a;
   --border-color: #b8b8b8;
-  --link-color: #ab7d4c;
-  --link-hover: #7c5736;
-  --highlight: rgba(162, 132, 94, 0.15);
+  --link-color: #ab7d4c;      /* ← ЯРКИЙ ЗОЛОТОЙ */
+  --link-hover: #7c5736;       /* ← тёмный золотой для hover */
+  --highlight: rgba(171, 125, 76, 0.15);
 }
 
 /* =========================================================
    ПЕРЕМЕННЫЕ ДЛЯ БЛОГА (blog.asteralog.ru)
    ========================================================= */
 
-/* Тёмная тема блога (по умолчанию для блога) */
+/* Тёмная тема блога */
 html[saved-theme="dark"].site-blog,
 .site-blog html[saved-theme="dark"] {
   --bg-primary: #1a1c1e;
@@ -47,9 +47,9 @@ html[saved-theme="dark"].site-blog,
   --text-secondary: #b0b0b0;
   --text-muted: #9a9a9a;
   --border-color: #4a4f54;
-  --link-color: #b5977a;
-  --link-hover: #d4b69b;
-  --highlight: rgba(181, 151, 122, 0.15);
+  --link-color: #ab7d4c;      /* ← ЯРКИЙ ЗОЛОТОЙ */
+  --link-hover: #7c5736;       /* ← тёмный золотой для hover */
+  --highlight: rgba(171, 125, 76, 0.15);
 }
 
 /* Светлая тема блога */
@@ -61,9 +61,9 @@ html[saved-theme="light"].site-blog,
   --text-secondary: #666666;
   --text-muted: #9a9a9a;
   --border-color: #b8b8b8;
-  --link-color: #ab7d4c;
-  --link-hover: #7c5736;
-  --highlight: rgba(162, 132, 94, 0.1);
+  --link-color: #ab7d4c;      /* ← ЯРКИЙ ЗОЛОТОЙ */
+  --link-hover: #7c5736;       /* ← тёмный золотой для hover */
+  --highlight: rgba(171, 125, 76, 0.1);
 }
 
 /* =========================================================
@@ -76,9 +76,9 @@ html[saved-theme="light"].site-blog,
   --text-secondary: #b0b0b0;
   --text-muted: #9a9a9a;
   --border-color: #4a4f54;
-  --link-color: #b5977a;
-  --link-hover: #d4b69b;
-  --highlight: rgba(181, 151, 122, 0.15);
+  --link-color: #ab7d4c;      /* ← ЯРКИЙ ЗОЛОТОЙ */
+  --link-hover: #7c5736;       /* ← тёмный золотой для hover */
+  --highlight: rgba(171, 125, 76, 0.15);
 }
 
 /* =========================================================

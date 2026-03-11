@@ -73,9 +73,10 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
+             ФИНАЛЬНАЯ ВЕРСИЯ — С БОЛЬШИМ КРУГОМ 64px
              ✅ Тёмная тема
-             ✅ Логотип и текст в ряд
+             ✅ Круг 64px, текст 18px, в ряд
+             ✅ Отступ 24px
              ✅ Скролл (скрывается/появляется)
              ✅ Кнопки: поиск в рамке, тема без рамки
         ==================================================== */}
@@ -189,14 +190,16 @@ export default (() => {
             .page-title {
               display: flex !important;
               align-items: center !important;
-              gap: 20px !important;
+              gap: 24px !important;
               margin: 0 !important;
               padding: 0 !important;
             }
             
             .page-logo {
-              width: 40px !important;
-              height: 40px !important;
+              width: 64px !important;
+              height: 64px !important;
+              min-width: 64px !important;
+              min-height: 64px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
@@ -207,7 +210,7 @@ export default (() => {
               font-size: 18px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
-              line-height: 40px !important;
+              line-height: 64px !important;
               text-decoration: none !important;
               white-space: nowrap !important;
               overflow: hidden !important;

@@ -73,12 +73,12 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ — ИСПРАВЛЕННАЯ
+             ФИНАЛЬНАЯ ВЕРСИЯ — С МИКРО-ФИКСАМИ
              ✅ Тёмная тема
-             ✅ Круг 64px, текст 18px, в ряд, отступ 24px
-             ✅ Fixed + transform для скролла (без layout shift)
-             ✅ Delta-фильтр (без дрожания)
-             ✅ Кнопки: поиск в рамке, тема без рамки
+             ✅ Круг 64px и текст в ряд (через flex в ссылке)
+             ✅ Fixed + transform + will-change
+             ✅ Правильный селектор .sidebar.left
+             ✅ Passive scroll listener
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -162,7 +162,7 @@ export default (() => {
 
           /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
           @media (max-width: 500px) {
-            .left.sidebar {
+            .sidebar.left {
               display: flex !important;
               align-items: center !important;
               justify-content: space-between !important;
@@ -177,24 +177,31 @@ export default (() => {
               z-index: 100 !important;
               transform: translateY(0) !important;
               transition: transform 0.35s ease !important;
+              will-change: transform !important;
               box-sizing: border-box !important;
               width: 100% !important;
             }
             
-            html[saved-theme="light"] .left.sidebar {
+            html[saved-theme="light"] .sidebar.left {
               background: rgba(249, 247, 244, 0.85) !important;
             }
             
-            .left.sidebar.hidden {
+            .sidebar.left.hidden {
               transform: translateY(-100%) !important;
             }
             
             .page-title {
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+            
+            .page-title-link {
               display: flex !important;
               align-items: center !important;
               gap: 24px !important;
               margin: 0 !important;
               padding: 0 !important;
+              text-decoration: none !important;
             }
             
             .page-logo {
@@ -208,12 +215,10 @@ export default (() => {
               display: block !important;
             }
             
-            .page-title-link {
+            .page-title-link span {
               font-size: 18px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
-              line-height: 64px !important;
-              text-decoration: none !important;
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
@@ -399,37 +404,39 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С DELTA-ФИЛЬТРОМ =====
-                if (window.innerWidth <= 500) {
-                  let lastScroll = 0;
-                  const header = document.querySelector('.left.sidebar');
-                  const headerHeight = 70;
-                  const delta = 5; // фильтр дрожания
-                  
-                  if (header) {
-                    window.addEventListener('scroll', () => {
-                      const currentScroll = window.scrollY;
-                      
-                      // Фильтр дрожания
-                      if (Math.abs(currentScroll - lastScroll) <= delta) return;
-                      
-                      // Скролл вниз И проскроллили больше высоты хедера
-                      if (currentScroll > lastScroll && currentScroll > headerHeight) {
-                        header.classList.add('hidden');
-                      } 
-                      // Скролл вверх
-                      else if (currentScroll < lastScroll) {
-                        header.classList.remove('hidden');
-                      }
-                      
-                      // Всегда показываем в самом верху
-                      if (currentScroll < 10) {
-                        header.classList.remove('hidden');
-                      }
-                      
-                      lastScroll = currentScroll;
-                    });
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ =====
+                function initHeader() {
+                  const header = document.querySelector('.sidebar.left');
+                  if (!header) {
+                    requestAnimationFrame(initHeader);
+                    return;
                   }
+                  
+                  let lastScroll = 0;
+                  const headerHeight = 70;
+                  const delta = 5;
+                  
+                  window.addEventListener('scroll', () => {
+                    const currentScroll = window.scrollY;
+                    
+                    if (Math.abs(currentScroll - lastScroll) <= delta) return;
+                    
+                    if (currentScroll > lastScroll && currentScroll > headerHeight) {
+                      header.classList.add('hidden');
+                    } else {
+                      header.classList.remove('hidden');
+                    }
+                    
+                    if (currentScroll < 10) {
+                      header.classList.remove('hidden');
+                    }
+                    
+                    lastScroll = currentScroll;
+                  }, { passive: true });
+                }
+                
+                if (window.innerWidth <= 500) {
+                  initHeader();
                 }
               })();
             `

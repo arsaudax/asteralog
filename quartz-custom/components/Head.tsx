@@ -73,10 +73,11 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ
+             ФИНАЛЬНАЯ ВЕРСИЯ — ИСПРАВЛЕННАЯ
              ✅ Тёмная тема
              ✅ Круг 64px, текст 18px, в ряд, отступ 24px
-             ✅ Скролл через visibility (работает!)
+             ✅ Fixed + transform для скролла (без layout shift)
+             ✅ Delta-фильтр (без дрожания)
              ✅ Кнопки: поиск в рамке, тема без рамки
         ==================================================== */}
         
@@ -169,12 +170,13 @@ export default (() => {
               background: rgba(26, 28, 30, 0.85) !important;
               backdrop-filter: blur(12px) !important;
               border-bottom: 1px solid var(--border-color) !important;
-              position: sticky !important;
+              position: fixed !important;
               top: 0 !important;
-              z-index: 999999 !important;
-              transition: visibility 0.3s ease-in-out, opacity 0.3s ease-in-out !important;
-              visibility: visible !important;
-              opacity: 1 !important;
+              left: 0 !important;
+              right: 0 !important;
+              z-index: 100 !important;
+              transform: translateY(0) !important;
+              transition: transform 0.35s ease !important;
               box-sizing: border-box !important;
               width: 100% !important;
             }
@@ -184,8 +186,7 @@ export default (() => {
             }
             
             .left.sidebar.hidden {
-              visibility: hidden !important;
-              opacity: 0 !important;
+              transform: translateY(-100%) !important;
             }
             
             .page-title {
@@ -218,9 +219,12 @@ export default (() => {
               text-overflow: ellipsis !important;
             }
             
-            .search {
+            /* Контейнер для кнопок */
+            .actions {
               display: flex !important;
               align-items: center !important;
+              gap: 8px !important;
+              flex-shrink: 0 !important;
             }
             
             .search-button {
@@ -395,15 +399,19 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ (через visibility) =====
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С DELTA-ФИЛЬТРОМ =====
                 if (window.innerWidth <= 500) {
                   let lastScroll = 0;
                   const header = document.querySelector('.left.sidebar');
                   const headerHeight = 70;
+                  const delta = 5; // фильтр дрожания
                   
                   if (header) {
                     window.addEventListener('scroll', () => {
                       const currentScroll = window.scrollY;
+                      
+                      // Фильтр дрожания
+                      if (Math.abs(currentScroll - lastScroll) <= delta) return;
                       
                       // Скролл вниз И проскроллили больше высоты хедера
                       if (currentScroll > lastScroll && currentScroll > headerHeight) {

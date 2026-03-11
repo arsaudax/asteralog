@@ -72,21 +72,16 @@ export default (() => {
 
     return (
       <head>
-        {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ - МАКСИМАЛЬНО ПРИМИТИВНЫЙ СКРИПТ
-             Проверено в консоли - работает!
-        ==================================================== */}
-        
-        {/* 1. МИНИМАЛЬНЫЕ META */}
+        {/* МИНИМАЛЬНЫЕ META */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ПРОВЕРЕН В КОНСОЛИ */}
+        {/* КРИТИЧЕСКИЙ СКРИПТ С БЛОКИРОВКОЙ РЕНДЕРА */}
         <script
+          blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
-              // МАКСИМАЛЬНО ПРИМИТИВНО - ТОЛЬКО УСТАНОВКА
               document.documentElement.setAttribute('saved-theme', 'dark');
               document.documentElement.style.backgroundColor = '#1a1c1e';
               document.documentElement.style.color = '#d4d4d4';
@@ -95,12 +90,12 @@ export default (() => {
           }}
         />
 
-        {/* 3. ОСТАЛЬНЫЕ META */}
+        {/* ОСТАЛЬНЫЕ META */}
         <meta name="description" content={description} />
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS */}
+        {/* КРИТИЧЕСКИЙ CSS */}
         <style>{`
           html.no-transitions *,
           html.no-transitions *::before,
@@ -143,7 +138,7 @@ export default (() => {
           }
         `}</style>
 
-        {/* 5. ШРИФТЫ И ОСТАЛЬНЫЕ РЕСУРСЫ */}
+        {/* ШРИФТЫ И ОСТАЛЬНЫЕ РЕСУРСЫ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
@@ -187,7 +182,7 @@ export default (() => {
           </>
         )}
 
-        {/* 6. OPEN GRAPH META */}
+        {/* OPEN GRAPH META */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -217,7 +212,7 @@ export default (() => {
           </>
         )}
 
-        {/* 7. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
+        {/* ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js
           .filter((res) => res.loadTime === "beforeDOMReady")
@@ -226,7 +221,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - УБИРАЕТ БЛОКИРОВКУ */}
+        {/* ФИНАЛЬНЫЙ СКРИПТ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `

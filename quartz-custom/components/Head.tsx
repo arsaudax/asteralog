@@ -172,21 +172,30 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ С !important ===== */
+                    /* ===== МОБИЛЬНЫЕ СТИЛИ С !important ===== */
           @media (max-width: 500px) {
             .left.sidebar {
               display: grid !important;
-              grid-template-columns: auto 40px 40px !important;
+              grid-template-columns: 1fr 40px 40px !important;
               grid-template-rows: auto !important;
               gap: 4px !important;
-              padding: 8px 12px !important;
+              padding: 8px 16px !important;  /* увеличил боковые отступы для выравнивания с текстом */
               margin: 0 !important;
-              position: sticky !important;
+              position: fixed !important;  /* fixed вместо sticky */
               top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
               z-index: 20 !important;
               background: color-mix(in srgb, var(--bg-primary) 92%, transparent) !important;
               backdrop-filter: blur(6px) !important;
               border-bottom: 1px solid var(--border-color) !important;
+              transform: translateY(0) !important;
+              transition: transform 0.3s ease !important;
+            }
+            
+            /* Класс для скрытой панели */
+            .left.sidebar.hidden {
+              transform: translateY(-100%) !important;
             }
             
             .left .page-title {
@@ -287,52 +296,9 @@ export default (() => {
               display: none !important;
             }
             
-            .right {
-              display: flex !important;
-              flex-direction: column !important;
-              gap: 0 !important;
-              padding: 12px !important;
-            }
-            
-            .right .graph,
-            .right .backlinks {
-              display: block !important;
-              padding: 8px 0 !important;
-            }
-            
-            .right .toc,
-            .right .tag-list {
-              display: none !important;
-            }
-            
-            [data-site-type="blog"] .right .tag-list,
-            [data-site-type="blog"] .right .archive-link-container {
-              display: block !important;
-              padding: 8px 0 !important;
-            }
-            
-            [data-site-type="blog"] .right .graph,
-            [data-site-type="blog"] .right .backlinks,
-            [data-site-type="blog"] .right .toc,
-            [data-site-type="blog"] .right .recent-notes {
-              display: none !important;
-            }
-            
-            .right h3 {
-              margin-bottom: 4px !important;
-              border-bottom: none !important;
-              font-size: 0.9rem !important;
-            }
-            
-            .explorer {
-              display: none !important;
-            }
-          }
-
-          /* ===== СТИЛИ ДЛЯ ЭКРАНОВ ДО 800px ===== */
-          @media (max-width: 800px) {
-            .explorer {
-              display: none !important;
+            /* Добавляем отступ для контента, чтобы не перекрывался панелью */
+            .page {
+              padding-top: 60px !important;  /* высота панели + небольшой отступ */
             }
           }
         `}</style>

@@ -183,7 +183,6 @@ export default (() => {
               justify-content: space-between !important;
               
               padding: 10px 20px !important;
-              gap: 16px !important;
               
               background: rgba(26, 28, 30, 0.85) !important;
               backdrop-filter: blur(12px) !important;
@@ -200,10 +199,11 @@ export default (() => {
               transform: translateY(-100%) !important;
             }
             
+            /* Логотип */
             .page-title {
               display: flex !important;
               align-items: center !important;
-              gap: 12px !important;
+              gap: 8px !important;
               margin: 0 !important;
               padding: 0 !important;
               flex-shrink: 1 !important;
@@ -228,24 +228,63 @@ export default (() => {
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
+              display: inline-block !important;
             }
             
-            /* Контейнер для кнопок */
-            .search,
-            .darkmode {
+            /* Контейнер для действий */
+            .actions-container {
+              display: flex !important;
+              align-items: center !important;
+              gap: 8px !important;
               flex-shrink: 0 !important;
             }
             
+            /* Кнопка поиска */
             .search {
               display: flex !important;
-              margin-right: 4px !important;
+              align-items: center !important;
+              position: relative !important;
             }
             
+            .search-button {
+              width: 36px !important;
+              height: 36px !important;
+              
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              
+              border-radius: 10px !important;
+              
+              background: var(--bg-secondary) !important;
+              border: 1px solid var(--border-color) !important;
+              
+              cursor: pointer !important;
+              padding: 0 !important;
+              transition: all 0.2s ease !important;
+            }
+            
+            .search-button:hover {
+              background: var(--highlight) !important;
+              border-color: var(--link-color) !important;
+            }
+            
+            .search-button p {
+              display: none !important;
+            }
+            
+            .search-button svg {
+              width: 18px !important;
+              height: 18px !important;
+              color: var(--link-color) !important;
+            }
+            
+            /* Кнопка темы */
             .darkmode {
               display: flex !important;
+              align-items: center !important;
             }
             
-            .search-button,
             .darkmode button {
               width: 36px !important;
               height: 36px !important;
@@ -264,28 +303,57 @@ export default (() => {
               transition: all 0.2s ease !important;
             }
             
-            .search-button:hover,
             .darkmode button:hover {
               background: var(--highlight) !important;
               border-color: var(--link-color) !important;
             }
             
-            .search-button p {
+            .darkmode button span {
               display: none !important;
             }
             
-            .search-button svg,
             .darkmode button svg {
               width: 18px !important;
               height: 18px !important;
               color: var(--link-color) !important;
             }
             
-            .spacer.mobile-only {
+            /* Поле поиска */
+            .search-container {
               display: none !important;
+              position: absolute !important;
+              top: calc(100% + 8px) !important;
+              left: 0 !important;
+              right: 0 !important;
+              background: var(--bg-primary) !important;
+              border: 1px solid var(--border-color) !important;
+              border-radius: 12px !important;
+              padding: 12px !important;
+              box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+              z-index: 1000000 !important;
             }
             
-            .search .search-container {
+            .search.active .search-container {
+              display: block !important;
+            }
+            
+            .search-container input {
+              width: 100% !important;
+              padding: 10px !important;
+              border-radius: 8px !important;
+              border: 1px solid var(--border-color) !important;
+              background: var(--bg-secondary) !important;
+              color: var(--text-primary) !important;
+              font-size: 16px !important;
+              outline: none !important;
+            }
+            
+            .search-container input:focus {
+              border-color: var(--link-color) !important;
+              box-shadow: 0 0 0 3px var(--highlight) !important;
+            }
+            
+            .spacer.mobile-only {
               display: none !important;
             }
           }
@@ -295,6 +363,11 @@ export default (() => {
             .explorer {
               display: none !important;
             }
+          }
+
+          /* ===== СТИЛИ ДЛЯ СВЕТЛОЙ ТЕМЫ ===== */
+          html[saved-theme="light"] .left.sidebar {
+            background: rgba(249, 247, 244, 0.85) !important;
           }
         `}</style>
 
@@ -434,6 +507,39 @@ export default (() => {
                   } else {
                     initScrollBehavior();
                   }
+                }
+                
+                // ===== ПОИСК =====
+                const searchButton = document.querySelector('.search-button');
+                const searchEl = document.querySelector('.search');
+                
+                if (searchButton && searchEl) {
+                  searchButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    searchEl.classList.toggle('active');
+                    
+                    if (searchEl.classList.contains('active')) {
+                      const input = searchEl.querySelector('input');
+                      setTimeout(() => {
+                        if (input) input.focus();
+                      }, 100);
+                    }
+                  });
+                  
+                  // Закрытие по клику вне
+                  document.addEventListener('click', function(e) {
+                    if (!searchEl.contains(e.target) && searchEl.classList.contains('active')) {
+                      searchEl.classList.remove('active');
+                    }
+                  });
+                  
+                  // Закрытие по Escape
+                  document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && searchEl.classList.contains('active')) {
+                      searchEl.classList.remove('active');
+                    }
+                  });
                 }
               })();
             `

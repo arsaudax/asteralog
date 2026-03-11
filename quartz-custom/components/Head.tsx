@@ -172,14 +172,14 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ С ИДЕАЛЬНЫМ ДИЗАЙНОМ ===== */
+                   /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
           @media (max-width: 500px) {
             body .left.sidebar,
             html body .left.sidebar {
               display: grid !important;
               grid-template-columns: 1fr 44px 44px !important;
               grid-template-rows: auto !important;
-              gap: 8px !important;
+              gap: 12px !important;  /* увеличил расстояние между кнопками */
               padding: 8px 20px !important;
               margin: 0 !important;
               position: fixed !important;
@@ -192,7 +192,7 @@ export default (() => {
               -webkit-backdrop-filter: blur(8px) !important;
               border-bottom: 1px solid var(--border-color) !important;
               transform: translateY(0) !important;
-              transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+              transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) !important;  /* более плавная, с замедлением в конце */
               box-shadow: none !important;
               width: 100% !important;
               max-width: 100% !important;
@@ -203,7 +203,7 @@ export default (() => {
             body .left.sidebar.hidden,
             html body .left.sidebar.hidden {
               transform: translateY(-100%) !important;
-              transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+              transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
             }
             
             body .left .page-title,
@@ -213,26 +213,28 @@ export default (() => {
               display: flex !important;
               align-items: center !important;
               justify-content: flex-start !important;
-              gap: 8px !important;
+              gap: 10px !important;
               margin: 0 !important;
               padding: 0 !important;
               overflow: hidden !important;
               white-space: nowrap !important;
               text-overflow: ellipsis !important;
               width: 100% !important;
+              line-height: 1 !important;  /* убираем лишние отступы */
             }
             
             body .left .page-logo,
             html body .left .page-logo {
-              width: 40px !important;
-              height: 40px !important;
-              min-width: 40px !important;
+              width: 36px !important;  /* чуть уменьшил логотип */
+              height: 36px !important;
+              min-width: 36px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
               flex-shrink: 0 !important;
               display: inline-block !important;
               margin: 0 !important;
+              vertical-align: middle !important;
             }
             
             body .left .page-title-link,
@@ -243,10 +245,11 @@ export default (() => {
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
-              line-height: 40px !important;
+              line-height: 36px !important;  /* выравниваем по вертикали с логотипом */
               margin: 0 !important;
               padding: 0 !important;
               display: inline-block !important;
+              vertical-align: middle !important;
             }
             
             .spacer.mobile-only {
@@ -260,8 +263,8 @@ export default (() => {
             .left .search-button {
               grid-column: 2 !important;
               grid-row: 1 !important;
-              width: 44px !important;
-              height: 44px !important;
+              width: 40px !important;  /* уменьшил до 40px */
+              height: 40px !important;
               display: flex !important;
               align-items: center !important;
               justify-content: center !important;
@@ -278,8 +281,8 @@ export default (() => {
             }
             
             .left .search-button svg {
-              width: 22px !important;
-              height: 22px !important;
+              width: 20px !important;  /* уменьшил иконки */
+              height: 20px !important;
               color: var(--link-color) !important;
             }
             
@@ -291,8 +294,8 @@ export default (() => {
             }
             
             .left .darkmode button {
-              width: 44px !important;
-              height: 44px !important;
+              width: 40px !important;  /* одинаковый размер с кнопкой поиска */
+              height: 40px !important;
               display: flex !important;
               align-items: center !important;
               justify-content: center !important;
@@ -308,8 +311,8 @@ export default (() => {
             }
             
             .left .darkmode button svg {
-              width: 22px !important;
-              height: 22px !important;
+              width: 20px !important;  /* одинаковые иконки */
+              height: 20px !important;
               color: var(--link-color) !important;
             }
             
@@ -320,7 +323,7 @@ export default (() => {
             /* Добавляем отступ для контента */
             body .page,
             html body .page {
-              padding-top: 70px !important;
+              padding-top: 65px !important;  /* уменьшил под новый размер */
             }
           }
 

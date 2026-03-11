@@ -74,7 +74,7 @@ export default (() => {
       <head>
         {/* ====================================================
              ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ 
-             С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ И ОТЛАДКОЙ
+             С ИДЕАЛЬНЫМ МОБИЛЬНЫМ ДИЗАЙНОМ
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -129,7 +129,7 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ */}
+        {/* 4. КРИТИЧЕСКИЙ CSS С ИДЕАЛЬНЫМ МОБИЛЬНЫМ ДИЗАЙНОМ */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
@@ -172,15 +172,15 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ С МАКСИМАЛЬНОЙ СПЕЦИФИЧНОСТЬЮ ===== */
+          /* ===== МОБИЛЬНЫЕ СТИЛИ С ИДЕАЛЬНЫМ ДИЗАЙНОМ ===== */
           @media (max-width: 500px) {
             body .left.sidebar,
             html body .left.sidebar {
               display: grid !important;
-              grid-template-columns: 1fr 40px 40px !important;
+              grid-template-columns: 1fr 44px 44px !important;
               grid-template-rows: auto !important;
-              gap: 4px !important;
-              padding: 8px 16px !important;
+              gap: 8px !important;
+              padding: 8px 20px !important;
               margin: 0 !important;
               position: fixed !important;
               top: 0 !important;
@@ -192,7 +192,7 @@ export default (() => {
               -webkit-backdrop-filter: blur(8px) !important;
               border-bottom: 1px solid var(--border-color) !important;
               transform: translateY(0) !important;
-              transition: transform 0.2s ease !important;
+              transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
               box-shadow: none !important;
               width: 100% !important;
               max-width: 100% !important;
@@ -203,7 +203,7 @@ export default (() => {
             body .left.sidebar.hidden,
             html body .left.sidebar.hidden {
               transform: translateY(-100%) !important;
-              box-shadow: none !important;
+              transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
             }
             
             body .left .page-title,
@@ -260,8 +260,8 @@ export default (() => {
             .left .search-button {
               grid-column: 2 !important;
               grid-row: 1 !important;
-              width: 40px !important;
-              height: 40px !important;
+              width: 44px !important;
+              height: 44px !important;
               display: flex !important;
               align-items: center !important;
               justify-content: center !important;
@@ -270,6 +270,7 @@ export default (() => {
               background: var(--bg-secondary) !important;
               border: 1px solid var(--border-color) !important;
               z-index: 2 !important;
+              cursor: pointer !important;
             }
             
             .left .search-button p {
@@ -277,8 +278,8 @@ export default (() => {
             }
             
             .left .search-button svg {
-              width: 20px !important;
-              height: 20px !important;
+              width: 22px !important;
+              height: 22px !important;
               color: var(--link-color) !important;
             }
             
@@ -290,8 +291,8 @@ export default (() => {
             }
             
             .left .darkmode button {
-              width: 40px !important;
-              height: 40px !important;
+              width: 44px !important;
+              height: 44px !important;
               display: flex !important;
               align-items: center !important;
               justify-content: center !important;
@@ -299,6 +300,7 @@ export default (() => {
               padding: 0 !important;
               background: var(--bg-secondary) !important;
               border: 1px solid var(--border-color) !important;
+              cursor: pointer !important;
             }
             
             .left .darkmode button span {
@@ -306,8 +308,8 @@ export default (() => {
             }
             
             .left .darkmode button svg {
-              width: 20px !important;
-              height: 20px !important;
+              width: 22px !important;
+              height: 22px !important;
               color: var(--link-color) !important;
             }
             
@@ -318,7 +320,7 @@ export default (() => {
             /* Добавляем отступ для контента */
             body .page,
             html body .page {
-              padding-top: 65px !important;
+              padding-top: 70px !important;
             }
           }
 
@@ -413,7 +415,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-                {/* 8. ФИНАЛЬНЫЙ СКРИПТ - С ОЖИДАНИЕМ ЗАГРУЗКИ DOM */}
+        {/* 8. ФИНАЛЬНЫЙ СКРИПТ - С ПЛАВНОЙ АНИМАЦИЕЙ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -434,15 +436,12 @@ export default (() => {
                   window.requestAnimationFrame(clean);
                 }
                 
-                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С ОЖИДАНИЕМ ЗАГРУЗКИ DOM =====
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ С ПЛАВНОЙ АНИМАЦИЕЙ =====
                 if (window.innerWidth <= 500) {
-                  // Функция инициализации
                   function initScrollBehavior() {
                     const header = document.querySelector('.left.sidebar');
                     
                     if (header) {
-                      console.log('✅ Мобильный хедер найден, скролл-поведение активировано');
-                      
                       let lastScrollTop = 0;
                       window.addEventListener('scroll', function() {
                         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -464,12 +463,10 @@ export default (() => {
                         lastScrollTop = scrollTop;
                       });
                     } else {
-                      console.log('❌ Мобильный хедер НЕ НАЙДЕН, пробуем через 100мс');
                       setTimeout(initScrollBehavior, 100);
                     }
                   }
                   
-                  // Запускаем после загрузки DOM
                   if (document.readyState === 'loading') {
                     document.addEventListener('DOMContentLoaded', initScrollBehavior);
                   } else {

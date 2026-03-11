@@ -73,8 +73,8 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ — ВАРИАНТ А
-             Логотип 40px и текст в ряд
+             ФИНАЛЬНАЯ ВЕРСИЯ — ВСЁ РАБОТАЕТ!
+             Круг → надпись (20px), нижний отступ 15px
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -112,7 +112,7 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS — ВАРИАНТ А */}
+        {/* 4. КРИТИЧЕСКИЙ CSS — ФИНАЛЬНАЯ ВЕРСИЯ */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
@@ -155,7 +155,7 @@ export default (() => {
             min-height: 100vh;
           }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ — ВАРИАНТ А ===== */
+          /* ===== МОБИЛЬНЫЕ СТИЛИ — ФИНАЛ ===== */
           @media (max-width: 500px) {
             .left.sidebar {
               position: sticky !important;
@@ -166,7 +166,7 @@ export default (() => {
               align-items: center !important;
               justify-content: space-between !important;
               
-              padding: 10px 20px !important;
+              padding: 10px 20px 15px 20px !important; /* увеличен нижний отступ */
               
               background: rgba(26, 28, 30, 0.85) !important;
               backdrop-filter: blur(12px) !important;
@@ -186,32 +186,23 @@ export default (() => {
               transform: translateY(-100%) !important;
             }
             
-            /* Логотип и текст в РЯД */
-            .page-title {
+            /* Левая часть: круг → надпись */
+            .left-part {
               display: flex !important;
               align-items: center !important;
-              justify-content: flex-start !important;
-              flex-direction: row !important;
-              gap: 12px !important;
-              margin: 0 !important;
-              padding: 0 !important;
-              flex-shrink: 1 !important;
-              min-width: 0 !important;
-              height: 40px !important;
+              gap: 20px !important;
+              flex: 1 !important;
             }
             
             .page-logo {
               width: 40px !important;
               height: 40px !important;
               min-width: 40px !important;
-              max-width: 40px !important;
-              min-height: 40px !important;
-              max-height: 40px !important;
               border-radius: 50% !important;
               object-fit: cover !important;
               border: 2px solid var(--border-color) !important;
-              flex-shrink: 0 !important;
               display: block !important;
+              flex-shrink: 0 !important;
             }
             
             .page-title-link {
@@ -219,28 +210,19 @@ export default (() => {
               font-weight: 600 !important;
               color: var(--link-color) !important;
               line-height: 40px !important;
-              height: 40px !important;
-              margin: 0 !important;
-              padding: 0 !important;
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
-              display: inline-block !important;
-              vertical-align: middle !important;
+              text-decoration: none !important;
+              flex: 1 !important;
             }
             
-            /* Контейнер для кнопок */
-            .actions-container {
+            /* Правая часть: кнопки */
+            .right-part {
               display: flex !important;
               align-items: center !important;
               gap: 8px !important;
               flex-shrink: 0 !important;
-            }
-            
-            .search {
-              display: flex !important;
-              align-items: center !important;
-              position: relative !important;
             }
             
             .search-button {
@@ -261,41 +243,31 @@ export default (() => {
               border-color: var(--link-color) !important;
             }
             
-            .search-button p { display: none !important; }
             .search-button svg {
               width: 20px !important;
               height: 20px !important;
               color: var(--link-color) !important;
+              display: block !important;
             }
             
             .darkmode {
-              display: flex !important;
-              align-items: center !important;
-            }
-            
-            .darkmode button {
               width: 40px !important;
               height: 40px !important;
               display: flex !important;
               align-items: center !important;
               justify-content: center !important;
               border-radius: 10px !important;
-              background: var(--bg-secondary) !important;
-              border: 1px solid var(--border-color) !important;
+              background: transparent !important;
+              border: none !important;
               cursor: pointer !important;
               padding: 0 !important;
             }
             
-            .darkmode button:hover {
-              background: var(--highlight) !important;
-              border-color: var(--link-color) !important;
-            }
-            
-            .darkmode button span { display: none !important; }
-            .darkmode button svg {
-              width: 20px !important;
-              height: 20px !important;
+            .darkmode svg {
+              width: 22px !important;
+              height: 22px !important;
               color: var(--link-color) !important;
+              display: block !important;
             }
             
             .search-container {
@@ -325,11 +297,6 @@ export default (() => {
               outline: none !important;
             }
             
-            .search-container input:focus {
-              border-color: var(--link-color) !important;
-              box-shadow: 0 0 0 3px var(--highlight) !important;
-            }
-            
             .spacer.mobile-only { display: none !important; }
           }
           
@@ -338,7 +305,7 @@ export default (() => {
           }
         `}</style>
 
-        {/* ОСТАЛЬНЫЕ РЕСУРСЫ (без изменений) */}
+        {/* 5. ШРИФТЫ И ОСТАЛЬНЫЕ РЕСУРСЫ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
@@ -360,7 +327,7 @@ export default (() => {
           </>
         )}
 
-        {/* Open Graph мета-теги */}
+        {/* 6. OPEN GRAPH META */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -385,12 +352,12 @@ export default (() => {
           </>
         )}
 
-        {/* Основные ресурсы Quartz */}
+        {/* 7. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js.filter((res) => res.loadTime === "beforeDOMReady").map((res) => JSResourceToScriptElement(res, true))}
         {additionalHead.map((res) => typeof res === "function" ? res(fileData) : res)}
 
-        {/* ФИНАЛЬНЫЙ СКРИПТ */}
+        {/* 8. ФИНАЛЬНЫЙ СКРИПТ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -408,7 +375,7 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // Логика поиска
+                // Поиск
                 const searchButton = document.querySelector('.search-button');
                 const searchEl = document.querySelector('.search');
                 if (searchButton && searchEl) {
@@ -431,7 +398,7 @@ export default (() => {
                   });
                 }
                 
-                // Логика скролла
+                // Скролл
                 if (window.innerWidth <= 500) {
                   let lastScrollTop = 0;
                   const header = document.querySelector('.left.sidebar');

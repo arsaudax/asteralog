@@ -73,8 +73,7 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
-             Скрипт блокирует рендер и устанавливает тёмную тему
+             ФИНАЛЬНАЯ ВЕРСИЯ С МЯГКОЙ ЗАЩИТОЙ
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -82,16 +81,33 @@ export default (() => {
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ С БЛОКИРОВКОЙ РЕНДЕРА */}
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ С БЛОКИРОВКОЙ РЕНДЕРА И МЯГКОЙ ЗАЩИТОЙ */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
-              // УСТАНАВЛИВАЕМ ТЁМНУЮ ТЕМУ ДО РЕНДЕРА
-              document.documentElement.setAttribute('saved-theme', 'dark');
-              document.documentElement.style.backgroundColor = '#1a1c1e';
-              document.documentElement.style.color = '#d4d4d4';
-              document.documentElement.classList.add('site-garden', 'no-transitions');
+              // УСТАНАВЛИВАЕМ ТЁМНУЮ ТЕМУ
+              const html = document.documentElement;
+              html.setAttribute('saved-theme', 'dark');
+              html.style.backgroundColor = '#1a1c1e';
+              html.style.color = '#d4d4d4';
+              html.classList.add('site-garden', 'no-transitions');
+              
+              // МЯГКАЯ ЗАЩИТА - одноразовое восстановление через 10ms
+              setTimeout(() => {
+                if (html.getAttribute('saved-theme') !== 'dark') {
+                  html.setAttribute('saved-theme', 'dark');
+                }
+                if (html.style.backgroundColor !== 'rgb(26, 28, 30)') {
+                  html.style.backgroundColor = '#1a1c1e';
+                }
+                if (html.style.color !== 'rgb(212, 212, 212)') {
+                  html.style.color = '#d4d4d4';
+                }
+                if (!html.classList.contains('no-transitions')) {
+                  html.classList.add('no-transitions');
+                }
+              }, 10);
             `
           }}
         />

@@ -88,13 +88,12 @@ export default (() => {
   try{
     const html = document.documentElement
 
-    // ========== ИСПРАВЛЕНО: определяем сайт по hostname ==========
+    // ========== ОПРЕДЕЛЯЕМ САЙТ ПО HOSTNAME ==========
     const isBlog = window.location.hostname.includes('blog');
     html.classList.add(isBlog ? 'site-blog' : 'site-garden');
-    // ============================================================
 
-    // По умолчанию - тёмная тема (из конфига)
-    let theme = '${cfg.theme.defaultTheme}'
+    // ========== ТЁМНАЯ ТЕМА ПО УМОЛЧАНИЮ ==========
+    let theme = 'dark'  // всегда тёмная, если нет сохранённой
 
     try{
       const saved = localStorage.getItem('saved-theme')
@@ -102,10 +101,9 @@ export default (() => {
       if(saved === 'dark' || saved === 'light'){
         theme = saved
       }
-      // Если нет сохранённой - оставляем тему по умолчанию (dark)
+      // Если нет сохранённой - оставляем 'dark'
     }catch(e){
-      // localStorage недоступен (инкогнито)
-      // Оставляем тему по умолчанию (dark)
+      // localStorage недоступен (инкогнито) - оставляем 'dark'
     }
 
     // Устанавливаем атрибут для CSS

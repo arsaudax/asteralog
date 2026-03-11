@@ -85,52 +85,46 @@ export default (() => {
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ПЕРВЫЙ! (Josh W. Comeau) */}
-        <script>
-          {`
-            // Максимально примитивно - никаких функций высшего порядка
-            // Однобуквенные переменные для минимального размера
-            (function(){
-              try{
-                var d=document.documentElement;
-                var t='dark'; // по умолчанию тёмная
-                
-                // Проверяем localStorage (одна строка)
-                try{var s=localStorage.getItem('saved-theme');if(s==='light'){t='light';}}catch(e){}
-                
-                // Определяем тип сайта по hostname
-                if(window.location.hostname.indexOf('blog')>-1){
-                  d.classList.add('site-blog');
-                }else{
-                  d.classList.add('site-garden');
-                }
-                
-                // Устанавливаем атрибут для CSS
-                d.setAttribute('saved-theme',t);
-                
-                // Inline-стили для первого кадра (гарантия)
-                if(t==='dark'){
-                  d.style.backgroundColor='#1a1c1e';
-                  d.style.color='#d4d4d4';
-                }else{
-                  d.style.backgroundColor='#f9f7f4';
-                  d.style.color='#2b2b2b';
-                }
-                
-                // Блокируем переходы
-                d.classList.add('no-transitions');
-                
-              }catch(e){
-                // Фатальный fallback
-                var d=document.documentElement;
-                d.setAttribute('saved-theme','dark');
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ - ГАРАНТИРОВАННОЕ ВЫПОЛНЕНИЕ */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Прямое выполнение, без функций, максимально быстро
+              var d=document.documentElement;
+              
+              // Тема по умолчанию - тёмная
+              var t='dark';
+              
+              // Проверяем localStorage (безопасно)
+              try {
+                var s=localStorage.getItem('saved-theme');
+                if(s==='light') t='light';
+              } catch(e){}
+              
+              // Класс сайта
+              if(window.location.hostname.indexOf('blog')>-1){
+                d.classList.add('site-blog');
+              } else {
+                d.classList.add('site-garden');
+              }
+              
+              // Устанавливаем атрибут
+              d.setAttribute('saved-theme', t);
+              
+              // Inline-стили для первого кадра
+              if(t==='dark'){
                 d.style.backgroundColor='#1a1c1e';
                 d.style.color='#d4d4d4';
-                d.classList.add('no-transitions');
+              } else {
+                d.style.backgroundColor='#f9f7f4';
+                d.style.color='#2b2b2b';
               }
-            })();
-          `}
-        </script>
+              
+              // Блокируем переходы
+              d.classList.add('no-transitions');
+            `
+          }}
+        />
 
         {/* 3. ОСТАЛЬНЫЕ META (уже не критичные) */}
         <meta name="description" content={description} />
@@ -264,30 +258,29 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-                {/* 9. ФИНАЛЬНЫЙ СКРИПТ - ТОЛЬКО УБИРАЕТ БЛОКИРОВКУ */}
-        <script>{`
-          (function(){
-            // Убираем блокировку переходов после загрузки
-            var clean=function(){
-              var h=document.documentElement;
-              h.classList.remove('no-transitions');
-              h.style.backgroundColor='';
-              h.style.color='';
-            };
-            
-            if(document.readyState==='loading'){
-              window.addEventListener('DOMContentLoaded',function(){
-                window.requestAnimationFrame(clean);
-              },{once:true});
-            }else{
-              window.requestAnimationFrame(clean);
-            }
-            
-            // ВНИМАНИЕ: НИКАКОГО КОДА ДЛЯ УСТАНОВКИ ТЕМЫ ЗДЕСЬ НЕТ!
-            // Тема уже установлена первым скриптом
-            
-          })();
-        `}</script>
+        {/* 9. ФИНАЛЬНЫЙ СКРИПТ - ТОЛЬКО УБИРАЕТ БЛОКИРОВКУ */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                var clean=function(){
+                  var h=document.documentElement;
+                  h.classList.remove('no-transitions');
+                  h.style.backgroundColor='';
+                  h.style.color='';
+                };
+                
+                if(document.readyState==='loading'){
+                  window.addEventListener('DOMContentLoaded',function(){
+                    window.requestAnimationFrame(clean);
+                  },{once:true});
+                }else{
+                  window.requestAnimationFrame(clean);
+                }
+              })();
+            `
+          }}
+        />
 
       </head>
     )

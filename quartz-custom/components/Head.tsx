@@ -74,7 +74,10 @@ export default (() => {
       <head>
         {/* ====================================================
              ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
-             Тёмная тема, скролл, отступы — всё работает
+             ✅ Тёмная тема
+             ✅ Логотип и текст в ряд
+             ✅ Скролл (скрывается/появляется)
+             ✅ Кнопки: поиск в рамке, тема без рамки
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -388,7 +391,7 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // Скролл-поведение
+                // ===== СКРОЛЛ-ПОВЕДЕНИЕ =====
                 if (window.innerWidth <= 500) {
                   let lastScroll = 0;
                   const header = document.querySelector('.left.sidebar');
@@ -398,12 +401,16 @@ export default (() => {
                     window.addEventListener('scroll', () => {
                       const currentScroll = window.scrollY;
                       
+                      // Скролл вниз И проскроллили больше высоты хедера
                       if (currentScroll > lastScroll && currentScroll > headerHeight) {
                         header.classList.add('hidden');
-                      } else if (currentScroll < lastScroll) {
+                      } 
+                      // Скролл вверх
+                      else if (currentScroll < lastScroll) {
                         header.classList.remove('hidden');
                       }
                       
+                      // Всегда показываем в самом верху
                       if (currentScroll < 10) {
                         header.classList.remove('hidden');
                       }

@@ -74,7 +74,7 @@ export default (() => {
       <head>
         {/* ====================================================
              ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
-             Проверено: тёмная тема, скролл, отступы — всё работает
+             Тёмная тема, скролл, отступы — всё работает
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -89,8 +89,6 @@ export default (() => {
             __html: `
               (function() {
                 const html = document.documentElement;
-                
-                // Принудительно тёмная тема
                 html.setAttribute('saved-theme', 'dark');
                 html.style.backgroundColor = '#1a1c1e';
                 html.style.color = '#d4d4d4';

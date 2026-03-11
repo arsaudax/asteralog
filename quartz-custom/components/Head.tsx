@@ -76,17 +76,11 @@ export default (() => {
       light: { bg: '#f9f7f4', text: '#2b2b2b' }
     }
 
-    // ========== МЕСТО ДЛЯ ИЗМЕНЕНИЯ 1 ==========
-    // Определяем класс сайта на основе SITE_TYPE
-    const siteClass = process.env.SITE_TYPE === 'blog' ? 'site-blog' : 'site-garden'
-    // ===========================================
-
     /* ----------------------------
        Theme bootstrap script
        Приоритет:
        1. localStorage (сохранённый выбор пользователя)
        2. dark (художественное решение автора)
-       Системные настройки ИГНОРИРУЮТСЯ в инкогнито
     ---------------------------- */
 
     const themeBootstrap = `
@@ -94,10 +88,10 @@ export default (() => {
   try{
     const html = document.documentElement
 
-    // ========== МЕСТО ДЛЯ ИЗМЕНЕНИЯ 2 ==========
-    // Добавляем класс сайта (garden или blog)
-    html.classList.add('${siteClass}')
-    // ===========================================
+    // ========== ИСПРАВЛЕНО: определяем сайт по hostname ==========
+    const isBlog = window.location.hostname.includes('blog');
+    html.classList.add(isBlog ? 'site-blog' : 'site-garden');
+    // ============================================================
 
     // По умолчанию - тёмная тема (из конфига)
     let theme = '${cfg.theme.defaultTheme}'
@@ -109,7 +103,6 @@ export default (() => {
         theme = saved
       }
       // Если нет сохранённой - оставляем тему по умолчанию (dark)
-      // Системные настройки НЕ влияют
     }catch(e){
       // localStorage недоступен (инкогнито)
       // Оставляем тему по умолчанию (dark)
@@ -165,7 +158,7 @@ export default (() => {
     }catch(e){}
   })
 
-  // Следим за изменениями в localStorage (если тема меняется в другой вкладке)
+  // Следим за изменениями в localStorage
   window.addEventListener('storage', function(e) {
     if(e.key === 'saved-theme') {
       const theme = e.newValue

@@ -1,3 +1,4 @@
+// quartz-custom/components/PageTitle.tsx
 import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
 
 interface Options {
@@ -24,31 +25,6 @@ export default ((opts?: Options) => {
     )
   }
 
-  PageTitle.css = `
-    .page-title a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-    
-    .page-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border-color);
-    }
-    
-    .page-title-text {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--link-color);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  `
-
+  // Стили теперь только в custom.scss
   return PageTitle
 }) satisfies QuartzComponentConstructor

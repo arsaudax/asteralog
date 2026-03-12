@@ -1,3 +1,138 @@
-@use "./base.scss";
+// quartz/styles/custom.scss
 
-// put your custom CSS here!
+/* ===== HEADER — ВЕРХНЯЯ ПАНЕЛЬ ===== */
+.page-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 20px !important;
+  background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  will-change: transform;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.page-header.hidden {
+  transform: translateY(-100%);
+}
+
+/* ===== ЛОГОТИП ===== */
+.page-title a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.page-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+.page-title-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--link-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== КНОПКИ ===== */
+.search-button,
+.darkmode {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.search-button {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.search-button:hover {
+  background: var(--highlight);
+  border-color: var(--link-color);
+}
+
+.search-button svg {
+  width: 20px;
+  height: 20px;
+  color: var(--link-color);
+}
+
+.darkmode {
+  background: transparent;
+  border: none;
+}
+
+.darkmode:hover {
+  background: var(--highlight);
+}
+
+.darkmode svg {
+  width: 22px;
+  height: 22px;
+  color: var(--link-color);
+  fill: var(--link-color);
+}
+
+/* Иконки темы */
+[data-theme="dark"] .darkmode .dayIcon { display: none; }
+[data-theme="dark"] .darkmode .nightIcon { display: block; }
+[data-theme="light"] .darkmode .dayIcon { display: block; }
+[data-theme="light"] .darkmode .nightIcon { display: none; }
+
+/* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
+@media (max-width: 800px) {
+  .page-header {
+    padding: 6px 16px;
+  }
+  
+  .page-logo {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .page-title-text {
+    font-size: 16px;
+  }
+  
+  .search-button,
+  .darkmode {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .search-button svg { width: 18px; height: 18px; }
+  .darkmode svg { width: 20px; height: 20px; }
+  
+  /* Explorer скрыт на мобильных через DesktopOnly */
+}
+
+/* ===== ОТСТУП ДЛЯ КОНТЕНТА ===== */
+.page {
+  padding-top: 70px; /* Высота header */
+}
+
+@media (max-width: 800px) {
+  .page {
+    padding-top: 60px;
+  }
+}

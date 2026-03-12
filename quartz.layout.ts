@@ -1,3 +1,4 @@
+// quartz.layout.ts
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
@@ -11,25 +12,11 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// ======================================
-// КОМПОНЕНТЫ ДЛЯ ВЕРХНЕЙ ПАНЕЛИ (HEADER)
-// ======================================
-const headerComponents = [
-  CustomComponent.PageTitle({ 
-    logo: "/static/thistle.png",
-    logoAlt: "Логотип",
-    title: "Asteralog"
-  }),
-  Component.Search(),
-  Component.Darkmode(),
-]
+// ==================================================
+// КОНФИГУРАЦИИ КОМПОНЕНТОВ
+// ==================================================
 
-// Базовая левая панель (уже без PageTitle, он теперь в header)
-const baseLeftPanel = [
-  Component.MobileOnly(Component.Spacer()),
-]
-
-// Конфигурация проводника
+// Конфигурация проводника (только на десктопе)
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
     const hasExcludedTag = node.data?.tags?.includes("explorer-exclude")
@@ -40,8 +27,9 @@ const explorerConfig = {
       node.displayName = "⊹ " + node.displayName
     }
   },
-  title: "Сад",
+  title: siteType === 'garden' ? "Сад" : "Блог",
   folderDefaultState: "collapsed",
+  useSavedState: true, // Сохраняем состояние папок
   sort: (a, b) => {
     if (a.isFolder && !b.isFolder) return -1
     if (!a.isFolder && b.isFolder) return 1
@@ -68,10 +56,25 @@ const backlinksConfig = {
   title: "Обратные ссылки",
 }
 
-// Общие компоненты
+// ==================================================
+// КОМПОНЕНТЫ ДЛЯ ВЕРХНЕЙ ПАНЕЛИ (HEADER)
+// ==================================================
+const headerComponents = [
+  CustomComponent.PageTitle({ 
+    logo: "/static/thistle.png",
+    logoAlt: "Логотип",
+    title: "Asteralog"
+  }),
+  Component.Search(),
+  Component.Darkmode(),
+]
+
+// ==================================================
+// БАЗОВЫЕ КОМПОНЕНТЫ (общие для всех layout)
+// ==================================================
 export const sharedPageComponents: SharedLayout = {
-  head: CustomComponent.Head(),
-  header: headerComponents, // 👈 ВАЖНО: используем header!
+  head: CustomComponent.Head(),      // Только мета и скрипты
+  header: headerComponents,           // ✅ ГОРИЗОНТАЛЬНАЯ ПАНЕЛЬ
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -82,23 +85,21 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// ==============================
+// ==================================================
 // GARDEN LAYOUTS
-// ==============================
+// ==================================================
 export const gardenContentPageLayout: PageLayout = {
+  ...sharedPageComponents,
   beforeBody: [
     Component.ArticleTitle(),
     Component.ConditionalRender({
       component: CustomComponent.ContentMeta({ showReadingTime: true }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index'
-      }
+      condition: (props: QuartzComponentProps) => props.fileData.slug !== 'index'
     }),
     Component.TagList(),
   ],
   left: [
-    ...baseLeftPanel,
-    Component.Explorer(explorerConfig), // Explorer теперь один на всех
+    Component.DesktopOnly(Component.Explorer(explorerConfig)), // ✅ ТОЛЬКО НА ДЕСКТОПЕ
   ],
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
@@ -109,37 +110,35 @@ export const gardenContentPageLayout: PageLayout = {
 }
 
 export const gardenListPageLayout: PageLayout = {
+  ...sharedPageComponents,
   beforeBody: [
     Component.ArticleTitle(),
     Component.ConditionalRender({
       component: CustomComponent.ContentMeta({ showReadingTime: true }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index'
-      }
+      condition: (props: QuartzComponentProps) => props.fileData.slug !== 'index'
     }),
   ],
   left: [
-    ...baseLeftPanel,
-    Component.Explorer(explorerConfig),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   right: [],
 }
 
-// ==============================
+// ==================================================
 // BLOG LAYOUTS
-// ==============================
+// ==================================================
 export const blogContentPageLayout: PageLayout = {
+  ...sharedPageComponents,
   beforeBody: [
     Component.ArticleTitle(),
     Component.ConditionalRender({
       component: CustomComponent.ContentMeta({ showReadingTime: true }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
-      }
+      condition: (props: QuartzComponentProps) => 
+        props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
     }),
     Component.TagList(),
   ],
-  left: baseLeftPanel,
+  left: [], // В блоге левая панель пустая
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
@@ -151,9 +150,8 @@ export const blogContentPageLayout: PageLayout = {
         filter: blogFilter,
         title: "Недавние записи"
       }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
-      }
+      condition: (props: QuartzComponentProps) => 
+        props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
     }),
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
@@ -161,47 +159,30 @@ export const blogContentPageLayout: PageLayout = {
         text: "Все записи →📚",
         emoji: "none"
       }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
-      }
+      condition: (props: QuartzComponentProps) => 
+        props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
     }),
   ],
   afterBody: [
     Component.ConditionalRender({
-      component: CustomComponent.BlogIndex({
-        limit: 5,
-        filter: blogFilter
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug === 'index'
-      }
+      component: CustomComponent.BlogIndex({ limit: 5, filter: blogFilter }),
+      condition: (props: QuartzComponentProps) => props.fileData.slug === 'index'
     }),
     Component.ConditionalRender({
-      component: CustomComponent.ArchiveLink({ 
-        text: "Все записи →📚",
-        emoji: "none"
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug === 'index'
-      }
+      component: CustomComponent.ArchiveLink({ text: "Все записи →📚", emoji: "none" }),
+      condition: (props: QuartzComponentProps) => props.fileData.slug === 'index'
     }),
     Component.ConditionalRender({
-      component: CustomComponent.BlogIndex({
-        limit: 1000,
-        filter: () => true
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug === 'archive'
-      }
+      component: CustomComponent.BlogIndex({ limit: 1000, filter: () => true }),
+      condition: (props: QuartzComponentProps) => props.fileData.slug === 'archive'
     }),
   ],
 }
 
 export const blogListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  left: baseLeftPanel,
+  ...sharedPageComponents,
+  beforeBody: [Component.ArticleTitle()],
+  left: [],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.ConditionalRender({
@@ -210,23 +191,16 @@ export const blogListPageLayout: PageLayout = {
         text: "Все записи →📚",
         emoji: "none"
       }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug?.startsWith('tags/') || false
-      }
+      condition: (props: QuartzComponentProps) => props.fileData.slug?.startsWith('tags/') || false
     }),
   ],
 }
 
-// ==============================
+// ==================================================
 // DEFAULT LAYOUT SELECTORS
-// ==============================
-
+// ==================================================
 export const defaultContentPageLayout: PageLayout =
-  siteType === 'garden' 
-    ? gardenContentPageLayout 
-    : blogContentPageLayout
+  siteType === 'garden' ? gardenContentPageLayout : blogContentPageLayout
 
 export const defaultListPageLayout: PageLayout =
-  siteType === 'garden'
-    ? gardenListPageLayout
-    : blogListPageLayout
+  siteType === 'garden' ? gardenListPageLayout : blogListPageLayout

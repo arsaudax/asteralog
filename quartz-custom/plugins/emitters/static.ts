@@ -1,4 +1,4 @@
-// quartz-custom/plugins/emitters/static.ts (обратите внимание: имя файла с маленькой буквы)
+// quartz-custom/plugins/emitters/static.ts
 import fs from "fs/promises"
 import { FilePath, joinSegments } from "../../../quartz/util/path"
 import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"
@@ -7,6 +7,7 @@ import { dirname } from "path"
 
 const QUARTZ_CUSTOM = "quartz-custom"
 
+// Экспорт с маленькой буквы, соответствующий имени файла
 export const Static: QuartzEmitterPlugin = () => ({
   name: "CustomStatic",
   

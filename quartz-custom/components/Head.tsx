@@ -73,11 +73,11 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
-             ✅ Тёмная тема по умолчанию
-             ✅ Переключение темы работает
-             ✅ Логотип 64x64
-             ✅ Мобильный header скрывается при скролле
+             АРХИТЕКТУРНО ПРАВИЛЬНАЯ ВЕРСИЯ
+             ✅ Только data-theme (как в Quartz)
+             ✅ Мобильный header без флагов
+             ✅ Логотип через flex на ссылке
+             ✅ Отступ для контента
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -86,17 +86,15 @@ export default (() => {
         <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ */}
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ — ТОЛЬКО DATA-THEME */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function () {
                 const html = document.documentElement;
-                const stored = localStorage.getItem('theme');
-                const theme = stored || 'dark';
-                html.setAttribute('saved-theme', theme);
-                html.setAttribute('data-theme', theme);
+                const stored = localStorage.getItem("theme") || "dark";
+                html.setAttribute("data-theme", stored);
               })();
             `
           }}
@@ -108,13 +106,11 @@ export default (() => {
         {/* 3. КРИТИЧЕСКИЙ CSS */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
-          html[saved-theme="dark"],
           html[data-theme="dark"] {
             background-color: #1a1c1e;
             color: #d4d4d4;
           }
           
-          html[saved-theme="light"],
           html[data-theme="light"] {
             background-color: #f9f7f4;
             color: #2b2b2b;
@@ -127,6 +123,10 @@ export default (() => {
 
           /* ===== МОБИЛЬНЫЙ HEADER ===== */
           @media (max-width: 500px) {
+            .page {
+              padding-top: 90px !important;
+            }
+            
             .sidebar.left {
               position: fixed;
               top: 0;
@@ -153,13 +153,12 @@ export default (() => {
               transform: translateY(-100%);
             }
             
-            /* ===== ЛОГОТИП ===== */
-            .page-title {
+            /* ===== ЛОГОТИП — FLEX НА ССЫЛКЕ ===== */
+            .page-title a {
               display: flex;
               align-items: center;
               gap: 20px;
-              margin: 0;
-              padding: 0;
+              text-decoration: none;
             }
             
             .page-logo {
@@ -177,7 +176,6 @@ export default (() => {
               font-size: 18px;
               font-weight: 600;
               color: var(--link-color);
-              text-decoration: none;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -333,21 +331,15 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 7. ФИНАЛЬНЫЙ СКРИПТ */}
+        {/* 7. ФИНАЛЬНЫЙ СКРИПТ — БЕЗ ФЛАГОВ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // ===== МОБИЛЬНЫЙ HEADER =====
-                let mobileHeaderInitialized = false;
-                
                 function initMobileHeader() {
-                  if (mobileHeaderInitialized) return;
-                  
                   const header = document.querySelector('.sidebar.left');
                   if (!header) return;
                   
-                  mobileHeaderInitialized = true;
                   header.classList.remove('hidden');
                   
                   let lastScroll = 0;

@@ -28,6 +28,11 @@ export default (() => {
             __html: `
               (function() {
                 const html = document.documentElement;
+                
+                // 🔥 ВАЖНО: определяем тип сайта по hostname
+                const isBlog = window.location.hostname.includes('blog');
+                html.classList.add(isBlog ? 'site-blog' : 'site-garden');
+                
                 const stored = localStorage.getItem("theme");
                 html.setAttribute("data-theme", stored || "dark");
                 html.classList.add('no-transitions');
@@ -45,7 +50,7 @@ export default (() => {
           }}
         />
 
-        {/* ===== ШРИФТЫ - ИСПРАВЛЕНО ===== */}
+        {/* ===== ШРИФТЫ ===== */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -56,7 +61,6 @@ export default (() => {
 
         {/* ===== CSS ===== */}
         <link rel="stylesheet" href="/index.css" />
-        {/* custom.css будет подключен автоматически через ComponentResources */}
 
         {/* ===== OPEN GRAPH META ===== */}
         <meta property="og:site_name" content={cfg.pageTitle} />

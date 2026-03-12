@@ -122,7 +122,7 @@ const config: QuartzConfig = {
       Plugin.ContentIndex({ enableSiteMap: true, enableRSS: true }),
       Plugin.Assets(),
       Plugin.Static(),
-      // CustomPlugins.Static(),      // ❌ ВРЕМЕННО УБРАНО
+      CustomPlugins.Static(),
       // CustomPlugins.CustomStyles(), // ❌ ВРЕМЕННО УБРАНО
       Plugin.NotFoundPage(),
     ],

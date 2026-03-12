@@ -123,7 +123,7 @@ const config: QuartzConfig = {
       Plugin.Assets(),
       Plugin.Static(),
       CustomPlugins.Static(),
-      // CustomPlugins.CustomStyles(), // ❌ ВРЕМЕННО УБРАНО
+      CustomPlugins.CustomStyles(),
       Plugin.NotFoundPage(),
     ],
   },

@@ -1,10 +1,12 @@
+// quartz-custom/plugins/transformers/removeTags.ts
 import { QuartzTransformerPlugin } from "../../../quartz/plugins/types"
 
 interface RemoveTagsOptions {
-  tags: string[] // Массив служебных тегов для удаления (garden, blog, explorer-exclude, graph-exclude)
+  tags: string[] // Массив служебных тегов для удаления
 }
 
-export const RemoveTags: QuartzTransformerPlugin<RemoveTagsOptions> = (options) => {
+// Экспорт с маленькой буквы для консистентности с именем файла
+export const removeTags: QuartzTransformerPlugin<RemoveTagsOptions> = (options) => {
   return {
     name: "RemoveTags",
     markdownPlugins() {

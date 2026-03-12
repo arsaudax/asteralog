@@ -1,17 +1,20 @@
+// quartz-custom/components/index.ts
+import ArchiveLink from "./ArchiveLink"
+import BlogIndex from "./BlogIndex"
 import ContentMeta from "./ContentMeta"
 import Footer from "./Footer"
-import BlogIndex from "./BlogIndex"
-import PageTitle from "./PageTitle"
-import ArchiveLink from "./ArchiveLink"
 import Head from "./Head"
-import ThemeRestoreScript from "./ThemeRestoreScript"
+import PageTitle from "./PageTitle"
+import ScrollBehavior from "./ScrollBehavior"
+import TagList from "./TagList"
 
-export { 
-  ContentMeta, 
-  Footer, 
-  BlogIndex, 
-  PageTitle,
+export {
   ArchiveLink,
+  BlogIndex,
+  ContentMeta,
+  Footer,
   Head,
-  ThemeRestoreScript
+  PageTitle,
+  ScrollBehavior,
+  TagList
 }

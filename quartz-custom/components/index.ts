@@ -5,7 +5,6 @@ import ContentMeta from "./ContentMeta"
 import Footer from "./Footer"
 import Head from "./Head"
 import PageTitle from "./PageTitle"
-import ScrollBehavior from "./ScrollBehavior"
 import TagList from "./TagList"
 
 export {
@@ -15,6 +14,5 @@ export {
   Footer,
   Head,
   PageTitle,
-  ScrollBehavior,
   TagList
 }

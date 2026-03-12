@@ -76,7 +76,7 @@ export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),      // Только мета и скрипты
   header: headerComponents,           // ✅ ГОРИЗОНТАЛЬНАЯ ПАНЕЛЬ
   afterBody: [
-    CustomComponent.ScrollBehavior(), // 🔥 Добавлен компонент скролла
+    // CustomComponent.ScrollBehavior(), // 🔥 Добавлен компонент скролла
   ],
   footer: CustomComponent.Footer({
     links: {

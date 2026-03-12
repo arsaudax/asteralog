@@ -115,15 +115,15 @@ const config: QuartzConfig = {
     filters: [Plugin.RemoveDrafts()],
     emitters: [
       Plugin.AliasRedirects(),
-      Plugin.ComponentResources(),
+      Plugin.ComponentResources(), // ✅ ОСТАВЛЯЕМ (генерирует index.css)
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),
       Plugin.ContentIndex({ enableSiteMap: true, enableRSS: true }),
       Plugin.Assets(),
       Plugin.Static(),
-      CustomPlugins.Static(),
-      CustomPlugins.CustomStyles(),
+      CustomPlugins.Static(),      // ✅ ОСТАВЛЯЕМ (копирует статику)
+      // CustomPlugins.CustomStyles(), // ❌ УДАЛЯЕМ (не нужен!)
       Plugin.NotFoundPage(),
     ],
   },

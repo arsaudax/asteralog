@@ -75,7 +75,9 @@ const headerComponents = [
 export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),      // Только мета и скрипты
   header: headerComponents,           // ✅ ГОРИЗОНТАЛЬНАЯ ПАНЕЛЬ
-  afterBody: [],
+  afterBody: [
+    CustomComponent.ScrollBehavior(), // 🔥 Добавлен компонент скролла
+  ],
   footer: CustomComponent.Footer({
     links: {
       Telegram: "https://t.me/asteralog",
@@ -161,6 +163,11 @@ export const blogContentPageLayout: PageLayout = {
       }),
       condition: (props: QuartzComponentProps) => 
         props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+    }),
+    // 🔥 Добавлен RSS для главной страницы блога
+    Component.ConditionalRender({
+      component: Component.Rss({ limit: 10 }),
+      condition: (props: QuartzComponentProps) => props.fileData.slug === 'index'
     }),
   ],
   afterBody: [

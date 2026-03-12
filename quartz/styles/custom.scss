@@ -1,5 +1,48 @@
 // quartz/styles/custom.scss
 
+/* ===== БАЗОВЫЕ СЕМАНТИЧЕСКИЕ ПЕРЕМЕННЫЕ ===== */
+:root {
+  // Основные семантические алиасы
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --text-muted: var(--gray);
+  --border-color: var(--lightgray);
+  --link-color: var(--secondary);
+  --link-hover: var(--tertiary);
+  --highlight-bg: var(--highlight);
+}
+
+// Переопределения для тёмной темы (автоматически через data-theme)
+[data-theme="dark"] {
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --border-color: var(--lightgray);
+  --link-color: var(--secondary);
+  --link-hover: var(--tertiary);
+  --highlight-bg: var(--highlight);
+}
+
+// Специфичные для блога переопределения (если нужно)
+[data-theme="light"].site-blog,
+.site-blog[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f0f0;
+  --text-primary: #333333;
+  --border-color: #e0e0e0;
+}
+
+/* ===== БЛОКИРОВКА ПЕРЕХОДОВ ПРИ ЗАГРУЗКЕ ===== */
+html.no-transitions *,
+html.no-transitions *::before,
+html.no-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
 /* ===== HEADER — ВЕРХНЯЯ ПАНЕЛЬ ===== */
 .page-header {
   display: flex !important;
@@ -16,10 +59,10 @@
   will-change: transform;
   box-sizing: border-box;
   width: 100%;
-}
-
-.page-header.hidden {
-  transform: translateY(-100%);
+  
+  &.hidden {
+    transform: translateY(-100%);
+  }
 }
 
 /* ===== ЛОГОТИП ===== */
@@ -33,9 +76,15 @@
 .page-logo {
   width: 56px;
   height: 56px;
+  min-width: 56px; // Добавлено для защиты от сжатия
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--border-color);
+  transition: border-color 0.2s ease;
+  
+  &:hover {
+    border-color: var(--link-color);
+  }
 }
 
 .page-title-text {
@@ -64,33 +113,33 @@
 .search-button {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-}
-
-.search-button:hover {
-  background: var(--highlight);
-  border-color: var(--link-color);
-}
-
-.search-button svg {
-  width: 20px;
-  height: 20px;
-  color: var(--link-color);
+  
+  &:hover {
+    background: var(--highlight-bg);
+    border-color: var(--link-color);
+  }
+  
+  svg {
+    width: 20px;
+    height: 20px;
+    color: var(--link-color);
+  }
 }
 
 .darkmode {
   background: transparent;
   border: none;
-}
-
-.darkmode:hover {
-  background: var(--highlight);
-}
-
-.darkmode svg {
-  width: 22px;
-  height: 22px;
-  color: var(--link-color);
-  fill: var(--link-color);
+  
+  &:hover {
+    background: var(--highlight-bg);
+  }
+  
+  svg {
+    width: 22px;
+    height: 22px;
+    color: var(--link-color);
+    fill: var(--link-color);
+  }
 }
 
 /* Иконки темы */
@@ -98,6 +147,45 @@
 [data-theme="dark"] .darkmode .nightIcon { display: block; }
 [data-theme="light"] .darkmode .dayIcon { display: block; }
 [data-theme="light"] .darkmode .nightIcon { display: none; }
+
+/* ===== ПОЛЕ ПОИСКА ===== */
+.search-container {
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  right: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: none;
+  
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    
+    &:focus {
+      border-color: var(--link-color);
+      box-shadow: 0 0 0 3px var(--highlight-bg);
+    }
+  }
+}
+
+/* ===== ОТСТУП ДЛЯ КОНТЕНТА ===== */
+.page {
+  padding-top: 70px; /* Высота header */
+}
 
 /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
 @media (max-width: 800px) {
@@ -108,6 +196,7 @@
   .page-logo {
     width: 48px;
     height: 48px;
+    min-width: 48px;
   }
   
   .page-title-text {
@@ -118,21 +207,60 @@
   .darkmode {
     width: 36px;
     height: 36px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
   
-  .search-button svg { width: 18px; height: 18px; }
-  .darkmode svg { width: 20px; height: 20px; }
+  .darkmode svg {
+    width: 20px;
+    height: 20px;
+  }
   
-  /* Explorer скрыт на мобильных через DesktopOnly */
-}
-
-/* ===== ОТСТУП ДЛЯ КОНТЕНТА ===== */
-.page {
-  padding-top: 70px; /* Высота header */
-}
-
-@media (max-width: 800px) {
   .page {
     padding-top: 60px;
+  }
+  
+  .search-container {
+    top: 70px;
+  }
+}
+
+@media (max-width: 500px) {
+  .page-title-text {
+    display: none; /* Скрываем текст, оставляем только логотип */
+  }
+}
+
+/* ===== АНИМАЦИИ ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== ПЕЧАТЬ ===== */
+@media print {
+  .page-header,
+  .search-button,
+  .darkmode,
+  .search-container {
+    display: none;
+  }
+  
+  .page {
+    padding-top: 0;
   }
 }

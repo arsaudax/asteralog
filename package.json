@@ -1,41 +1,22 @@
 {
-  "name": "@jackyzha0/quartz",
-  "description": "🌱 publish your digital garden and notes as a website",
-  "private": true,
-  "version": "4.5.2",
+  "name": "asteralog",
+  "version": "1.0.0",
+  "description": "🌱 Asteralog: digital garden and blog from Obsidian",
   "type": "module",
-  "author": "jackyzha0 <j.zhao2k19@gmail.com>",
-  "license": "MIT",
-  "homepage": "https://quartz.jzhao.xyz",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jackyzha0/quartz.git"
-  },
+  "private": true,
   "scripts": {
-    "build": "npx quartz build",
-    "serve": "npx quartz build --serve",
-    "sync-content": "node utils/content-sync/index.js",
+    "sync": "node utils/content-sync/index.js",
+    "dev:garden": "npm run sync && npx quartz build --serve --directory content-garden --port 3001",
+    "dev:blog": "npm run sync && npx quartz build --serve --directory content-blog --port 3002",
+    "build:garden": "npm run sync && npx quartz build --directory content-garden --output public-garden",
+    "build:blog": "npm run sync && npx quartz build --directory content-blog --output public-blog",
     "quartz": "./quartz/bootstrap-cli.mjs",
-    "docs": "npx quartz build --serve -d docs",
     "check": "tsc --noEmit && npx prettier . --check",
-    "format": "npx prettier . --write",
-    "test": "tsx --test",
-    "profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1"
+    "format": "npx prettier . --write"
   },
   "engines": {
-    "npm": ">=10.9.2",
-    "node": ">=22"
-  },
-  "keywords": [
-    "site generator",
-    "ssg",
-    "digital-garden",
-    "markdown",
-    "blog",
-    "quartz"
-  ],
-  "bin": {
-    "quartz": "./quartz/bootstrap-cli.mjs"
+    "node": ">=22",
+    "npm": ">=10.9.2"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",

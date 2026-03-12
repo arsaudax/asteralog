@@ -7,7 +7,7 @@
   margin-bottom: var(--spacing-xl);
   padding-top: var(--spacing-xl);
   border-top: 1px solid var(--border-color);
-  opacity: 0.85;  /* было 0.7 - увеличили яркость */
+  opacity: 0.85;
   transition: opacity var(--transition-base);
   font-size: var(--font-size-sm);
   color: var(--text-muted);
@@ -16,7 +16,6 @@
     opacity: 1;
   }
 
-  // Основное содержимое футера
   &-content {
     display: flex;
     flex-wrap: wrap;
@@ -25,7 +24,6 @@
     gap: var(--spacing-lg);
   }
 
-  // Блок копирайта
   &-copyright {
     display: flex;
     align-items: center;
@@ -41,7 +39,6 @@
     color: var(--text-secondary);
   }
 
-  // Список ссылок
   &-links {
     display: flex;
     flex-wrap: wrap;
@@ -60,7 +57,7 @@
     text-decoration: none;
     font-size: var(--font-size-sm);
     transition: color var(--transition-fast);
-    opacity: 0.9;  /* добавили небольшую прозрачность */
+    opacity: 0.9;
 
     &:hover {
       opacity: 1;
@@ -69,7 +66,6 @@
     }
   }
 
-  // Адаптивность для мобильных
   @media (max-width: 600px) {
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-lg);
@@ -93,8 +89,8 @@
   }
 }
 
-// Тёмная тема
-:root[saved-theme="dark"] {
+/* 🔥 ИСПРАВЛЕНО: data-theme вместо saved-theme */
+[data-theme="dark"] {
   .footer {
     border-top-color: var(--border-color);
     
@@ -108,7 +104,6 @@
   }
 }
 
-// Для экранов с высоким контрастом
 @media (prefers-contrast: high) {
   .footer {
     border-top-width: 2px;
@@ -120,7 +115,6 @@
   }
 }
 
-// Для печати
 @media print {
   .footer {
     border-top: 1px solid #000;

@@ -11,6 +11,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-xs) 0;
+  animation: fadeIn var(--transition-slow);
 
   // Разделители — запятые (по умолчанию)
   &[show-comma="true"] {
@@ -93,12 +94,14 @@
 
   // Категория
   .meta-category {
-    background: var(--highlight);
+    background: var(--highlight-bg);
     padding: 0.1em 0.5em;
     border-radius: var(--radius-sm);
     color: var(--link-color);
     font-size: 0.95em;
     border: 1px solid transparent;
+    transition: all var(--transition-fast);
+    text-decoration: none;
     
     &::before {
       content: "📁";
@@ -108,7 +111,7 @@
     
     &:hover {
       background: var(--link-color);
-      color: white;
+      color: var(--bg-primary);
       border-color: var(--link-color);
     }
   }
@@ -140,12 +143,12 @@
     }
   }
 
-  // Тёмная тема
-  :root[saved-theme="dark"] & {
+  // 🔥 ИСПРАВЛЕНО: data-theme вместо saved-theme
+  [data-theme="dark"] & {
     color: var(--text-secondary);
     
     .meta-category {
-      background: var(--highlight);
+      background: var(--highlight-bg);
       color: var(--link-color);
       
       &:hover {
@@ -166,9 +169,6 @@
       background: transparent;
     }
   }
-
-  // Анимация появления
-  animation: fadeIn var(--transition-slow);
   
   @keyframes fadeIn {
     from {

@@ -279,7 +279,7 @@ a[href^="http"] img {
   font-weight: 600;
   margin-bottom: var(--spacing-md);
   color: var(--text-primary);
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-color); /* 🔥 ИСПРАВЛЕНО */
   padding-bottom: var(--spacing-xs);
 }
 

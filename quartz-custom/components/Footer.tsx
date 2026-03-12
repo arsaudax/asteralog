@@ -1,3 +1,4 @@
+// quartz-custom/components/Footer.tsx
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { classNames } from "../../quartz/util/lang"
 import style from "./styles/footer.scss"
@@ -5,6 +6,7 @@ import style from "./styles/footer.scss"
 interface Options {
   links?: Record<string, string>
   showCopyright?: boolean
+  showCrossLink?: boolean // Опция для отключения перекрёстной ссылки
 }
 
 export default ((opts?: Options) => {
@@ -12,6 +14,7 @@ export default ((opts?: Options) => {
     const year = new Date().getFullYear()
     const links = opts?.links || {}
     const showCopyright = opts?.showCopyright ?? true
+    const showCrossLink = opts?.showCrossLink ?? true
     
     // Определяем тип сайта для ссылки на другой сайт
     const siteType = typeof process !== 'undefined' 
@@ -42,14 +45,17 @@ export default ((opts?: Options) => {
           {/* Ссылки */}
           <ul class="footer-links">
             {/* Ссылка на другой сайт (сад/блог) */}
-            <li class="footer-link-item">
-              <a 
-                href={otherSiteUrl} 
-                class="footer-link"
-              >
-                {otherSiteEmoji} {otherSiteName}
-              </a>
-            </li>
+            {showCrossLink && (
+              <li class="footer-link-item">
+                <a 
+                  href={otherSiteUrl} 
+                  class="footer-link cross-link"
+                  title={`Перейти в ${otherSiteName}`}
+                >
+                  {otherSiteEmoji} {otherSiteName}
+                </a>
+              </li>
+            )}
             
             {/* Остальные ссылки из конфига */}
             {Object.entries(links).map(([text, link]) => (

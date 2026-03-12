@@ -36,7 +36,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 { font-size: var(--font-size-xxxl); }
-h2 { font-size: var(--font-size-xxl); border-bottom: 1px solid var(--border-light); padding-bottom: var(--spacing-xs); }
+h2 { 
+  font-size: var(--font-size-xxl); 
+  border-bottom: 1px solid var(--border-color); /* 🔥 ИСПРАВЛЕНО */
+  padding-bottom: var(--spacing-xs); 
+}
 h3 { font-size: var(--font-size-xl); }
 h4 { font-size: var(--font-size-lg); color: var(--text-secondary); }
 h5 { font-size: var(--font-size-md); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -311,9 +315,9 @@ article {
 
 /* ===== МЕДИА-ЗАПРОСЫ ===== */
 @media (max-width: 500px) {
-  h1 { font-size: calc(var(--font-size-xxxl) * 0.8); }
-  h2 { font-size: calc(var(--font-size-xxl) * 0.8); }
-  h3 { font-size: calc(var(--font-size-xl) * 0.8); }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.6rem; }
+  h3 { font-size: 1.2rem; }
   
   pre {
     padding: var(--spacing-md) !important;

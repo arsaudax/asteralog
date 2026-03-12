@@ -17,6 +17,10 @@ export default ((opts?: Options) => {
               src={opts.logo} 
               alt={opts.logoAlt || opts.title || "Logo"} 
               class="page-logo"
+              onError={(e) => {
+                // Если логотип не загрузился, скрываем его
+                (e.target as HTMLImageElement).style.display = 'none'
+              }}
             />
           )}
           <span class="page-title-text">{opts?.title || "Asteralog"}</span>
@@ -25,6 +29,5 @@ export default ((opts?: Options) => {
     )
   }
 
-  // Стили теперь только в custom.scss
   return PageTitle
 }) satisfies QuartzComponentConstructor

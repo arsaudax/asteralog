@@ -1,8 +1,9 @@
-import { FullSlug, joinSegments } from "../../../quartz/util/path"
-import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"
-import { BuildCtx } from "../../../quartz/util/ctx"
+// quartz-custom/plugins/CustomStyles.ts
+import { FullSlug, joinSegments } from "../../quartz/util/path"
+import { QuartzEmitterPlugin } from "../../quartz/plugins/types"
+import { BuildCtx } from "../../quartz/util/ctx"
 import { Features, transform } from "lightningcss"
-import { write } from "../../../quartz/plugins/emitters/helpers"
+import { write } from "../../quartz/plugins/emitters/helpers"
 
 // Импортируем стили с обработкой ошибок
 let customStyles = ""
@@ -37,7 +38,7 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
             firefox: 102 << 16, // 102
             chrome: 109 << 16, // 109
           },
-          include: Features.MediaQueries,
+          include: Features.MediaQueries | Features.Nesting, // 🔥 Добавлена поддержка вложенности
         })
 
         // Emit the custom stylesheet
@@ -51,16 +52,22 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
         console.log("✅ Custom styles emitted successfully")
       } catch (error) {
         console.error("❌ Error processing custom styles:", error)
-        // Эмитируем пустой CSS в случае ошибки
+        
+        // Fallback: эмитируем исходные стили без трансформации
+        console.log("ℹ️ Emitting raw styles as fallback")
         yield write({
           ctx,
           slug: "custom" as FullSlug,
           ext: ".css",
-          content: "/* Error processing custom styles */",
+          content: customStyles,
         })
       }
     },
-    async *partialEmit() {},
+    
+    async *partialEmit() {
+      // Не используется для этого плагина
+    },
+    
     externalResources: () => {
       return {
         css: [

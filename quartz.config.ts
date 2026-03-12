@@ -20,7 +20,11 @@ const baseConfig = {
   defaultDateType: "created",
 }
 
-// Цвета для сада
+// ==================================================
+// УНИФИЦИРОВАННЫЕ ЦВЕТОВЫЕ СХЕМЫ
+// ==================================================
+
+// Цвета для сада (garden.asteralog.ru)
 const gardenColors = {
   lightMode: {
     light: "#f9f7f4",        // светлый фон
@@ -28,9 +32,9 @@ const gardenColors = {
     gray: "#9a9a9a",          // muted текст
     darkgray: "#4a4a49",      // второстепенный текст
     dark: "#2b2b2b",          // основной текст
-    secondary: "#ab7d4c",     // ссылки
+    secondary: "#ab7d4c",     // ссылки (яркий золотой)
     tertiary: "#7c5736",      // ссылки при наведении
-    highlight: "rgba(162, 132, 94, 0.15)",
+    highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#fff23688",
   },
   darkMode: {
@@ -39,14 +43,14 @@ const gardenColors = {
     gray: "#4a4f54",          // границы
     darkgray: "#d4d4d4",      // основной текст
     dark: "#ffffff",          // заголовки
-    secondary: "#b5977a",     // ссылки
-    tertiary: "#d4b69b",      // ссылки при наведении
-    highlight: "rgba(181, 151, 122, 0.15)",
+    secondary: "#ab7d4c",     // ссылки (яркий золотой)
+    tertiary: "#7c5736",      // ссылки при наведении
+    highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#2e2a24",
   },
 }
 
-// Цвета для блога
+// Цвета для блога (blog.asteralog.ru)
 const blogColors = {
   lightMode: {
     light: "#ffffff",        // чисто белый фон
@@ -56,7 +60,7 @@ const blogColors = {
     dark: "#333333",          // основной текст
     secondary: "#ab7d4c",     // ссылки
     tertiary: "#7c5736",      // ссылки при наведении
-    highlight: "rgba(162, 132, 94, 0.1)",
+    highlight: "rgba(171, 125, 76, 0.1)",
     textHighlight: "#fff23688",
   },
   darkMode: {
@@ -65,21 +69,25 @@ const blogColors = {
     gray: "#4a4f54",          // границы
     darkgray: "#d4d4d4",      // основной текст
     dark: "#ffffff",          // заголовки
-    secondary: "#b5977a",     // ссылки
-    tertiary: "#d4b69b",      // ссылки при наведении
-    highlight: "rgba(181, 151, 122, 0.15)",
+    secondary: "#ab7d4c",     // ссылки
+    tertiary: "#7c5736",      // ссылки при наведении
+    highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#2e2a24",
   },
 }
 
+// Выбираем цвета в зависимости от типа сайта
 const colors = siteType === 'blog' ? blogColors : gardenColors
 
+// ==================================================
+// ФИНАЛЬНАЯ КОНФИГУРАЦИЯ
+// ==================================================
 const config: QuartzConfig = {
   configuration: {
     ...baseConfig,
     baseUrl: process.env.BASE_URL || '',
     theme: {
-      defaultTheme: "dark",
+      defaultTheme: "dark",  // 🔥 КРИТИЧЕСКИ ВАЖНО: тёмная по умолчанию
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
@@ -101,10 +109,15 @@ const config: QuartzConfig = {
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
       Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
-      Plugin.CrawlLinks({ markdownLinkResolution: "shortest", openLinksInNewTab: true }),
+      Plugin.CrawlLinks({ 
+        markdownLinkResolution: "shortest", 
+        openLinksInNewTab: true 
+      }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
-      CustomPlugins.RemoveTags({ tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] }),
+      CustomPlugins.RemoveTags({ 
+        tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] 
+      }),
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [

@@ -73,11 +73,11 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             АРХИТЕКТУРНО ПРАВИЛЬНАЯ ВЕРСИЯ
-             ✅ Ранняя инициализация темы
-             ✅ Нет дублирования обработчиков
-             ✅ Сохранён встроенный поиск Quartz
-             ✅ Правильные отступы
+             МИНИМАЛЬНАЯ АРХИТЕКТУРНО-ПРАВИЛЬНАЯ ВЕРСИЯ
+             ✅ Тёмная тема по умолчанию
+             ✅ Переключение темы работает
+             ✅ Мобильный header скрывается при скролле
+             ✅ Логотип и название в ряд
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -86,15 +86,51 @@ export default (() => {
         <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ */}
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ (всё в одном) */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
-              (function() {
+              (function () {
                 const html = document.documentElement;
-                const stored = localStorage.getItem('saved-theme') || localStorage.getItem('theme');
-                html.setAttribute('saved-theme', stored || 'dark');
+
+                // ===== THEME INIT =====
+                const stored = localStorage.getItem("theme");
+                const theme = stored || "dark";
+                html.setAttribute("data-theme", theme);
+
+                // ===== MOBILE HEADER =====
+                function initMobileHeader() {
+                  const header = document.querySelector(".sidebar.left");
+                  if (!header) return;
+
+                  let lastScroll = 0;
+                  const delta = 5;
+                  const headerHeight = 70;
+
+                  function handleScroll() {
+                    const current = window.scrollY;
+
+                    if (Math.abs(current - lastScroll) <= delta) return;
+
+                    if (current > lastScroll && current > headerHeight) {
+                      header.classList.add("hidden");
+                    } else {
+                      header.classList.remove("hidden");
+                    }
+
+                    if (current < 10) {
+                      header.classList.remove("hidden");
+                    }
+
+                    lastScroll = current;
+                  }
+
+                  window.addEventListener("scroll", handleScroll, { passive: true });
+                }
+
+                initMobileHeader();
+                document.addEventListener("nav", initMobileHeader);
               })();
             `
           }}
@@ -103,175 +139,142 @@ export default (() => {
         <meta name="description" content={description} />
         <link rel="icon" href={iconPath} />
 
-        {/* 3. КРИТИЧЕСКИЙ CSS */}
+        {/* 3. МИНИМАЛЬНЫЙ CSS */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
-          html.no-transitions *,
-          html.no-transitions *::before,
-          html.no-transitions *::after {
-            transition: none !important;
-            animation: none !important;
-          }
-          
-          html[saved-theme="dark"] {
+          html[data-theme="dark"] {
             background-color: #1a1c1e;
             color: #d4d4d4;
           }
           
-          html[saved-theme="dark"] body,
-          html[saved-theme="dark"] #quartz-root,
-          html[saved-theme="dark"] #quartz-body {
-            background-color: #1a1c1e !important;
-            color: #d4d4d4 !important;
-          }
-          
-          html[saved-theme="light"] {
+          html[data-theme="light"] {
             background-color: #f9f7f4;
             color: #2b2b2b;
-          }
-          
-          html[saved-theme="light"] body,
-          html[saved-theme="light"] #quartz-root,
-          html[saved-theme="light"] #quartz-body {
-            background-color: #f9f7f4 !important;
-            color: #2b2b2b !important;
           }
           
           body {
             background: inherit;
             color: inherit;
           }
-          
-          #quartz-root {
-            min-height: 100vh;
-          }
 
-          /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
+          /* ===== МОБИЛЬНЫЙ HEADER ===== */
           @media (max-width: 500px) {
-            /* Отступ для контента */
-            .page {
-              padding-top: 90px !important;
-            }
-            
             .sidebar.left {
-              display: flex !important;
-              align-items: center !important;
-              justify-content: space-between !important;
-              padding: 10px 20px 15px 20px !important;
-              background: rgba(26, 28, 30, 0.85) !important;
-              backdrop-filter: blur(12px) !important;
-              border-bottom: 1px solid var(--border-color) !important;
-              position: fixed !important;
-              top: 0 !important;
-              left: 0 !important;
-              right: 0 !important;
-              z-index: 100 !important;
-              transform: translateY(0) !important;
-              transition: transform 0.35s ease !important;
-              will-change: transform !important;
-              box-sizing: border-box !important;
-              width: 100% !important;
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 12px 20px;
+              background: rgba(26, 28, 30, 0.85);
+              backdrop-filter: blur(12px);
+              border-bottom: 1px solid var(--border-color);
+              z-index: 100;
+              transition: transform 0.35s ease;
+              transform: translateY(0);
+              box-sizing: border-box;
             }
             
-            html[saved-theme="light"] .sidebar.left {
-              background: rgba(249, 247, 244, 0.85) !important;
+            html[data-theme="light"] .sidebar.left {
+              background: rgba(249, 247, 244, 0.85);
             }
             
             .sidebar.left.hidden {
-              transform: translateY(-100%) !important;
+              transform: translateY(-100%);
             }
             
-            .page-title {
-              display: flex !important;
-              align-items: center !important;
-              gap: 24px !important;
-              margin: 0 !important;
-              padding: 0 !important;
+            /* ===== ЛОГОТИП + НАЗВАНИЕ ===== */
+            .page-title a {
+              display: flex;
+              align-items: center;
+              gap: 20px;
+              text-decoration: none;
             }
             
-            .page-logo {
-              width: 64px !important;
-              height: 64px !important;
-              min-width: 64px !important;
-              min-height: 64px !important;
-              border-radius: 50% !important;
-              object-fit: cover !important;
-              border: 2px solid var(--border-color) !important;
-              display: block !important;
+            .page-title img.page-logo {
+              width: 56px;
+              height: 56px;
+              min-width: 56px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid var(--border-color);
+              display: block;
             }
             
             .page-title-link {
-              font-size: 18px !important;
-              font-weight: 600 !important;
-              color: var(--link-color) !important;
-              text-decoration: none !important;
-              white-space: nowrap !important;
-              overflow: hidden !important;
-              text-overflow: ellipsis !important;
+              font-size: 18px;
+              font-weight: 600;
+              color: var(--link-color);
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
             
+            /* ===== КНОПКИ ===== */
             .search-button {
-              width: 40px !important;
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              border-radius: 10px !important;
-              background: var(--bg-secondary) !important;
-              border: 1px solid var(--border-color) !important;
-              cursor: pointer !important;
-              padding: 0 !important;
+              width: 40px;
+              height: 40px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 10px;
+              background: var(--bg-secondary);
+              border: 1px solid var(--border-color);
+              cursor: pointer;
+              padding: 0;
             }
             
             .search-button svg {
-              width: 20px !important;
-              height: 20px !important;
-              color: var(--link-color) !important;
+              width: 20px;
+              height: 20px;
+              color: var(--link-color);
             }
             
             .darkmode {
-              width: 40px !important;
-              height: 40px !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              background: transparent !important;
-              border: none !important;
-              cursor: pointer !important;
-              padding: 0 !important;
+              width: 40px;
+              height: 40px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: transparent;
+              border: none;
+              cursor: pointer;
+              padding: 0;
             }
             
             .darkmode svg {
-              width: 22px !important;
-              height: 22px !important;
-              color: var(--link-color) !important;
-              fill: var(--link-color) !important;
+              width: 22px;
+              height: 22px;
+              color: var(--link-color);
+              fill: var(--link-color);
             }
             
-            html[saved-theme="dark"] .darkmode .dayIcon {
-              display: none !important;
+            html[data-theme="dark"] .darkmode .dayIcon {
+              display: none;
             }
             
-            html[saved-theme="dark"] .darkmode .nightIcon {
-              display: block !important;
+            html[data-theme="dark"] .darkmode .nightIcon {
+              display: block;
             }
             
-            html[saved-theme="light"] .darkmode .dayIcon {
-              display: block !important;
+            html[data-theme="light"] .darkmode .dayIcon {
+              display: block;
             }
             
-            html[saved-theme="light"] .darkmode .nightIcon {
-              display: none !important;
+            html[data-theme="light"] .darkmode .nightIcon {
+              display: none;
             }
             
             .spacer.mobile-only {
-              display: none !important;
+              display: none;
             }
           }
 
           @media (max-width: 800px) {
             .explorer {
-              display: none !important;
+              display: none;
             }
           }
         `}</style>
@@ -358,156 +361,6 @@ export default (() => {
         {additionalHead.map((res) =>
           typeof res === "function" ? res(fileData) : res,
         )}
-
-        {/* 7. ФИНАЛЬНЫЙ СКРИПТ (с защитой от дублирования) */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                // Очистка блокировки переходов
-                const clean = () => {
-                  const html = document.documentElement;
-                  html.classList.remove('no-transitions');
-                };
-                
-                if (document.readyState === 'loading') {
-                  window.addEventListener('DOMContentLoaded', () => requestAnimationFrame(clean), { once: true });
-                } else {
-                  requestAnimationFrame(clean);
-                }
-                
-                // ===== МОБИЛЬНЫЙ HEADER (с защитой от дублирования) =====
-                let mobileHeaderInitialized = false;
-                
-                function initMobileHeader() {
-                  if (mobileHeaderInitialized) return;
-                  
-                  const header = document.querySelector('.sidebar.left');
-                  if (!header) return;
-                  
-                  mobileHeaderInitialized = true;
-                  header.classList.remove('hidden');
-                  
-                  let lastScroll = 0;
-                  const headerHeight = 70;
-                  const delta = 5;
-                  
-                  function handleScroll() {
-                    const currentScroll = window.scrollY;
-                    
-                    if (Math.abs(currentScroll - lastScroll) <= delta) return;
-                    
-                    if (currentScroll > lastScroll && currentScroll > headerHeight) {
-                      header.classList.add('hidden');
-                    } else {
-                      header.classList.remove('hidden');
-                    }
-                    
-                    if (currentScroll < 10) {
-                      header.classList.remove('hidden');
-                    }
-                    
-                    lastScroll = currentScroll;
-                  }
-                  
-                  window.addEventListener('scroll', handleScroll, { passive: true });
-                }
-                
-                if (window.innerWidth <= 500) {
-                  initMobileHeader();
-                }
-                
-                // ===== КАСТОМНЫЙ ПОИСК (только если не работает встроенный) =====
-                // Ждём инициализации Quartz
-                setTimeout(() => {
-                  const quartzSearch = document.querySelector('.search .search-container');
-                  
-                  // Если встроенный поиск не работает, создаём свой
-                  if (!quartzSearch || quartzSearch.children.length === 0) {
-                    console.log('🔍 Используем кастомный поиск');
-                    
-                    let searchInitialized = false;
-                    
-                    function initCustomSearch() {
-                      if (searchInitialized) return;
-                      
-                      const searchBtn = document.querySelector('.search-button');
-                      if (!searchBtn) return;
-                      
-                      searchInitialized = true;
-                      
-                      let searchContainer = document.getElementById('custom-search-container');
-                      
-                      if (!searchContainer) {
-                        searchContainer = document.createElement('div');
-                        searchContainer.id = 'custom-search-container';
-                        searchContainer.innerHTML = \`
-                          <div style="
-                            position: fixed;
-                            top: 80px;
-                            left: 20px;
-                            right: 20px;
-                            background: var(--bg-primary);
-                            border: 1px solid var(--border-color);
-                            border-radius: 16px;
-                            padding: 16px;
-                            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-                            z-index: 1000000;
-                            color: var(--text-primary);
-                            display: none;
-                          ">
-                            <input 
-                              type="text" 
-                              placeholder="Поиск..." 
-                              style="
-                                width: 100%;
-                                padding: 12px 16px;
-                                border-radius: 12px;
-                                border: 1px solid var(--border-color);
-                                background: var(--bg-secondary);
-                                color: var(--text-primary);
-                                font-size: 16px;
-                                outline: none;
-                                box-sizing: border-box;
-                              "
-                            >
-                          </div>
-                        \`;
-                        document.body.appendChild(searchContainer);
-                      }
-                      
-                      const newBtn = searchBtn.cloneNode(true);
-                      searchBtn.parentNode.replaceChild(newBtn, searchBtn);
-                      
-                      newBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        if (searchContainer.style.display === 'none') {
-                          searchContainer.style.display = 'block';
-                          const input = searchContainer.querySelector('input');
-                          setTimeout(() => input.focus(), 100);
-                        } else {
-                          searchContainer.style.display = 'none';
-                        }
-                      });
-                      
-                      document.addEventListener('click', (e) => {
-                        if (!newBtn.contains(e.target) && !searchContainer.contains(e.target)) {
-                          searchContainer.style.display = 'none';
-                        }
-                      });
-                    }
-                    
-                    initCustomSearch();
-                  } else {
-                    console.log('🔍 Используем встроенный поиск Quartz');
-                  }
-                }, 500); // Ждём полсекунды для инициализации Quartz
-              })();
-            `
-          }}
-        />
       </head>
     )
   }

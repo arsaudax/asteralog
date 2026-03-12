@@ -75,9 +75,8 @@ export default (() => {
         {/* ====================================================
              АРХИТЕКТУРНО ПРАВИЛЬНАЯ ВЕРСИЯ
              ✅ Только data-theme (как в Quartz)
-             ✅ Мобильный header без флагов
-             ✅ Логотип через flex на ссылке
-             ✅ Отступ для контента
+             ✅ Минимальный критический CSS
+             ✅ Без конфликтов с layout
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -85,6 +84,8 @@ export default (() => {
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="icon" href={iconPath} />
 
         {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ — ТОЛЬКО DATA-THEME */}
         <script
@@ -100,151 +101,21 @@ export default (() => {
           }}
         />
 
-        <meta name="description" content={description} />
-        <link rel="icon" href={iconPath} />
-
-        {/* 3. КРИТИЧЕСКИЙ CSS */}
+        {/* 3. КРИТИЧЕСКИЙ CSS (только для предотвращения FOUC) */}
         <style>{`
-          /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html[data-theme="dark"] {
             background-color: #1a1c1e;
             color: #d4d4d4;
           }
-          
           html[data-theme="light"] {
             background-color: #f9f7f4;
             color: #2b2b2b;
           }
-          
           body {
             background: inherit;
             color: inherit;
-          }
-
-          /* ===== МОБИЛЬНЫЙ HEADER ===== */
-          @media (max-width: 500px) {
-            .page {
-              padding-top: 90px !important;
-            }
-            
-            .sidebar.left {
-              position: fixed;
-              top: 0;
-              left: 0;
-              right: 0;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding: 12px 20px;
-              background: rgba(26, 28, 30, 0.85);
-              backdrop-filter: blur(12px);
-              border-bottom: 1px solid var(--border-color);
-              z-index: 100;
-              transition: transform 0.35s ease;
-              transform: translateY(0);
-              box-sizing: border-box;
-            }
-            
-            html[data-theme="light"] .sidebar.left {
-              background: rgba(249, 247, 244, 0.85);
-            }
-            
-            .sidebar.left.hidden {
-              transform: translateY(-100%);
-            }
-            
-            /* ===== ЛОГОТИП — FLEX НА ССЫЛКЕ ===== */
-            .page-title a {
-              display: flex;
-              align-items: center;
-              gap: 20px;
-              text-decoration: none;
-            }
-            
-            .page-logo {
-              width: 64px !important;
-              height: 64px !important;
-              min-width: 64px !important;
-              min-height: 64px !important;
-              border-radius: 50%;
-              object-fit: cover;
-              border: 2px solid var(--border-color);
-              display: block;
-            }
-            
-            .page-title-link {
-              font-size: 18px;
-              font-weight: 600;
-              color: var(--link-color);
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            }
-            
-            /* ===== КНОПКИ ===== */
-            .search-button {
-              width: 40px;
-              height: 40px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 10px;
-              background: var(--bg-secondary);
-              border: 1px solid var(--border-color);
-              cursor: pointer;
-              padding: 0;
-            }
-            
-            .search-button svg {
-              width: 20px;
-              height: 20px;
-              color: var(--link-color);
-            }
-            
-            .darkmode {
-              width: 40px;
-              height: 40px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              background: transparent;
-              border: none;
-              cursor: pointer;
-              padding: 0;
-            }
-            
-            .darkmode svg {
-              width: 22px;
-              height: 22px;
-              color: var(--link-color);
-              fill: var(--link-color);
-            }
-            
-            html[data-theme="dark"] .darkmode .dayIcon {
-              display: none;
-            }
-            
-            html[data-theme="dark"] .darkmode .nightIcon {
-              display: block;
-            }
-            
-            html[data-theme="light"] .darkmode .dayIcon {
-              display: block;
-            }
-            
-            html[data-theme="light"] .darkmode .nightIcon {
-              display: none;
-            }
-            
-            .spacer.mobile-only {
-              display: none;
-            }
-          }
-
-          @media (max-width: 800px) {
-            .explorer {
-              display: none;
-            }
+            margin: 0;
+            padding: 0;
           }
         `}</style>
 
@@ -331,46 +202,43 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 7. ФИНАЛЬНЫЙ СКРИПТ — БЕЗ ФЛАГОВ */}
+        {/* 7. СКРИПТ ДЛЯ СКРОЛЛ-ПОВЕДЕНИЯ */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                function initMobileHeader() {
-                  const header = document.querySelector('.sidebar.left');
+                function initScrollBehavior() {
+                  const header = document.querySelector('.page-header');
                   if (!header) return;
                   
-                  header.classList.remove('hidden');
-                  
                   let lastScroll = 0;
-                  const headerHeight = 70;
                   const delta = 5;
                   
                   function handleScroll() {
-                    const current = window.scrollY;
+                    const currentScroll = window.scrollY;
                     
-                    if (Math.abs(current - lastScroll) <= delta) return;
+                    if (Math.abs(currentScroll - lastScroll) <= delta) return;
                     
-                    if (current > lastScroll && current > headerHeight) {
+                    if (currentScroll > lastScroll && currentScroll > 70) {
                       header.classList.add('hidden');
                     } else {
                       header.classList.remove('hidden');
                     }
                     
-                    if (current < 10) {
+                    if (currentScroll < 10) {
                       header.classList.remove('hidden');
                     }
                     
-                    lastScroll = current;
+                    lastScroll = currentScroll;
                   }
                   
                   window.addEventListener('scroll', handleScroll, { passive: true });
                 }
                 
                 if (window.innerWidth <= 500) {
-                  initMobileHeader();
+                  initScrollBehavior();
                 }
-                document.addEventListener('nav', initMobileHeader);
+                document.addEventListener('nav', initScrollBehavior);
               })();
             `
           }}

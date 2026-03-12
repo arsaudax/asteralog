@@ -11,15 +11,22 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// Базовая левая панель (общая для всех layout)
-const baseLeftPanel = [
+// ======================================
+// КОМПОНЕНТЫ ДЛЯ ВЕРХНЕЙ ПАНЕЛИ (HEADER)
+// ======================================
+const headerComponents = [
   CustomComponent.PageTitle({ 
     logo: "/static/thistle.png",
-    logoAlt: "Логотип"
+    logoAlt: "Логотип",
+    title: "Asteralog"
   }),
-  Component.MobileOnly(Component.Spacer()),
   Component.Search(),
   Component.Darkmode(),
+]
+
+// Базовая левая панель (уже без PageTitle, он теперь в header)
+const baseLeftPanel = [
+  Component.MobileOnly(Component.Spacer()),
 ]
 
 // Конфигурация проводника
@@ -64,7 +71,7 @@ const backlinksConfig = {
 // Общие компоненты
 export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),
-  header: [],
+  header: headerComponents, // 👈 ВАЖНО: используем header!
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -91,8 +98,7 @@ export const gardenContentPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    // ИСПРАВЛЕНО: убрали DesktopOnly, оставили просто Explorer
-    Component.Explorer(explorerConfig),
+    Component.Explorer(explorerConfig), // Explorer теперь один на всех
   ],
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
@@ -114,7 +120,6 @@ export const gardenListPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    // ИСПРАВЛЕНО: убрали DesktopOnly
     Component.Explorer(explorerConfig),
   ],
   right: [],
@@ -189,7 +194,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'archive'
       }
     }),
-    CustomComponent.ThemeRestoreScript(),
   ],
 }
 
@@ -210,7 +214,6 @@ export const blogListPageLayout: PageLayout = {
         return props.fileData.slug?.startsWith('tags/') || false
       }
     }),
-    CustomComponent.ThemeRestoreScript(),
   ],
 }
 

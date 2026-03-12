@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          cd utils/content-sync && npm install --no-package-lock
+          cd utils/content-sync && npm ci --no-package-lock
 
       - name: Clone or update garden content
         run: |
@@ -67,7 +67,7 @@ jobs:
           BASE_URL: garden.asteralog.ru
 
       - name: Build Garden
-        run: npx quartz build --directory content-garden --output public-garden
+        run: node quartz/bootstrap-cli.mjs build --directory content-garden --output public-garden
         env:
           BASE_URL: garden.asteralog.ru
           SITE_TYPE: garden
@@ -80,20 +80,22 @@ jobs:
           echo "BASE_URL: $BASE_URL"
           echo ""
           echo "📁 Files in public-garden/:"
-          ls -la public-garden/
+          ls -la public-garden/ || echo "Directory not found"
           echo ""
-          echo "📄 First 20 lines of index.html:"
-          cat public-garden/index.html | head -20
-          echo ""
-          echo "🔍 Checking for 404 page..."
-          if grep -q "404" public-garden/index.html; then
-            echo "❌ ERROR: index.html is a 404 page!"
+          if [ -f "public-garden/index.html" ]; then
+            echo "📄 First 20 lines of index.html:"
+            head -20 public-garden/index.html
             echo ""
-            echo "=== Looking for index.md in source ==="
-            find content-garden -name "index.md" -exec cat {} \; | head -10
-            exit 1
+            echo "🔍 Checking for 404 page..."
+            if grep -q "404" public-garden/index.html; then
+              echo "❌ ERROR: index.html is a 404 page!"
+              exit 1
+            else
+              echo "✅ index.html looks good"
+            fi
           else
-            echo "✅ index.html looks good"
+            echo "❌ ERROR: index.html not found!"
+            exit 1
           fi
         env:
           SITE_TYPE: garden
@@ -123,7 +125,7 @@ jobs:
           BASE_URL: blog.asteralog.ru
 
       - name: Build Blog
-        run: npx quartz build --directory content-blog --output public-blog
+        run: node quartz/bootstrap-cli.mjs build --directory content-blog --output public-blog
         env:
           BASE_URL: blog.asteralog.ru
           SITE_TYPE: blog
@@ -136,20 +138,22 @@ jobs:
           echo "BASE_URL: $BASE_URL"
           echo ""
           echo "📁 Files in public-blog/:"
-          ls -la public-blog/
+          ls -la public-blog/ || echo "Directory not found"
           echo ""
-          echo "📄 First 20 lines of index.html:"
-          cat public-blog/index.html | head -20
-          echo ""
-          echo "🔍 Checking for 404 page..."
-          if grep -q "404" public-blog/index.html; then
-            echo "❌ ERROR: index.html is a 404 page!"
+          if [ -f "public-blog/index.html" ]; then
+            echo "📄 First 20 lines of index.html:"
+            head -20 public-blog/index.html
             echo ""
-            echo "=== Looking for index.md in source ==="
-            find content-blog -name "index.md" -exec cat {} \; | head -10
-            exit 1
+            echo "🔍 Checking for 404 page..."
+            if grep -q "404" public-blog/index.html; then
+              echo "❌ ERROR: index.html is a 404 page!"
+              exit 1
+            else
+              echo "✅ index.html looks good"
+            fi
           else
-            echo "✅ index.html looks good"
+            echo "❌ ERROR: index.html not found!"
+            exit 1
           fi
         env:
           SITE_TYPE: blog

@@ -6,7 +6,7 @@ import style from "./styles/footer.scss"
 interface Options {
   links?: Record<string, string>
   showCopyright?: boolean
-  showCrossLink?: boolean // Опция для отключения перекрёстной ссылки
+  showCrossLink?: boolean
 }
 
 export default ((opts?: Options) => {
@@ -17,9 +17,9 @@ export default ((opts?: Options) => {
     const showCrossLink = opts?.showCrossLink ?? true
     
     // Определяем тип сайта для ссылки на другой сайт
-    const siteType = typeof process !== 'undefined' 
-      ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
-      : 'garden'
+    const siteType = typeof process !== 'undefined' && process.env?.BASE_URL
+      ? (process.env.BASE_URL.includes('blog') ? 'blog' : 'garden')
+      : 'garden' // fallback по умолчанию
     
     const otherSite = siteType === 'blog' ? 'garden' : 'blog'
     const otherSiteUrl = siteType === 'blog' 
@@ -50,7 +50,7 @@ export default ((opts?: Options) => {
                 <a 
                   href={otherSiteUrl} 
                   class="footer-link cross-link"
-                  title={`Перейти в ${otherSiteName}`}
+                  title={`Перейти в ${otherSiteName.toLowerCase()}`}
                 >
                   {otherSiteEmoji} {otherSiteName}
                 </a>
@@ -58,10 +58,10 @@ export default ((opts?: Options) => {
             )}
             
             {/* Остальные ссылки из конфига */}
-            {Object.entries(links).map(([text, link]) => (
+            {Object.entries(links).map(([text, url]) => (
               <li key={text} class="footer-link-item">
                 <a 
-                  href={link} 
+                  href={url} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   class="footer-link"

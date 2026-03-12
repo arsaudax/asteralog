@@ -1,3 +1,4 @@
+// quartz-custom/components/BlogIndex.tsx
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { QuartzPluginData } from "../../quartz/plugins/vfile"
 import { Date, getDate } from "../../quartz/components/Date"
@@ -20,10 +21,11 @@ export default ((opts?: Options) => {
     const showTags = opts?.showTags ?? true
     const showDate = opts?.showDate ?? true
 
-    // Фильтруем файлы - исключаем только index
+    // Фильтруем файлы - исключаем index и archive
     let files = allFiles.filter(file => {
       const passed = filter(file)
-      if (file.slug === 'index') return false
+      // Исключаем служебные страницы
+      if (file.slug === 'index' || file.slug === 'archive') return false
       return passed
     })
 
@@ -75,8 +77,10 @@ export default ((opts?: Options) => {
                 
                 {showTags && tags.length > 0 && (
                   <div class="blog-index-tags">
-                    {tags.map(tag => (
-                      <span key={tag} class="blog-index-tag">{tag}</span>
+                    {tags.map((tag, index) => (
+                      <span key={`${file.slug}-tag-${index}`} class="blog-index-tag">
+                        {tag}
+                      </span>
                     ))}
                   </div>
                 )}
@@ -89,7 +93,84 @@ export default ((opts?: Options) => {
   }
 
   BlogIndex.css = `
-  /* стили из blogIndex.scss */
+  .blog-index {
+    margin: var(--spacing-lg) 0;
+  }
+  
+  .blog-index--empty {
+    padding: var(--spacing-xl);
+    text-align: center;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--border-color);
+  }
+  
+  .blog-index-empty {
+    color: var(--text-muted);
+    font-style: italic;
+    margin: 0;
+  }
+  
+  .blog-index-item {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .blog-index-item:last-child {
+    border-bottom: none;
+  }
+  
+  .blog-index-title {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .blog-index-title a {
+    color: var(--link-color);
+    text-decoration: none;
+  }
+  
+  .blog-index-title a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+  
+  .blog-index-date {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .blog-index-description {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .blog-index-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+  
+  .blog-index-tag {
+    font-size: var(--font-size-xs);
+    padding: 0.2rem 0.5rem;
+    background: var(--highlight);
+    border-radius: var(--radius-sm);
+    color: var(--link-color);
+  }
+  
+  @media (max-width: 500px) {
+    .blog-index-item {
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-lg);
+    }
+    
+    .blog-index-title {
+      font-size: var(--font-size-lg);
+    }
+  }
   `
 
   return BlogIndex

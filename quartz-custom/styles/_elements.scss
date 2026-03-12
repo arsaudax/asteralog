@@ -1,7 +1,9 @@
-/* Elements Styles for Asteralog
+// quartz-custom/styles/_elements.scss
+/* =========================================================
+   Elements Styles for Asteralog
    Стили для специфических элементов интерфейса
    Только то, чего нет в custom.scss
-*/
+   ========================================================= */
 
 @use "variables" as *;
 
@@ -107,7 +109,7 @@ table {
   
   td {
     padding: var(--spacing-sm) var(--spacing-md);
-    border-bottom: 1px solid var(--border-color); /* 🔥 ИСПРАВЛЕНО */
+    border-bottom: 1px solid var(--border-color);
   }
   
   tr:last-child td {
@@ -128,6 +130,88 @@ table {
   }
 }
 
+/* ===== ТЕГИ (специфичные) ===== */
+.tag {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  margin: 0.15rem;
+  border-radius: var(--radius-sm);
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    background: var(--link-color);
+    color: white;
+    border-color: var(--link-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  // Счётчик тегов
+  &-count {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-left: var(--spacing-xs);
+    
+    &::before {
+      content: "(";
+    }
+    
+    &::after {
+      content: ")";
+    }
+  }
+}
+
+/* ===== МЕТАДАННЫЕ СТАТЬИ ===== */
+.content-meta {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin: var(--spacing-sm) 0 var(--spacing-lg) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  align-items: center;
+  
+  svg {
+    fill: var(--link-color);
+    width: 1em;
+    height: 1em;
+    margin-right: var(--spacing-xs);
+  }
+  
+  time, span {
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .meta-separator {
+    color: var(--border-color);
+    opacity: 0.5;
+    
+    &::after {
+      content: "·";
+      margin: 0 var(--spacing-xs);
+    }
+  }
+  
+  .reading-time {
+    &::before {
+      content: "☕️";
+      margin-right: var(--spacing-xs);
+      opacity: 0.7;
+    }
+  }
+  
+  @media (max-width: 500px) {
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+}
+
 /* ===== АДАПТИВНОСТЬ ===== */
 @media (max-width: 500px) {
   .article-title {
@@ -141,7 +225,7 @@ table {
 }
 
 /* ===== ТЁМНАЯ ТЕМА ===== */
-[data-theme="dark"] {  /* 🔥 ИСПРАВЛЕНО */
+[data-theme="dark"] {
   .tag:hover {
     background: var(--link-hover);
     border-color: var(--link-hover);
@@ -152,9 +236,33 @@ table {
   }
 }
 
+/* ===== СВЕТЛАЯ ТЕМА ===== */
+[data-theme="light"] {
+  .tag:hover {
+    background: var(--link-color);
+    border-color: var(--link-color);
+    color: white;
+  }
+}
+
 /* ===== ПЕЧАТЬ ===== */
 @media print {
   .breadcrumb-container {
     display: none;
+  }
+  
+  .article-title {
+    color: black !important;
+    border-bottom-color: #999;
+  }
+  
+  .tag {
+    border: 1px solid #999;
+    color: black;
+    
+    &:hover {
+      background: none;
+      color: black;
+    }
   }
 }

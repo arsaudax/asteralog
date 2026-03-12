@@ -1,7 +1,6 @@
 // quartz-custom/components/Head.tsx
-import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
+import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { i18n } from "../../quartz/i18n"
-import { QuartzComponentProps } from "../../quartz/components/types"
 
 export default (() => {
   const Head: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) => {
@@ -32,7 +31,15 @@ export default (() => {
                 const stored = localStorage.getItem("theme");
                 html.setAttribute("data-theme", stored || "dark");
                 html.classList.add('no-transitions');
-                setTimeout(() => html.classList.remove('no-transitions'), 100);
+                
+                // Убираем блокировку после загрузки страницы
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', () => {
+                    html.classList.remove('no-transitions');
+                  });
+                } else {
+                  html.classList.remove('no-transitions');
+                }
               })();
             `
           }}
@@ -46,26 +53,38 @@ export default (() => {
           rel="stylesheet"
           media="print"
           onLoad="this.media='all'"
+          crossOrigin="anonymous"
         />
         <noscript>
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet" />
         </noscript>
 
-        {/* ===== 🔥 КРИТИЧЕСКИЕ СТИЛИ ===== */}
+        {/* ===== CSS ===== */}
         <link rel="stylesheet" href="/index.css" />
-        {/* УДАЛЕНО: <link rel="stylesheet" href="/custom.css" /> */}
+        {/* custom.css будет подключен автоматически через ComponentResources */}
 
         {/* ===== OPEN GRAPH META ===== */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://garden.asteralog.ru/static/og-image.png" />
+        <meta property="og:url" content={`https://${cfg.baseUrl}${fileData.slug === 'index' ? '' : '/' + fileData.slug}`} />
+        
+        {fileData.frontmatter?.image ? (
+          <meta property="og:image" content={fileData.frontmatter.image} />
+        ) : (
+          <meta property="og:image" content={`https://${cfg.baseUrl}/static/og-image.png`} />
+        )}
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content="https://garden.asteralog.ru/static/og-image.png" />
+        
+        {fileData.frontmatter?.image ? (
+          <meta name="twitter:image" content={fileData.frontmatter.image} />
+        ) : (
+          <meta name="twitter:image" content={`https://${cfg.baseUrl}/static/og-image.png`} />
+        )}
         
         {cfg.baseUrl && (
           <link rel="canonical" href={`https://${cfg.baseUrl}${fileData.slug === 'index' ? '' : '/' + fileData.slug}`} />

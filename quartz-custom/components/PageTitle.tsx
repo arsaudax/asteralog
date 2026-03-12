@@ -17,9 +17,15 @@ export default ((opts?: Options) => {
               src={opts.logo} 
               alt={opts.logoAlt || opts.title || "Logo"} 
               class="page-logo"
+              width="56"
+              height="56"
+              loading="eager"
               onError={(e) => {
                 // Если логотип не загрузился, скрываем его
-                (e.target as HTMLImageElement).style.display = 'none'
+                const img = e.target as HTMLImageElement
+                img.style.display = 'none'
+                // Можно также добавить запасной текст или иконку
+                console.warn(`Logo failed to load: ${img.src}`)
               }}
             />
           )}

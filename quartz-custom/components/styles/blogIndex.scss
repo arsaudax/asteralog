@@ -1,9 +1,14 @@
-/* Blog Index Styles for Asteralog */
+// quartz-custom/components/styles/blogIndex.scss
+/* =========================================================
+   Blog Index Styles for Asteralog
+   ========================================================= */
+
 @use "../../styles/variables" as *;
 
 .blog-index {
   margin: var(--spacing-lg) 0;
   
+  /* ===== EMPTY STATE ===== */
   &--empty {
     padding: var(--spacing-xl);
     text-align: center;
@@ -18,12 +23,14 @@
     margin: 0;
   }
   
+  /* ===== LIST ===== */
   &-list {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
   }
   
+  /* ===== ITEM ===== */
   &-item {
     border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-lg);
@@ -41,8 +48,14 @@
         color: var(--link-hover);
       }
     }
+    
+    // Поддержка RTL (опционально)
+    [dir="rtl"] &:hover {
+      transform: translateX(calc(-1 * var(--spacing-xs)));
+    }
   }
   
+  /* ===== LINK ===== */
   &-link {
     text-decoration: none;
     color: inherit;
@@ -54,6 +67,7 @@
     }
   }
   
+  /* ===== TITLE ===== */
   &-title {
     font-size: var(--font-size-xl);
     margin: 0 0 var(--spacing-xs) 0;
@@ -67,6 +81,7 @@
     }
   }
   
+  /* ===== DATE ===== */
   &-date {
     font-size: var(--font-size-sm);
     color: var(--text-muted);
@@ -81,6 +96,7 @@
     }
   }
   
+  /* ===== DESCRIPTION ===== */
   &-description {
     color: var(--text-secondary);
     margin: 0 0 var(--spacing-sm) 0;
@@ -92,6 +108,7 @@
     }
   }
   
+  /* ===== TAGS ===== */
   &-tags {
     display: flex;
     flex-wrap: wrap;
@@ -102,7 +119,7 @@
   &-tag {
     font-size: var(--font-size-xs);
     padding: 0.2rem 0.5rem;
-    background: var(--highlight-bg);
+    background: var(--highlight);
     border-radius: var(--radius-sm);
     color: var(--link-color);
     border: 1px solid transparent;
@@ -115,13 +132,42 @@
       border-color: var(--link-color);
     }
   }
+  
+  /* ===== COMPACT VARIANT ===== */
+  &--compact {
+    .blog-index-item {
+      padding-bottom: var(--spacing-md);
+    }
+    
+    .blog-index-title {
+      font-size: var(--font-size-lg);
+    }
+    
+    .blog-index-description {
+      font-size: var(--font-size-sm);
+    }
+  }
+  
+  /* ===== FEATURED VARIANT ===== */
+  &--featured {
+    .blog-index-item:first-child {
+      background: var(--highlight);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      border-bottom: none;
+      
+      .blog-index-title {
+        font-size: var(--font-size-xxl);
+      }
+    }
+  }
 }
 
-/* 🔥 ИСПРАВЛЕНО: data-theme вместо saved-theme */
+/* ===== ТЁМНАЯ ТЕМА ===== */
 [data-theme="dark"] {
   .blog-index {
     &-tag {
-      background: var(--highlight-bg);
+      background: var(--highlight);
       color: var(--link-color);
       
       &:hover {
@@ -138,7 +184,7 @@
   }
 }
 
-/* Анимация */
+/* ===== АНИМАЦИЯ ===== */
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -150,7 +196,7 @@
   }
 }
 
-/* Высокий контраст */
+/* ===== ВЫСОКИЙ КОНТРАСТ ===== */
 @media (prefers-contrast: high) {
   .blog-index-item {
     border-bottom-width: 2px;
@@ -166,7 +212,7 @@
   }
 }
 
-/* Печать */
+/* ===== ПЕЧАТЬ ===== */
 @media print {
   .blog-index-item {
     break-inside: avoid;
@@ -177,35 +223,5 @@
     border: 1px solid #999;
     background: none;
     color: black;
-  }
-}
-
-// Добавить поддержку разных размеров
-.blog-index {
-  &--compact {
-    .blog-index-item {
-      padding-bottom: var(--spacing-md);
-    }
-    
-    .blog-index-title {
-      font-size: var(--font-size-lg);
-    }
-    
-    .blog-index-description {
-      font-size: var(--font-size-sm);
-    }
-  }
-  
-  &--featured {
-    .blog-index-item:first-child {
-      background: var(--highlight-bg);
-      padding: var(--spacing-lg);
-      border-radius: var(--radius-lg);
-      border-bottom: none;
-      
-      .blog-index-title {
-        font-size: var(--font-size-xxl);
-      }
-    }
   }
 }

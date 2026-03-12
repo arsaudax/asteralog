@@ -1,3 +1,4 @@
+// quartz-custom/components/ContentMeta.tsx
 import { Date, getDate } from "../../quartz/components/Date"
 import { QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import style from "./styles/contentMeta.scss"
@@ -65,11 +66,11 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
     if (!text) return null
     
     // Определяем тип сайта для CSS-стилизации
-    const siteType = typeof process !== 'undefined' 
-      ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
+    const siteType = typeof process !== 'undefined' && process.env?.BASE_URL
+      ? (process.env.BASE_URL.includes('blog') ? 'blog' : 'garden')
       : 'garden'
     
-    const segments: (string | JSX.Element)[] = []
+    const segments: { key: string; element: JSX.Element }[] = []
 
     // Дата создания
     if (fileData.dates?.created) {
@@ -85,7 +86,10 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
         } else {
           dateDisplay = <Date date={createdDate} locale={cfg.locale} />
         }
-        segments.push(<span class="meta-created">{dateDisplay}</span>)
+        segments.push({ 
+          key: 'created', 
+          element: <span class="meta-created">{dateDisplay}</span> 
+        })
       }
     }
 
@@ -95,33 +99,39 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
       const readingTimeDisplay = formatReadingTime(Math.ceil(minutes))
       
       if (options.showWordCount) {
-        segments.push(
-          <span class="meta-reading">
-            {readingTimeDisplay} · {formatWordCount(words)}
-          </span>
-        )
+        segments.push({
+          key: 'reading',
+          element: (
+            <span class="meta-reading">
+              {readingTimeDisplay} · {formatWordCount(words)}
+            </span>
+          )
+        })
       } else {
-        segments.push(<span class="meta-reading">{readingTimeDisplay}</span>)
+        segments.push({
+          key: 'reading',
+          element: <span class="meta-reading">{readingTimeDisplay}</span>
+        })
       }
     }
 
     // Автор (из frontmatter)
     if (options.showAuthor && fileData.frontmatter?.author) {
-      segments.push(
-        <span class="meta-author">
-          ✍️ {fileData.frontmatter.author}
-        </span>
-      )
+      segments.push({
+        key: 'author',
+        element: <span class="meta-author">✍️ {fileData.frontmatter.author}</span>
+      })
     }
 
     // Категория (из frontmatter)
     if (options.showCategory && fileData.frontmatter?.category) {
-      segments.push(
-        <span class="meta-category">
-          📁 {fileData.frontmatter.category}
-        </span>
-      )
+      segments.push({
+        key: 'category',
+        element: <span class="meta-category">📁 {fileData.frontmatter.category}</span>
+      })
     }
+
+    if (segments.length === 0) return null
 
     return (
       <div 
@@ -130,14 +140,13 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
         data-site-type={siteType}
         data-separator={options.showComma ? "comma" : "dot"}
       >
-        {segments.map((segment, i) => (
-          <span key={i} class="meta-item">{segment}</span>
+        {segments.map(({ key, element }) => (
+          <span key={key} class="meta-item">{element}</span>
         ))}
       </div>
     )
   }
 
   ContentMetadata.css = style
-
   return ContentMetadata
 }) satisfies QuartzComponentConstructor

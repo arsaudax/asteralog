@@ -1,5 +1,5 @@
 // quartz-custom/components/ArchiveLink.tsx
-import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
+import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { classNames } from "../../quartz/util/lang"
 import style from "./styles/archiveLink.scss"
 
@@ -7,31 +7,38 @@ interface Options {
   sidebar?: boolean
   text?: string
   emoji?: "before" | "after" | "none"
-  hideIfEmpty?: boolean // если на странице нет постов для архива
+  hideIfEmpty?: boolean
 }
 
 export default ((opts?: Options) => {
-  const ArchiveLink: QuartzComponent = ({ displayClass, fileData }) => {
-    const classes = ["archive-link-container"]
-    if (opts?.sidebar) classes.push("sidebar")
+  const ArchiveLink: QuartzComponent = ({ displayClass, fileData, allFiles }: QuartzComponentProps) => {
+    // Не показываем на служебных страницах
+    const hideOnSlugs = ['archive', 'index', '404']
+    if (hideOnSlugs.includes(fileData.slug || '')) return null
     
-    // Не показываем на странице архива
-    if (fileData.slug === 'archive') return null
-    
-    // Не показываем, если включена опция hideIfEmpty
-    // (нужна будет дополнительная логика для проверки наличия постов)
+    // Проверка на наличие постов (если нужна)
     if (opts?.hideIfEmpty) {
-      // TODO: добавить проверку через allFiles
-      // пока просто заглушка
+      // Фильтруем файлы, которые должны быть в архиве
+      const archiveFiles = allFiles.filter(file => {
+        return file.slug && 
+               file.type === "content" && 
+               file.slug !== 'index' && 
+               file.slug !== 'archive'
+      })
+      
+      if (archiveFiles.length === 0) return null
     }
     
-    const emoji = opts?.emoji ?? "after" // по умолчанию эмодзи после текста
+    const classes = ["archive-link-container"]
+    if (opts?.sidebar) classes.push("archive-link-container--sidebar")
+    
+    const emoji = opts?.emoji ?? "after"
     const baseText = opts?.text ?? "Все записи"
     
     let linkText = baseText
-    if (emoji === "before") linkText = `${baseText} 📚`
+    if (emoji === "before") linkText = `📚 ${baseText}`
     else if (emoji === "after") linkText = `${baseText} 📚`
-    else linkText = baseText
+    // else "none" — ничего не добавляем
     
     return (
       <div class={classNames(displayClass, ...classes)}>

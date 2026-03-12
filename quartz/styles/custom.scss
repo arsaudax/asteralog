@@ -1,4 +1,7 @@
 // quartz/styles/custom.scss
+// ====================================================
+// ПОЛНАЯ ВЕРСИЯ С ОПЦИОНАЛЬНЫМИ УЛУЧШЕНИЯМИ
+// ====================================================
 
 /* ===== БАЗОВЫЕ СЕМАНТИЧЕСКИЕ ПЕРЕМЕННЫЕ ===== */
 :root {
@@ -12,6 +15,12 @@
   --link-color: var(--secondary);
   --link-hover: var(--tertiary);
   --highlight-bg: var(--highlight);
+  
+  // 👇 ОПЦИОНАЛЬНО: переменные для высоты header
+  --header-height: 70px;
+  --header-height-mobile: 60px;
+  --header-padding: 8px 20px;
+  --header-padding-mobile: 6px 16px;
 }
 
 // Переопределения для тёмной темы (автоматически через data-theme)
@@ -48,7 +57,7 @@ html.no-transitions *::after {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 8px 20px !important;
+  padding: var(--header-padding);
   background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
@@ -59,6 +68,7 @@ html.no-transitions *::after {
   will-change: transform;
   box-sizing: border-box;
   width: 100%;
+  min-height: var(--header-height);
   
   &.hidden {
     transform: translateY(-100%);
@@ -76,7 +86,7 @@ html.no-transitions *::after {
 .page-logo {
   width: 56px;
   height: 56px;
-  min-width: 56px; // Добавлено для защиты от сжатия
+  min-width: 56px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--border-color);
@@ -151,7 +161,7 @@ html.no-transitions *::after {
 /* ===== ПОЛЕ ПОИСКА ===== */
 .search-container {
   position: fixed;
-  top: 80px;
+  top: calc(var(--header-height) + 10px);
   left: 20px;
   right: 20px;
   max-width: 600px;
@@ -184,13 +194,14 @@ html.no-transitions *::after {
 
 /* ===== ОТСТУП ДЛЯ КОНТЕНТА ===== */
 .page {
-  padding-top: 70px; /* Высота header */
+  padding-top: var(--header-height);
 }
 
 /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
 @media (max-width: 800px) {
   .page-header {
-    padding: 6px 16px;
+    padding: var(--header-padding-mobile);
+    min-height: var(--header-height-mobile);
   }
   
   .page-logo {
@@ -220,11 +231,11 @@ html.no-transitions *::after {
   }
   
   .page {
-    padding-top: 60px;
+    padding-top: var(--header-height-mobile);
   }
   
   .search-container {
-    top: 70px;
+    top: calc(var(--header-height-mobile) + 10px);
   }
 }
 

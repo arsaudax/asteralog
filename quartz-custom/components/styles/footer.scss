@@ -1,10 +1,7 @@
-/* Footer Styles for Asteralog */
-@use "../../styles/variables" as *;
+// quartz-custom/components/styles/footer.scss
 
 .footer {
-  text-align: left;
   margin-top: var(--spacing-xxl);
-  margin-bottom: var(--spacing-xl);
   padding-top: var(--spacing-xl);
   border-top: 1px solid var(--border-color);
   opacity: 0.85;
@@ -55,7 +52,6 @@
   &-link {
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: var(--font-size-sm);
     transition: color var(--transition-fast);
     opacity: 0.9;
 
@@ -66,11 +62,21 @@
     }
   }
 
-  @media (max-width: 600px) {
-    margin-top: var(--spacing-xl);
-    margin-bottom: var(--spacing-lg);
-    padding-top: var(--spacing-lg);
+  // Стили для перекрёстной ссылки (сад/блог)
+  .cross-link {
+    font-weight: 500;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--highlight-bg);
+    border-radius: var(--radius-sm);
+    
+    &:hover {
+      background: var(--link-color);
+      color: var(--bg-primary);
+    }
+  }
 
+  // Адаптивность
+  @media (max-width: 600px) {
     &-content {
       flex-direction: column;
       align-items: flex-start;
@@ -89,7 +95,7 @@
   }
 }
 
-/* 🔥 ИСПРАВЛЕНО: data-theme вместо saved-theme */
+// Тёмная тема
 [data-theme="dark"] {
   .footer {
     border-top-color: var(--border-color);
@@ -101,20 +107,14 @@
         color: var(--link-hover);
       }
     }
-  }
-}
-
-@media (prefers-contrast: high) {
-  .footer {
-    border-top-width: 2px;
-    opacity: 1;
     
-    &-link {
-      text-decoration: underline;
+    .cross-link:hover {
+      background: var(--link-hover);
     }
   }
 }
 
+// Для печати
 @media print {
   .footer {
     border-top: 1px solid #000;
@@ -123,7 +123,6 @@
     
     a {
       color: #000;
-      text-decoration: underline;
       
       &[href]::after {
         content: " (" attr(href) ")";

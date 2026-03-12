@@ -1,6 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
-// import * as CustomPlugins from "./quartz-custom/plugins" // ПОЛНОСТЬЮ ОТКЛЮЧАЕМ
+import * as CustomPlugins from "./quartz-custom/plugins" // ПОЛНОСТЬЮ ОТКЛЮЧАЕМ
 
 // Определяем, какой сайт собирается
 const siteType = process.env.SITE_TYPE || 
@@ -108,9 +108,9 @@ const config: QuartzConfig = {
       }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
-      // CustomPlugins.RemoveTags({ 
-      //   tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] 
-      // }), // ❌ ВРЕМЕННО УБРАНО
+      CustomPlugins.RemoveTags({ 
+        tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] 
+      }),
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [

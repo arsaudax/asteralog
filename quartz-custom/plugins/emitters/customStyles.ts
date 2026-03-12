@@ -25,13 +25,10 @@ export const customStyles: QuartzEmitterPlugin = () => {
       // Читаем файл стилей при каждой сборке
       let customStyles = ""
       try {
-        // Поднимаемся из .../plugins/emitters/ на 3 уровня вверх
-        // Это должно привести в корень проекта
-        const rootDir = path.resolve(__dirname, "../../../")
-        const stylePath = path.join(rootDir, "quartz-custom/styles/custom.scss")
+        // 🔥 ЛУЧШИЙ СПОСОБ: process.cwd() всегда указывает на корень проекта
+        const stylePath = path.join(process.cwd(), "quartz-custom/styles/custom.scss")
         
-        console.log(`🔍 Current __dirname: ${__dirname}`)
-        console.log(`🔍 Resolved rootDir: ${rootDir}`)
+        console.log(`🔍 Current working directory: ${process.cwd()}`)
         console.log(`🔍 Looking for styles at: ${stylePath}`)
         
         // Проверяем существование файла

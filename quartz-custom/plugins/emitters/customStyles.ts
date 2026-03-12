@@ -22,33 +22,59 @@ export const customStyles: QuartzEmitterPlugin = () => {
     name: "CustomStyles",
     
     async *emit(ctx: BuildCtx, _content, _resources) {
-      // Читаем файл стилей при каждой сборке
-      let customStyles = ""
+      // Собираем ВСЕ стили
+      let allStyles = ""
       try {
-        // 🔥 ЛУЧШИЙ СПОСОБ: process.cwd() всегда указывает на корень проекта
-        const stylePath = path.join(process.cwd(), "quartz-custom/styles/custom.scss")
+        const rootDir = process.cwd()
         
-        console.log(`🔍 Current working directory: ${process.cwd()}`)
-        console.log(`🔍 Looking for styles at: ${stylePath}`)
+        // Читаем все три файла
+        const variablesPath = path.join(rootDir, "quartz-custom/styles/_variables.scss")
+        const overridesPath = path.join(rootDir, "quartz-custom/styles/_overrides.scss")
+        const customPath = path.join(rootDir, "quartz-custom/styles/custom.scss")
         
-        // Проверяем существование файла
-        await fs.access(stylePath)
-        console.log(`✅ File exists!`)
+        console.log(`🔍 Reading styles from:`)
+        console.log(`   - ${variablesPath}`)
+        console.log(`   - ${overridesPath}`)
+        console.log(`   - ${customPath}`)
         
-        customStyles = await fs.readFile(stylePath, "utf-8")
-        console.log(`📖 Read custom styles (${customStyles.length} bytes)`)
+        // Проверяем существование файлов
+        await fs.access(variablesPath)
+        await fs.access(overridesPath)
+        await fs.access(customPath)
+        
+        // Читаем содержимое
+        const variables = await fs.readFile(variablesPath, "utf-8")
+        const overrides = await fs.readFile(overridesPath, "utf-8")
+        const custom = await fs.readFile(customPath, "utf-8")
+        
+        // Удаляем директивы @use (они не нужны в финальном CSS)
+        const cleanVariables = variables.replace(/@use .*;/g, '')
+        const cleanOverrides = overrides.replace(/@use .*;/g, '')
+        const cleanCustom = custom.replace(/@use .*;/g, '')
+        
+        // Объединяем все стили
+        allStyles = [
+          "/* ===== USER VARIABLES ===== */",
+          cleanVariables,
+          "/* ===== QUARTZ OVERRIDES ===== */",
+          cleanOverrides,
+          "/* ===== CUSTOM STYLES ===== */",
+          cleanCustom
+        ].join('\n\n')
+        
+        console.log(`✅ Loaded total styles: ${allStyles.length} bytes`)
       } catch (error) {
-        console.warn(`⚠️ Custom styles not found: ${error.message}`)
+        console.warn(`⚠️ Error loading styles: ${error.message}`)
         console.log("ℹ️ No custom styles to emit")
         return
       }
 
       try {
-        console.log("🎨 Processing custom styles...")
+        console.log("🎨 Processing styles with lightningcss...")
         
         const transformedStyles = transform({
           filename: "custom.css",
-          code: Buffer.from(customStyles),
+          code: Buffer.from(allStyles),
           minify: true,
           targets: {
             safari: (15 << 16) | (6 << 8),
@@ -68,16 +94,22 @@ export const customStyles: QuartzEmitterPlugin = () => {
         )
         
         console.log(`✅ Custom styles emitted to ${outputPath}`)
+        
+        // Важно: добавляем ресурс в сборку
+        if (!ctx.resources) ctx.resources = { css: [], js: [], additionalHead: [] }
+        if (!ctx.resources.css) ctx.resources.css = []
+        ctx.resources.css.push({ content: "/custom.css" })
+        
         yield outputPath
       } catch (error) {
         console.error("❌ Error processing custom styles:", error)
         
-        console.log("ℹ️ Emitting raw styles as fallback")
+        // Fallback: сохраняем исходные стили как есть
         const outputPath = await writeFile(
           ctx,
           "custom" as FullSlug,
           ".css",
-          customStyles
+          allStyles
         )
         console.log(`⚠️ Raw styles saved to ${outputPath}`)
         yield outputPath

@@ -164,11 +164,6 @@ export const blogContentPageLayout: PageLayout = {
       condition: (props: QuartzComponentProps) => 
         props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
     }),
-    // 🔥 Добавлен RSS для главной страницы блога
-    Component.ConditionalRender({
-      component: Component.Rss({ limit: 10 }),
-      condition: (props: QuartzComponentProps) => props.fileData.slug === 'index'
-    }),
   ],
   afterBody: [
     Component.ConditionalRender({

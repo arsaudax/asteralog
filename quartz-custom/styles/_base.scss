@@ -5,6 +5,31 @@
 
 @use "variables" as *;
 
+/* ===== СЕМАНТИЧЕСКИЕ CSS-ПЕРЕМЕННЫЕ ===== */
+:root {
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --text-muted: var(--gray);
+  --border-color: var(--lightgray);
+  --link-color: var(--secondary);
+  --link-hover: var(--tertiary);
+  --highlight-bg: var(--highlight);
+}
+
+/* Тёмная тема */
+[data-theme="dark"] {
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --border-color: var(--lightgray);
+  --link-color: var(--secondary);
+  --link-hover: var(--tertiary);
+  --highlight-bg: var(--highlight);
+}
+
 /* ===== БАЗОВЫЕ СБРОСЫ ===== */
 * {
   box-sizing: border-box;

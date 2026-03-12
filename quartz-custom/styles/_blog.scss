@@ -5,6 +5,35 @@
 
 @use "variables" as *;
 
+/* ===== ЦВЕТА ДЛЯ БЛОГА ===== */
+/* Тёмная тема блога */
+[data-theme="dark"].site-blog,
+.site-blog[data-theme="dark"] {
+  --bg-primary: #1a1c1e !important;
+  --bg-secondary: #2e3235 !important;
+  --text-primary: #d4d4d4 !important;
+  --text-secondary: #b0b0b0 !important;
+  --text-muted: #9a9a9a !important;
+  --border-color: #4a4f54 !important;
+  --link-color: #ab7d4c !important;
+  --link-hover: #7c5736 !important;
+  --highlight: rgba(171, 125, 76, 0.15) !important;
+}
+
+/* Светлая тема блога */
+[data-theme="light"].site-blog,
+.site-blog[data-theme="light"] {
+  --bg-primary: #ffffff !important;
+  --bg-secondary: #f0f0f0 !important;
+  --text-primary: #333333 !important;
+  --text-secondary: #666666 !important;
+  --text-muted: #9a9a9a !important;
+  --border-color: #b8b8b8 !important;
+  --link-color: #ab7d4c !important;
+  --link-hover: #7c5736 !important;
+  --highlight: rgba(171, 125, 76, 0.1) !important;
+}
+
 /* ===== ПОСТЫ В ЛЕНТЕ ===== */
 .blog-index {
   margin: var(--spacing-lg) 0;
@@ -172,7 +201,7 @@
   }
 }
 
-/* ===== ТЁМНАЯ ТЕМА ===== */
+/* ===== ТЁМНАЯ ТЕМА (дополнительные стили) ===== */
 [data-theme="dark"] {
   .blog-index-tag {
     background: var(--highlight);
@@ -185,7 +214,7 @@
   }
 }
 
-/* ===== СВЕТЛАЯ ТЕМА ===== */
+/* ===== СВЕТЛАЯ ТЕМА (дополнительные стили) ===== */
 [data-theme="light"] {
   .blog-index-tag:hover {
     background: var(--link-color);

@@ -1,12 +1,15 @@
 // quartz-custom/plugins/emitters/customStyles.ts
-import { FullSlug, joinSegments } from "../../../quartz/util/path"
+import { FullSlug } from "../../../quartz/util/path"
 import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"
 import { BuildCtx } from "../../../quartz/util/ctx"
 import { Features, transform } from "lightningcss"
 import fs from "fs/promises"
 import path from "path"
+import { fileURLToPath } from "url"
 
-// Своя функция записи файла
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 async function writeFile(ctx: BuildCtx, slug: FullSlug, ext: string, content: string) {
   const filePath = path.join(ctx.argv.output, slug + ext)
   await fs.mkdir(path.dirname(filePath), { recursive: true })
@@ -14,23 +17,26 @@ async function writeFile(ctx: BuildCtx, slug: FullSlug, ext: string, content: st
   return filePath
 }
 
-// Импортируем стили с обработкой ошибок
-let customStyles = ""
-try {
-  // Читаем файл напрямую
-  const stylePath = path.join(__dirname, "../../styles/custom.scss")
-  customStyles = await fs.readFile(stylePath, "utf-8")
-  console.log(`📖 Read custom styles from ${stylePath}`)
-} catch (error) {
-  console.warn("⚠️ Custom styles not found, using empty styles")
-  customStyles = "/* No custom styles */"
-}
-
-export const CustomStyles: QuartzEmitterPlugin = () => {
+export const customStyles: QuartzEmitterPlugin = () => {
   return {
     name: "CustomStyles",
+    
     async *emit(ctx: BuildCtx, _content, _resources) {
-      // Если нет стилей, ничего не эмитируем
+      // Читаем файл стилей при каждой сборке
+      let customStyles = ""
+      try {
+        // Поднимаемся из .../plugins/emitters/ в корень проекта
+        const rootDir = path.resolve(__dirname, "../../..")
+        const stylePath = path.join(rootDir, "quartz-custom/styles/custom.scss")
+        
+        console.log(`🔍 Looking for styles at: ${stylePath}`)
+        customStyles = await fs.readFile(stylePath, "utf-8")
+        console.log(`📖 Read custom styles (${customStyles.length} bytes)`)
+      } catch (error) {
+        console.warn("⚠️ Custom styles not found, using empty styles")
+        customStyles = "/* No custom styles */"
+      }
+
       if (!customStyles || customStyles === "/* No custom styles */") {
         console.log("ℹ️ No custom styles to emit")
         return
@@ -39,7 +45,6 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
       try {
         console.log("🎨 Processing custom styles...")
         
-        // Transform and minify the custom SCSS
         const transformedStyles = transform({
           filename: "custom.css",
           code: Buffer.from(customStyles),
@@ -54,7 +59,6 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
           include: Features.MediaQueries | Features.Nesting,
         })
 
-        // Сохраняем обработанный CSS
         const outputPath = await writeFile(
           ctx, 
           "custom" as FullSlug, 
@@ -67,7 +71,6 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
       } catch (error) {
         console.error("❌ Error processing custom styles:", error)
         
-        // Fallback: сохраняем исходные стили без обработки
         console.log("ℹ️ Emitting raw styles as fallback")
         const outputPath = await writeFile(
           ctx,
@@ -80,18 +83,10 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
       }
     },
     
-    async *partialEmit() {
-      // Не используется для этого плагина
-    },
+    async *partialEmit() {},
     
-    externalResources: () => {
-      return {
-        css: [
-          {
-            content: "/custom.css",
-          },
-        ],
-      }
-    },
+    externalResources: () => ({
+      css: [{ content: "/custom.css" }]
+    }),
   }
 }

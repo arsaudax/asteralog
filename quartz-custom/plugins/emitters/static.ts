@@ -1,4 +1,4 @@
-// quartz-custom/plugins/Static.ts
+// quartz-custom/plugins/emitters/static.ts (обратите внимание: имя файла с маленькой буквы)
 import fs from "fs/promises"
 import { FilePath, joinSegments } from "../../../quartz/util/path"
 import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"

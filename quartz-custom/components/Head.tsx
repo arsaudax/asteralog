@@ -52,6 +52,10 @@ export default (() => {
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet" />
         </noscript>
 
+        {/* ===== 🔥 КРИТИЧЕСКИЕ СТИЛИ ===== */}
+        <link rel="stylesheet" href="/index.css" />
+        <link rel="stylesheet" href="/custom.css" />
+
         {/* ===== OPEN GRAPH META ===== */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />

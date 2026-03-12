@@ -53,7 +53,7 @@ export default (() => {
 
         {/* ===== 🔥 КРИТИЧЕСКИЕ СТИЛИ ===== */}
         <link rel="stylesheet" href="/index.css" />
-        <link rel="stylesheet" href="/custom.css" />
+        {/* УДАЛЕНО: <link rel="stylesheet" href="/custom.css" /> */}
 
         {/* ===== OPEN GRAPH META ===== */}
         <meta property="og:site_name" content={cfg.pageTitle} />

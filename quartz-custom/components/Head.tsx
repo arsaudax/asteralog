@@ -73,11 +73,11 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             МИНИМАЛЬНАЯ АРХИТЕКТУРНО-ПРАВИЛЬНАЯ ВЕРСИЯ
+             ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
              ✅ Тёмная тема по умолчанию
              ✅ Переключение темы работает
+             ✅ Логотип 64x64
              ✅ Мобильный header скрывается при скролле
-             ✅ Логотип и название в ряд
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
@@ -86,51 +86,17 @@ export default (() => {
         <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
 
-        {/* 2. КРИТИЧЕСКИЙ СКРИПТ (всё в одном) */}
+        {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function () {
                 const html = document.documentElement;
-
-                // ===== THEME INIT =====
-                const stored = localStorage.getItem("theme");
-                const theme = stored || "dark";
-                html.setAttribute("data-theme", theme);
-
-                // ===== MOBILE HEADER =====
-                function initMobileHeader() {
-                  const header = document.querySelector(".sidebar.left");
-                  if (!header) return;
-
-                  let lastScroll = 0;
-                  const delta = 5;
-                  const headerHeight = 70;
-
-                  function handleScroll() {
-                    const current = window.scrollY;
-
-                    if (Math.abs(current - lastScroll) <= delta) return;
-
-                    if (current > lastScroll && current > headerHeight) {
-                      header.classList.add("hidden");
-                    } else {
-                      header.classList.remove("hidden");
-                    }
-
-                    if (current < 10) {
-                      header.classList.remove("hidden");
-                    }
-
-                    lastScroll = current;
-                  }
-
-                  window.addEventListener("scroll", handleScroll, { passive: true });
-                }
-
-                initMobileHeader();
-                document.addEventListener("nav", initMobileHeader);
+                const stored = localStorage.getItem('theme');
+                const theme = stored || 'dark';
+                html.setAttribute('saved-theme', theme);
+                html.setAttribute('data-theme', theme);
               })();
             `
           }}
@@ -139,14 +105,16 @@ export default (() => {
         <meta name="description" content={description} />
         <link rel="icon" href={iconPath} />
 
-        {/* 3. МИНИМАЛЬНЫЙ CSS */}
+        {/* 3. КРИТИЧЕСКИЙ CSS */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
+          html[saved-theme="dark"],
           html[data-theme="dark"] {
             background-color: #1a1c1e;
             color: #d4d4d4;
           }
           
+          html[saved-theme="light"],
           html[data-theme="light"] {
             background-color: #f9f7f4;
             color: #2b2b2b;
@@ -185,18 +153,20 @@ export default (() => {
               transform: translateY(-100%);
             }
             
-            /* ===== ЛОГОТИП + НАЗВАНИЕ ===== */
-            .page-title a {
+            /* ===== ЛОГОТИП ===== */
+            .page-title {
               display: flex;
               align-items: center;
               gap: 20px;
-              text-decoration: none;
+              margin: 0;
+              padding: 0;
             }
             
-            .page-title img.page-logo {
-              width: 56px;
-              height: 56px;
-              min-width: 56px;
+            .page-logo {
+              width: 64px !important;
+              height: 64px !important;
+              min-width: 64px !important;
+              min-height: 64px !important;
               border-radius: 50%;
               object-fit: cover;
               border: 2px solid var(--border-color);
@@ -207,6 +177,7 @@ export default (() => {
               font-size: 18px;
               font-weight: 600;
               color: var(--link-color);
+              text-decoration: none;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -361,6 +332,57 @@ export default (() => {
         {additionalHead.map((res) =>
           typeof res === "function" ? res(fileData) : res,
         )}
+
+        {/* 7. ФИНАЛЬНЫЙ СКРИПТ */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // ===== МОБИЛЬНЫЙ HEADER =====
+                let mobileHeaderInitialized = false;
+                
+                function initMobileHeader() {
+                  if (mobileHeaderInitialized) return;
+                  
+                  const header = document.querySelector('.sidebar.left');
+                  if (!header) return;
+                  
+                  mobileHeaderInitialized = true;
+                  header.classList.remove('hidden');
+                  
+                  let lastScroll = 0;
+                  const headerHeight = 70;
+                  const delta = 5;
+                  
+                  function handleScroll() {
+                    const current = window.scrollY;
+                    
+                    if (Math.abs(current - lastScroll) <= delta) return;
+                    
+                    if (current > lastScroll && current > headerHeight) {
+                      header.classList.add('hidden');
+                    } else {
+                      header.classList.remove('hidden');
+                    }
+                    
+                    if (current < 10) {
+                      header.classList.remove('hidden');
+                    }
+                    
+                    lastScroll = current;
+                  }
+                  
+                  window.addEventListener('scroll', handleScroll, { passive: true });
+                }
+                
+                if (window.innerWidth <= 500) {
+                  initMobileHeader();
+                }
+                document.addEventListener('nav', initMobileHeader);
+              })();
+            `
+          }}
+        />
       </head>
     )
   }

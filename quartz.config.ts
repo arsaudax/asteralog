@@ -1,6 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
-import * as CustomPlugins from "./quartz-custom/plugins"
+// import * as CustomPlugins from "./quartz-custom/plugins" // ПОЛНОСТЬЮ ОТКЛЮЧАЕМ
 
 // Определяем, какой сайт собирается
 const siteType = process.env.SITE_TYPE || 
@@ -20,31 +20,27 @@ const baseConfig = {
   defaultDateType: "created",
 }
 
-// ==================================================
-// УНИФИЦИРОВАННЫЕ ЦВЕТОВЫЕ СХЕМЫ
-// ==================================================
-
 // Цвета для сада (garden.asteralog.ru)
 const gardenColors = {
   lightMode: {
-    light: "#f9f7f4",        // светлый фон
-    lightgray: "#e5e5e5",     // светлый серый для карточек
-    gray: "#9a9a9a",          // muted текст
-    darkgray: "#4a4a49",      // второстепенный текст
-    dark: "#2b2b2b",          // основной текст
-    secondary: "#ab7d4c",     // ссылки (яркий золотой)
-    tertiary: "#7c5736",      // ссылки при наведении
+    light: "#f9f7f4",
+    lightgray: "#e5e5e5",
+    gray: "#9a9a9a",
+    darkgray: "#4a4a49",
+    dark: "#2b2b2b",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
     highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#fff23688",
   },
   darkMode: {
-    light: "#1a1c1e",        // тёмный фон
-    lightgray: "#2e3235",     // тёмно-серый для карточек
-    gray: "#4a4f54",          // границы
-    darkgray: "#d4d4d4",      // основной текст
-    dark: "#ffffff",          // заголовки
-    secondary: "#ab7d4c",     // ссылки (яркий золотой)
-    tertiary: "#7c5736",      // ссылки при наведении
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
+    dark: "#ffffff",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
     highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#2e2a24",
   },
@@ -53,24 +49,24 @@ const gardenColors = {
 // Цвета для блога (blog.asteralog.ru)
 const blogColors = {
   lightMode: {
-    light: "#ffffff",        // чисто белый фон
-    lightgray: "#f0f0f0",     // светлый серый
-    gray: "#9a9a9a",          // muted текст
-    darkgray: "#666666",      // второстепенный текст
-    dark: "#333333",          // основной текст
-    secondary: "#ab7d4c",     // ссылки
-    tertiary: "#7c5736",      // ссылки при наведении
+    light: "#ffffff",
+    lightgray: "#f0f0f0",
+    gray: "#9a9a9a",
+    darkgray: "#666666",
+    dark: "#333333",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
     highlight: "rgba(171, 125, 76, 0.1)",
     textHighlight: "#fff23688",
   },
   darkMode: {
-    light: "#1a1c1e",        // тёмный фон
-    lightgray: "#2e3235",     // тёмно-серый
-    gray: "#4a4f54",          // границы
-    darkgray: "#d4d4d4",      // основной текст
-    dark: "#ffffff",          // заголовки
-    secondary: "#ab7d4c",     // ссылки
-    tertiary: "#7c5736",      // ссылки при наведении
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
+    dark: "#ffffff",
+    secondary: "#ab7d4c",
+    tertiary: "#7c5736",
     highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#2e2a24",
   },
@@ -79,15 +75,12 @@ const blogColors = {
 // Выбираем цвета в зависимости от типа сайта
 const colors = siteType === 'blog' ? blogColors : gardenColors
 
-// ==================================================
-// ФИНАЛЬНАЯ КОНФИГУРАЦИЯ
-// ==================================================
 const config: QuartzConfig = {
   configuration: {
     ...baseConfig,
     baseUrl: process.env.BASE_URL || '',
     theme: {
-      defaultTheme: "dark",  // 🔥 КРИТИЧЕСКИ ВАЖНО: тёмная по умолчанию
+      defaultTheme: "dark",
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
@@ -115,9 +108,9 @@ const config: QuartzConfig = {
       }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
-      CustomPlugins.RemoveTags({ 
-        tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] 
-      }),
+      // CustomPlugins.RemoveTags({ 
+      //   tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] 
+      // }), // ❌ ВРЕМЕННО УБРАНО
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [
@@ -129,8 +122,8 @@ const config: QuartzConfig = {
       Plugin.ContentIndex({ enableSiteMap: true, enableRSS: true }),
       Plugin.Assets(),
       Plugin.Static(),
-      CustomPlugins.Static(),
-      CustomPlugins.CustomStyles(),
+      // CustomPlugins.Static(),      // ❌ ВРЕМЕННО УБРАНО
+      // CustomPlugins.CustomStyles(), // ❌ ВРЕМЕННО УБРАНО
       Plugin.NotFoundPage(),
     ],
   },

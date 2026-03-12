@@ -73,19 +73,17 @@ export default (() => {
     return (
       <head>
         {/* ====================================================
-             ФИНАЛЬНАЯ ВЕРСИЯ — ВСЁ РАБОТАЕТ!
-             ✅ Тёмная тема
-             ✅ Круг 64px и текст в ряд
-             ✅ Fixed + transform + will-change
-             ✅ Правильный селектор .sidebar.left
-             ✅ Passive scroll listener
-             ✅ Реинициализация после SPA
-             ✅ ПОИСК РАБОТАЕТ!
+             АРХИТЕКТУРНО ПРАВИЛЬНАЯ ВЕРСИЯ
+             ✅ Ранняя инициализация темы
+             ✅ Нет дублирования обработчиков
+             ✅ Сохранён встроенный поиск Quartz
+             ✅ Правильные отступы
         ==================================================== */}
         
         {/* 1. МИНИМАЛЬНЫЕ META */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
 
         {/* 2. КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ */}
@@ -95,31 +93,17 @@ export default (() => {
             __html: `
               (function() {
                 const html = document.documentElement;
-                html.setAttribute('saved-theme', 'dark');
-                html.style.backgroundColor = '#1a1c1e';
-                html.style.color = '#d4d4d4';
-                html.classList.add('site-garden', 'no-transitions');
-                
-                // Лёгкая защита от переопределения (100ms)
-                let counter = 0;
-                const interval = setInterval(() => {
-                  counter++;
-                  if (html.getAttribute('saved-theme') !== 'dark') {
-                    html.setAttribute('saved-theme', 'dark');
-                  }
-                  if (counter > 10) clearInterval(interval);
-                }, 10);
+                const stored = localStorage.getItem('saved-theme') || localStorage.getItem('theme');
+                html.setAttribute('saved-theme', stored || 'dark');
               })();
             `
           }}
         />
 
-        {/* 3. ОСТАЛЬНЫЕ META */}
         <meta name="description" content={description} />
         <link rel="icon" href={iconPath} />
-        <meta name="color-scheme" content="dark light" />
 
-        {/* 4. КРИТИЧЕСКИЙ CSS */}
+        {/* 3. КРИТИЧЕСКИЙ CSS */}
         <style>{`
           /* ===== БАЗОВЫЕ СТИЛИ ===== */
           html.no-transitions *,
@@ -164,6 +148,11 @@ export default (() => {
 
           /* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
           @media (max-width: 500px) {
+            /* Отступ для контента */
+            .page {
+              padding-top: 90px !important;
+            }
+            
             .sidebar.left {
               display: flex !important;
               align-items: center !important;
@@ -193,17 +182,11 @@ export default (() => {
             }
             
             .page-title {
-              margin: 0 !important;
-              padding: 0 !important;
-            }
-            
-            .page-title-link {
               display: flex !important;
               align-items: center !important;
               gap: 24px !important;
               margin: 0 !important;
               padding: 0 !important;
-              text-decoration: none !important;
             }
             
             .page-logo {
@@ -217,21 +200,14 @@ export default (() => {
               display: block !important;
             }
             
-            .page-title-link span {
+            .page-title-link {
               font-size: 18px !important;
               font-weight: 600 !important;
               color: var(--link-color) !important;
+              text-decoration: none !important;
               white-space: nowrap !important;
               overflow: hidden !important;
               text-overflow: ellipsis !important;
-            }
-            
-            /* Контейнер для кнопок */
-            .actions {
-              display: flex !important;
-              align-items: center !important;
-              gap: 8px !important;
-              flex-shrink: 0 !important;
             }
             
             .search-button {
@@ -300,7 +276,7 @@ export default (() => {
           }
         `}</style>
 
-        {/* 5. ШРИФТЫ И РЕСУРСЫ */}
+        {/* 4. ШРИФТЫ И РЕСУРСЫ */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
@@ -344,7 +320,7 @@ export default (() => {
           </>
         )}
 
-        {/* 6. OPEN GRAPH META */}
+        {/* 5. OPEN GRAPH META */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
@@ -374,7 +350,7 @@ export default (() => {
           </>
         )}
 
-        {/* 7. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
+        {/* 6. ОСНОВНЫЕ РЕСУРСЫ QUARTZ */}
         {css.map((res) => CSSResourceToStyleElement(res, true))}
         {js
           .filter((res) => res.loadTime === "beforeDOMReady")
@@ -383,7 +359,7 @@ export default (() => {
           typeof res === "function" ? res(fileData) : res,
         )}
 
-        {/* 8. ФИНАЛЬНЫЙ СКРИПТ */}
+        {/* 7. ФИНАЛЬНЫЙ СКРИПТ (с защитой от дублирования) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -392,8 +368,6 @@ export default (() => {
                 const clean = () => {
                   const html = document.documentElement;
                   html.classList.remove('no-transitions');
-                  html.style.backgroundColor = '';
-                  html.style.color = '';
                 };
                 
                 if (document.readyState === 'loading') {
@@ -402,11 +376,16 @@ export default (() => {
                   requestAnimationFrame(clean);
                 }
                 
-                // ===== МОБИЛЬНЫЙ HEADER =====
+                // ===== МОБИЛЬНЫЙ HEADER (с защитой от дублирования) =====
+                let mobileHeaderInitialized = false;
+                
                 function initMobileHeader() {
+                  if (mobileHeaderInitialized) return;
+                  
                   const header = document.querySelector('.sidebar.left');
                   if (!header) return;
                   
+                  mobileHeaderInitialized = true;
                   header.classList.remove('hidden');
                   
                   let lastScroll = 0;
@@ -437,81 +416,94 @@ export default (() => {
                 if (window.innerWidth <= 500) {
                   initMobileHeader();
                 }
-                document.addEventListener('nav', initMobileHeader);
                 
-                // ===== ПОИСК =====
-                function initSearch() {
-                  const searchBtn = document.querySelector('.search-button');
-                  if (!searchBtn) return;
+                // ===== КАСТОМНЫЙ ПОИСК (только если не работает встроенный) =====
+                // Ждём инициализации Quartz
+                setTimeout(() => {
+                  const quartzSearch = document.querySelector('.search .search-container');
                   
-                  // Создаём контейнер поиска
-                  let searchContainer = document.getElementById('custom-search-container');
-                  
-                  if (!searchContainer) {
-                    searchContainer = document.createElement('div');
-                    searchContainer.id = 'custom-search-container';
-                    searchContainer.innerHTML = \`
-                      <div style="
-                        position: fixed;
-                        top: 80px;
-                        left: 20px;
-                        right: 20px;
-                        background: var(--bg-primary);
-                        border: 1px solid var(--border-color);
-                        border-radius: 16px;
-                        padding: 16px;
-                        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-                        z-index: 1000000;
-                        color: var(--text-primary);
-                        display: none;
-                      ">
-                        <input 
-                          type="text" 
-                          placeholder="Поиск..." 
-                          style="
-                            width: 100%;
-                            padding: 12px 16px;
-                            border-radius: 12px;
-                            border: 1px solid var(--border-color);
-                            background: var(--bg-secondary);
-                            color: var(--text-primary);
-                            font-size: 16px;
-                            outline: none;
-                            box-sizing: border-box;
-                          "
-                        >
-                      </div>
-                    \`;
-                    document.body.appendChild(searchContainer);
-                  }
-                  
-                  // Обработчик клика
-                  const newBtn = searchBtn.cloneNode(true);
-                  searchBtn.parentNode.replaceChild(newBtn, searchBtn);
-                  
-                  newBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                  // Если встроенный поиск не работает, создаём свой
+                  if (!quartzSearch || quartzSearch.children.length === 0) {
+                    console.log('🔍 Используем кастомный поиск');
                     
-                    if (searchContainer.style.display === 'none') {
-                      searchContainer.style.display = 'block';
-                      const input = searchContainer.querySelector('input');
-                      setTimeout(() => input.focus(), 100);
-                    } else {
-                      searchContainer.style.display = 'none';
+                    let searchInitialized = false;
+                    
+                    function initCustomSearch() {
+                      if (searchInitialized) return;
+                      
+                      const searchBtn = document.querySelector('.search-button');
+                      if (!searchBtn) return;
+                      
+                      searchInitialized = true;
+                      
+                      let searchContainer = document.getElementById('custom-search-container');
+                      
+                      if (!searchContainer) {
+                        searchContainer = document.createElement('div');
+                        searchContainer.id = 'custom-search-container';
+                        searchContainer.innerHTML = \`
+                          <div style="
+                            position: fixed;
+                            top: 80px;
+                            left: 20px;
+                            right: 20px;
+                            background: var(--bg-primary);
+                            border: 1px solid var(--border-color);
+                            border-radius: 16px;
+                            padding: 16px;
+                            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+                            z-index: 1000000;
+                            color: var(--text-primary);
+                            display: none;
+                          ">
+                            <input 
+                              type="text" 
+                              placeholder="Поиск..." 
+                              style="
+                                width: 100%;
+                                padding: 12px 16px;
+                                border-radius: 12px;
+                                border: 1px solid var(--border-color);
+                                background: var(--bg-secondary);
+                                color: var(--text-primary);
+                                font-size: 16px;
+                                outline: none;
+                                box-sizing: border-box;
+                              "
+                            >
+                          </div>
+                        \`;
+                        document.body.appendChild(searchContainer);
+                      }
+                      
+                      const newBtn = searchBtn.cloneNode(true);
+                      searchBtn.parentNode.replaceChild(newBtn, searchBtn);
+                      
+                      newBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        if (searchContainer.style.display === 'none') {
+                          searchContainer.style.display = 'block';
+                          const input = searchContainer.querySelector('input');
+                          setTimeout(() => input.focus(), 100);
+                        } else {
+                          searchContainer.style.display = 'none';
+                        }
+                      });
+                      
+                      document.addEventListener('click', (e) => {
+                        if (!newBtn.contains(e.target) && !searchContainer.contains(e.target)) {
+                          searchContainer.style.display = 'none';
+                        }
+                      });
                     }
-                  });
-                  
-                  // Закрытие по клику вне
-                  document.addEventListener('click', (e) => {
-                    if (!newBtn.contains(e.target) && !searchContainer.contains(e.target)) {
-                      searchContainer.style.display = 'none';
-                    }
-                  });
-                }
-                
-                initSearch();
-                document.addEventListener('nav', initSearch);
+                    
+                    initCustomSearch();
+                  } else {
+                    console.log('🔍 Используем встроенный поиск Quartz');
+                  }
+                }, 500); // Ждём полсекунды для инициализации Quartz
               })();
             `
           }}

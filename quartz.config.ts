@@ -2,7 +2,7 @@ import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as CustomPlugins from "./quartz-custom/plugins"
 
-// Определяем, какой сайт собирается
+// Определяем, какой сайт собирается (только для title)
 const siteType = process.env.SITE_TYPE || 
                  (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
 
@@ -20,60 +20,34 @@ const baseConfig = {
   defaultDateType: "created",
 }
 
-// Цвета для сада (garden.asteralog.ru)
-const gardenColors = {
-  lightMode: {
-    light: "#f9f7f4",
-    lightgray: "#e5e5e5",
-    gray: "#9a9a9a",
-    darkgray: "#4a4a49",
-    dark: "#2b2b2b",
-    secondary: "#ab7d4c",
-    tertiary: "#7c5736",
-    highlight: "rgba(171, 125, 76, 0.15)",
-    textHighlight: "#fff23688",
-  },
-  darkMode: {
-    light: "#1a1c1e",
-    lightgray: "#2e3235",
-    gray: "#4a4f54",
-    darkgray: "#d4d4d4",
-    dark: "#ffffff",
-    secondary: "#ab7d4c",
-    tertiary: "#7c5736",
-    highlight: "rgba(171, 125, 76, 0.15)",
-    textHighlight: "#2e2a24",
-  },
-}
+// ==================================================
+// ЕДИНЫЕ ЦВЕТА ДЛЯ ОБОИХ САЙТОВ
+// ==================================================
 
-// Цвета для блога (blog.asteralog.ru)
-const blogColors = {
+const colors = {
   lightMode: {
-    light: "#ffffff",
-    lightgray: "#f0f0f0",
-    gray: "#9a9a9a",
-    darkgray: "#666666",
-    dark: "#333333",
-    secondary: "#ab7d4c",
-    tertiary: "#7c5736",
+    light: "#ffffff",        // светлый фон (будет переопределён для сада)
+    lightgray: "#f0f0f0",    // второстепенный фон
+    gray: "#9a9a9a",         // muted текст
+    darkgray: "#666666",     // второстепенный текст
+    dark: "#333333",         // основной текст
+    secondary: "#ab7d4c",    // ссылки (золотой)
+    tertiary: "#7c5736",     // ссылки при наведении
     highlight: "rgba(171, 125, 76, 0.1)",
     textHighlight: "#fff23688",
   },
   darkMode: {
-    light: "#1a1c1e",
-    lightgray: "#2e3235",
-    gray: "#4a4f54",
-    darkgray: "#d4d4d4",
-    dark: "#ffffff",
-    secondary: "#ab7d4c",
-    tertiary: "#7c5736",
+    light: "#1a1c1e",        // тёмный фон
+    lightgray: "#2e3235",    // второстепенный фон
+    gray: "#4a4f54",         // границы
+    darkgray: "#d4d4d4",     // основной текст
+    dark: "#ffffff",         // заголовки
+    secondary: "#ab7d4c",    // ссылки
+    tertiary: "#7c5736",     // ссылки при наведении
     highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#2e2a24",
   },
 }
-
-// Выбираем цвета в зависимости от типа сайта
-const colors = siteType === 'blog' ? blogColors : gardenColors
 
 const config: QuartzConfig = {
   configuration: {
@@ -88,7 +62,7 @@ const config: QuartzConfig = {
         body: "Inter",
         code: "JetBrains Mono",
       },
-      colors: colors,
+      colors: colors,  // 👈 ЕДИНЫЕ ЦВЕТА
     },
   },
   plugins: {
@@ -115,15 +89,14 @@ const config: QuartzConfig = {
     filters: [Plugin.RemoveDrafts()],
     emitters: [
       Plugin.AliasRedirects(),
-      Plugin.ComponentResources(), // ✅ Генерирует index.css и custom.css
+      Plugin.ComponentResources(),
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),
       Plugin.ContentIndex({ enableSiteMap: true, enableRSS: true }),
       Plugin.Assets(),
       Plugin.Static(),
-      CustomPlugins.Static(),      // ✅ Копирует статику
-      // ❌ CustomPlugins.CustomStyles() - УДАЛЕН (не нужен, всё делает ComponentResources)
+      CustomPlugins.Static(),
       Plugin.NotFoundPage(),
     ],
   },

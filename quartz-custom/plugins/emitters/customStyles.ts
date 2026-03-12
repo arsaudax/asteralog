@@ -25,19 +25,23 @@ export const customStyles: QuartzEmitterPlugin = () => {
       // Читаем файл стилей при каждой сборке
       let customStyles = ""
       try {
-        // Поднимаемся из .../plugins/emitters/ в корень проекта
-        const rootDir = path.resolve(__dirname, "../../..")
+        // Поднимаемся из .../plugins/emitters/ на 3 уровня вверх
+        // Это должно привести в корень проекта
+        const rootDir = path.resolve(__dirname, "../../../")
         const stylePath = path.join(rootDir, "quartz-custom/styles/custom.scss")
         
+        console.log(`🔍 Current __dirname: ${__dirname}`)
+        console.log(`🔍 Resolved rootDir: ${rootDir}`)
         console.log(`🔍 Looking for styles at: ${stylePath}`)
+        
+        // Проверяем существование файла
+        await fs.access(stylePath)
+        console.log(`✅ File exists!`)
+        
         customStyles = await fs.readFile(stylePath, "utf-8")
         console.log(`📖 Read custom styles (${customStyles.length} bytes)`)
       } catch (error) {
-        console.warn("⚠️ Custom styles not found, using empty styles")
-        customStyles = "/* No custom styles */"
-      }
-
-      if (!customStyles || customStyles === "/* No custom styles */") {
+        console.warn(`⚠️ Custom styles not found: ${error.message}`)
         console.log("ℹ️ No custom styles to emit")
         return
       }

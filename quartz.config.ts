@@ -1,6 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
-import * as CustomPlugins from "./quartz-custom/plugins" // ПОЛНОСТЬЮ ОТКЛЮЧАЕМ
+import * as CustomPlugins from "./quartz-custom/plugins"
 
 // Определяем, какой сайт собирается
 const siteType = process.env.SITE_TYPE || 

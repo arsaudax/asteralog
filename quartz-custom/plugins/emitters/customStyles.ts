@@ -1,15 +1,26 @@
-// quartz-custom/plugins/CustomStyles.ts
-import { FullSlug, joinSegments } from "../../quartz/util/path"
-import { QuartzEmitterPlugin } from "../../quartz/plugins/types"
-import { BuildCtx } from "../../quartz/util/ctx"
+// quartz-custom/plugins/emitters/customStyles.ts
+import { FullSlug, joinSegments } from "../../../quartz/util/path"
+import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"
+import { BuildCtx } from "../../../quartz/util/ctx"
 import { Features, transform } from "lightningcss"
-import { write } from "../../quartz/plugins/emitters/helpers"
+import fs from "fs/promises"
+import path from "path"
+
+// Своя функция записи файла
+async function writeFile(ctx: BuildCtx, slug: FullSlug, ext: string, content: string) {
+  const filePath = path.join(ctx.argv.output, slug + ext)
+  await fs.mkdir(path.dirname(filePath), { recursive: true })
+  await fs.writeFile(filePath, content)
+  return filePath
+}
 
 // Импортируем стили с обработкой ошибок
 let customStyles = ""
 try {
-  // Динамический импорт для избежания ошибок при отсутствии файла
-  customStyles = (await import("../../styles/custom.scss?raw")).default || ""
+  // Читаем файл напрямую
+  const stylePath = path.join(__dirname, "../../styles/custom.scss")
+  customStyles = await fs.readFile(stylePath, "utf-8")
+  console.log(`📖 Read custom styles from ${stylePath}`)
 } catch (error) {
   console.warn("⚠️ Custom styles not found, using empty styles")
   customStyles = "/* No custom styles */"
@@ -26,41 +37,46 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
       }
 
       try {
+        console.log("🎨 Processing custom styles...")
+        
         // Transform and minify the custom SCSS
         const transformedStyles = transform({
           filename: "custom.css",
           code: Buffer.from(customStyles),
           minify: true,
           targets: {
-            safari: (15 << 16) | (6 << 8), // 15.6
-            ios_saf: (15 << 16) | (6 << 8), // 15.6
-            edge: 115 << 16, // 115
-            firefox: 102 << 16, // 102
-            chrome: 109 << 16, // 109
+            safari: (15 << 16) | (6 << 8),
+            ios_saf: (15 << 16) | (6 << 8),
+            edge: 115 << 16,
+            firefox: 102 << 16,
+            chrome: 109 << 16,
           },
-          include: Features.MediaQueries | Features.Nesting, // 🔥 Добавлена поддержка вложенности
+          include: Features.MediaQueries | Features.Nesting,
         })
 
-        // Emit the custom stylesheet
-        yield write({
-          ctx,
-          slug: "custom" as FullSlug,
-          ext: ".css",
-          content: transformedStyles.code.toString(),
-        })
+        // Сохраняем обработанный CSS
+        const outputPath = await writeFile(
+          ctx, 
+          "custom" as FullSlug, 
+          ".css", 
+          transformedStyles.code.toString()
+        )
         
-        console.log("✅ Custom styles emitted successfully")
+        console.log(`✅ Custom styles emitted to ${outputPath}`)
+        yield outputPath
       } catch (error) {
         console.error("❌ Error processing custom styles:", error)
         
-        // Fallback: эмитируем исходные стили без трансформации
+        // Fallback: сохраняем исходные стили без обработки
         console.log("ℹ️ Emitting raw styles as fallback")
-        yield write({
+        const outputPath = await writeFile(
           ctx,
-          slug: "custom" as FullSlug,
-          ext: ".css",
-          content: customStyles,
-        })
+          "custom" as FullSlug,
+          ".css",
+          customStyles
+        )
+        console.log(`⚠️ Raw styles saved to ${outputPath}`)
+        yield outputPath
       }
     },
     

@@ -31,7 +31,6 @@ export default (() => {
                 const html = document.documentElement;
                 const stored = localStorage.getItem("theme");
                 html.setAttribute("data-theme", stored || "dark");
-                // Блокируем transitions на время загрузки
                 html.classList.add('no-transitions');
                 setTimeout(() => html.classList.remove('no-transitions'), 100);
               })();
@@ -39,7 +38,7 @@ export default (() => {
           }}
         />
 
-        {/* ===== ШРИФТЫ (ленивая загрузка) ===== */}
+        {/* ===== ШРИФТЫ ===== */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -68,7 +67,6 @@ export default (() => {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content="https://garden.asteralog.ru/static/og-image.png" />
         
-        {/* Канонический URL (если есть baseUrl) */}
         {cfg.baseUrl && (
           <link rel="canonical" href={`https://${cfg.baseUrl}${fileData.slug === 'index' ? '' : '/' + fileData.slug}`} />
         )}

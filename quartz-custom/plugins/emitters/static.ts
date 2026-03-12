@@ -7,8 +7,8 @@ import { dirname } from "path"
 
 const QUARTZ_CUSTOM = "quartz-custom"
 
-// ✅ ИСПРАВЛЕНО: экспорт с маленькой буквой
-export const static: QuartzEmitterPlugin = () => ({
+// ✅ ИСПРАВЛЕНО: используем другое имя для экспорта
+export const staticPlugin: QuartzEmitterPlugin = () => ({
   name: "CustomStatic",
   
   async *emit({ argv, cfg }) {

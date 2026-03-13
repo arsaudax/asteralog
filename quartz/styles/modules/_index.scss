@@ -1,9 +1,14 @@
 // quartz/styles/modules/_index.scss
-@use "variables";
-@use "layout";
-@use "header";
-@use "components";
-@use "blog";
-@use "mobile";
-@use "overrides";
-@use "utilities";
+// ====================================================
+// ЦЕНТРАЛЬНЫЙ МАНИФЕСТ МОДУЛЕЙ
+// ====================================================
+
+// Явно указываем путь ./ для всех файлов в той же папке
+@use "./variables";
+@use "./layout";
+@use "./header";
+@use "./components";
+@use "./blog";
+@use "./mobile";
+@use "./overrides";
+@use "./utilities";

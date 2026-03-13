@@ -3,15 +3,8 @@
 // ГЛАВНЫЙ ФАЙЛ СТИЛЕЙ
 // ====================================================
 
-// Импортируем модули из папки modules/
-@use "modules/variables";
-@use "modules/layout";
-@use "modules/header";
-@use "modules/components";
-@use "modules/blog";
-@use "modules/mobile";
-@use "modules/overrides";
-@use "modules/utilities";
+// Импортируем ВСЕ модули одной строкой через index
+@use "./modules";
 
 /* ===== СЕМАНТИЧЕСКИЕ ПЕРЕМЕННЫЕ ===== */
 :root {

@@ -1,15 +1,9 @@
-// styles/_index.scss
-// ====================================================
-// ЦЕНТРАЛЬНЫЙ МАНИФЕСТ СТИЛЕЙ ASTERALOG
-// ====================================================
-
-// Порядок важен: сначала переменные, потом базовые стили, потом компоненты
+// quartz/styles/modules/_index.scss
 @use "variables";
-@use "reset";
-@use "typography";
-@use "utilities";
+@use "layout";
 @use "header";
 @use "components";
 @use "blog";
 @use "mobile";
 @use "overrides";
+@use "utilities";

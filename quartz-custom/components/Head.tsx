@@ -18,7 +18,7 @@ export default (() => {
         <meta name="description" content={fileData.frontmatter?.description ?? "Asteralog — цифровой сад и блог"} />
         <link rel="icon" href="/static/icon.png" />
 
-        {/* ===== ИНИЦИАЛИЗАЦИЯ ТЕМЫ ===== */}
+        {/* ===== ПРОСТОЙ СКРИПТ ТЕМЫ ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
@@ -27,31 +27,21 @@ export default (() => {
                 const html = document.documentElement;
                 const isBlog = window.location.hostname.includes('blog');
                 html.classList.add(isBlog ? 'site-blog' : 'site-garden');
-                const stored = localStorage.getItem("theme");
-                html.setAttribute("data-theme", stored || "dark");
-                html.classList.add('no-transitions');
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', () => {
-                    setTimeout(() => {
-                      html.classList.remove('no-transitions');
-                    }, 100);
-                  });
-                } else {
-                  setTimeout(() => {
-                    html.classList.remove('no-transitions');
-                  }, 100);
-                }
+                
+                // Просто берём тему из localStorage или ставим dark
+                const theme = localStorage.getItem('theme') || 'dark';
+                html.setAttribute('data-theme', theme);
               })();
             `
           }}
         />
 
-        {/* ===== ШРИФТЫ (просто, без лишнего) ===== */}
+        {/* ===== ШРИФТЫ ===== */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-        {/* ===== 🔥 CSS - ПРЯМАЯ ССЫЛКА ===== */}
+        {/* ===== CSS ===== */}
         <link rel="stylesheet" href="/index.css" />
       </head>
     )

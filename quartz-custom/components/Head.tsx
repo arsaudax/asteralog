@@ -1,6 +1,7 @@
 // quartz-custom/components/Head.tsx
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { i18n } from "../../quartz/i18n"
+import { joinSegments } from "../../quartz/util/path"
 
 export default (() => {
   const Head: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) => {
@@ -11,6 +12,9 @@ export default (() => {
                         fileData.frontmatter?.socialDescription ??
                         "Asteralog — цифровой сад и блог"
 
+    // Путь к корню сайта
+    const baseDir = fileData.slug === "index" ? "" : ".."
+
     return (
       <head>
         {/* ===== БАЗОВЫЕ META ===== */}
@@ -19,7 +23,7 @@ export default (() => {
         <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="icon" href="/static/icon.png" />
+        <link rel="icon" href={joinSegments(baseDir, "static/icon.png")} />
 
         {/* ===== 🔥 КРИТИЧЕСКИЙ СКРИПТ ТЕМЫ ===== */}
         <script
@@ -28,22 +32,13 @@ export default (() => {
             __html: `
               (function() {
                 const html = document.documentElement;
-                
-                // Определяем тип сайта по hostname
                 const isBlog = window.location.hostname.includes('blog');
                 html.classList.add(isBlog ? 'site-blog' : 'site-garden');
-                
-                // Устанавливаем тему ДО загрузки CSS
                 const stored = localStorage.getItem("theme");
                 html.setAttribute("data-theme", stored || "dark");
-                
-                // Блокируем transitions до полной загрузки
                 html.classList.add('no-transitions');
-                
-                // Убираем блокировку после загрузки страницы
                 if (document.readyState === 'loading') {
                   document.addEventListener('DOMContentLoaded', () => {
-                    // Небольшая задержка для гарантии
                     setTimeout(() => {
                       html.classList.remove('no-transitions');
                     }, 100);
@@ -58,35 +53,17 @@ export default (() => {
           }}
         />
 
-        {/* ===== ШРИФТЫ С ЛЕНИВОЙ ЗАГРУЗКОЙ ===== */}
+        {/* ===== ШРИФТЫ ===== */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* Preload критического шрифта */}
-        <link
-          rel="preload"
-          as="style"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-          crossOrigin="anonymous"
-        />
-        
-        {/* Ленивая загрузка с media="print" */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-          media="print"
-          onLoad="this.media='all'"
-          crossOrigin="anonymous"
-        />
-        
-        {/* Fallback для браузеров без JS */}
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onLoad="this.media='all'" crossOrigin="anonymous" />
         <noscript>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            crossOrigin="anonymous"
-          />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" crossOrigin="anonymous" />
         </noscript>
+
+        {/* ===== 🔥 ВАЖНО: ПОДКЛЮЧАЕМ СГЕНЕРИРОВАННЫЙ CSS ===== */}
+        <link rel="stylesheet" href={joinSegments(baseDir, "index.css")} />
 
         {/* ===== OPEN GRAPH META ===== */}
         <meta property="og:site_name" content={cfg.pageTitle} />

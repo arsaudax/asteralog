@@ -6,6 +6,7 @@ import * as CustomComponent from "./quartz-custom/components"
 import CustomTagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
+import * as CustomComponent from "./quartz-custom/components"
 
 // Определяем тип сайта
 const siteType = typeof process !== 'undefined' 
@@ -76,7 +77,7 @@ export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),      // Только мета и скрипты
   header: headerComponents,           // ✅ ГОРИЗОНТАЛЬНАЯ ПАНЕЛЬ
   afterBody: [
-    // CustomComponent.ScrollBehavior(), // 🔥 Добавлен компонент скролла
+    CustomComponent.ScrollBehavior(), // 🔥 Добавлен компонент скролла
   ],
   footer: CustomComponent.Footer({
     links: {

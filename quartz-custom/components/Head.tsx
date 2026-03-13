@@ -29,35 +29,64 @@ export default (() => {
               (function() {
                 const html = document.documentElement;
                 
-                // 🔥 ВАЖНО: определяем тип сайта по hostname
+                // Определяем тип сайта по hostname
                 const isBlog = window.location.hostname.includes('blog');
                 html.classList.add(isBlog ? 'site-blog' : 'site-garden');
                 
+                // Устанавливаем тему ДО загрузки CSS
                 const stored = localStorage.getItem("theme");
                 html.setAttribute("data-theme", stored || "dark");
+                
+                // Блокируем transitions до полной загрузки
                 html.classList.add('no-transitions');
                 
                 // Убираем блокировку после загрузки страницы
                 if (document.readyState === 'loading') {
                   document.addEventListener('DOMContentLoaded', () => {
-                    html.classList.remove('no-transitions');
+                    // Небольшая задержка для гарантии
+                    setTimeout(() => {
+                      html.classList.remove('no-transitions');
+                    }, 100);
                   });
                 } else {
-                  html.classList.remove('no-transitions');
+                  setTimeout(() => {
+                    html.classList.remove('no-transitions');
+                  }, 100);
                 }
               })();
             `
           }}
         />
 
-        {/* ===== ШРИФТЫ ===== */}
+        {/* ===== ШРИФТЫ С ЛЕНИВОЙ ЗАГРУЗКОЙ ===== */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Preload критического шрифта */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap"
-          rel="stylesheet"
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
           crossOrigin="anonymous"
         />
+        
+        {/* Ленивая загрузка с media="print" */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+          media="print"
+          onLoad="this.media='all'"
+          crossOrigin="anonymous"
+        />
+        
+        {/* Fallback для браузеров без JS */}
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            crossOrigin="anonymous"
+          />
+        </noscript>
 
         {/* ===== CSS ===== */}
         <link rel="stylesheet" href="/index.css" />

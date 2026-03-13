@@ -5,8 +5,24 @@
 
 @use "variables" as *;
 
-/* ===== СЕМАНТИЧЕСКИЕ CSS-ПЕРЕМЕННЫЕ ===== */
+/* ===== ОТКЛЮЧАЕМ СТАРУЮ СИСТЕМУ QUARTZ ===== */
+:root[saved-theme="dark"],
+:root[saved-theme="light"] {
+  all: unset;
+}
+
+/* ===== БАЗОВЫЕ ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ ===== */
 :root {
+  --light: #1a1c1e;
+  --lightgray: #2e3235;
+  --gray: #4a4f54;
+  --darkgray: #d4d4d4;
+  --dark: #ffffff;
+  --secondary: #ab7d4c;
+  --tertiary: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
+  
+  /* Семантические переменные */
   --bg-primary: var(--light);
   --bg-secondary: var(--lightgray);
   --text-primary: var(--dark);
@@ -20,6 +36,15 @@
 
 /* Тёмная тема */
 [data-theme="dark"] {
+  --light: #1a1c1e;
+  --lightgray: #2e3235;
+  --gray: #4a4f54;
+  --darkgray: #d4d4d4;
+  --dark: #ffffff;
+  --secondary: #ab7d4c;
+  --tertiary: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
+  
   --bg-primary: var(--light);
   --bg-secondary: var(--lightgray);
   --text-primary: var(--dark);
@@ -28,6 +53,50 @@
   --link-color: var(--secondary);
   --link-hover: var(--tertiary);
   --highlight-bg: var(--highlight);
+}
+
+/* Светлая тема */
+[data-theme="light"] {
+  --light: #f9f7f4;
+  --lightgray: #e5e5e5;
+  --gray: #9a9a9a;
+  --darkgray: #4a4a49;
+  --dark: #2b2b2b;
+  --secondary: #ab7d4c;
+  --tertiary: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
+  
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --border-color: var(--lightgray);
+  --link-color: var(--secondary);
+  --link-hover: var(--tertiary);
+  --highlight-bg: var(--highlight);
+}
+
+/* Блог: светлая тема (белый фон) */
+.site-blog[data-theme="light"] {
+  --light: #ffffff;
+  --lightgray: #f0f0f0;
+  --gray: #9a9a9a;
+  --darkgray: #666666;
+  --dark: #333333;
+  --highlight: rgba(171, 125, 76, 0.1);
+}
+
+/* Блог: тёмная тема (как основная) */
+.site-blog[data-theme="dark"] {
+  // ничего не меняем
+}
+
+/* Сад: светлая тема (тёплый фон) */
+.site-garden[data-theme="light"] {
+  --light: #f9f7f4;
+  --lightgray: #e5e5e5;
+  --dark: #2b2b2b;
+  --darkgray: #4a4a49;
 }
 
 /* ===== БАЗОВЫЕ СБРОСЫ ===== */

@@ -3,12 +3,12 @@
 // ЦЕНТРАЛЬНЫЙ МАНИФЕСТ МОДУЛЕЙ
 // ====================================================
 
-// Явно указываем путь ./ для всех файлов в той же папке
 @use "./variables";
-@use "./layout";
+@use "./reset";
+@use "./typography";
+@use "./utilities";
 @use "./header";
 @use "./components";
 @use "./blog";
 @use "./mobile";
 @use "./overrides";
-@use "./utilities";

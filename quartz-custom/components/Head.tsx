@@ -88,9 +88,6 @@ export default (() => {
           />
         </noscript>
 
-        {/* ===== CSS ===== */}
-        <link rel="stylesheet" href="/index.css" />
-
         {/* ===== OPEN GRAPH META ===== */}
         <meta property="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />

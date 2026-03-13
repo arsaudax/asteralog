@@ -62,8 +62,16 @@ export default (() => {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" crossOrigin="anonymous" />
         </noscript>
 
-        {/* ===== 🔥 ВАЖНО: ПОДКЛЮЧАЕМ СГЕНЕРИРОВАННЫЙ CSS ===== */}
-        <link rel="stylesheet" href={joinSegments(baseDir, "index.css")} />
+        {/* ===== 🔥 ЖЁСТКАЯ ССЫЛКА НА CSS В КОРНЕ ===== */}
+        <link rel="stylesheet" href="/index.css" />
+
+        {/* ===== 🔥 ТЕСТОВЫЙ СТИЛЬ (временно) ===== */}
+        <style>{`
+          body {
+            outline: 10px solid red !important;
+            outline-offset: -10px !important;
+          }
+        `}</style>
 
         {/* ===== OPEN GRAPH META ===== */}
         <meta property="og:site_name" content={cfg.pageTitle} />

@@ -1,0 +1,47 @@
+// quartz-custom/styles/_emergency.scss
+/* =========================================================
+   ЭКСТРЕННЫЙ ФИКС — ПЕРЕЗАПИСЫВАЕТ ВСЁ
+   ========================================================= */
+
+:root, [data-theme="dark"], [data-theme="light"] {
+  --light: #1a1c1e !important;
+  --lightgray: #2e3235 !important;
+  --gray: #4a4f54 !important;
+  --darkgray: #d4d4d4 !important;
+  --dark: #ffffff !important;
+  --secondary: #ab7d4c !important;
+  --tertiary: #7c5736 !important;
+  --highlight: rgba(171, 125, 76, 0.15) !important;
+  
+  --bg-primary: var(--light) !important;
+  --bg-secondary: var(--lightgray) !important;
+  --text-primary: var(--dark) !important;
+  --text-secondary: var(--darkgray) !important;
+  --text-muted: var(--gray) !important;
+  --border-color: var(--lightgray) !important;
+  --link-color: var(--secondary) !important;
+  --link-hover: var(--tertiary) !important;
+  --highlight-bg: var(--highlight) !important;
+}
+
+[data-theme="light"] {
+  --light: #f9f7f4 !important;
+  --lightgray: #e5e5e5 !important;
+  --gray: #9a9a9a !important;
+  --darkgray: #4a4a49 !important;
+  --dark: #2b2b2b !important;
+  --highlight: rgba(171, 125, 76, 0.15) !important;
+}
+
+.site-blog[data-theme="light"] {
+  --light: #ffffff !important;
+  --lightgray: #f0f0f0 !important;
+  --dark: #333333 !important;
+  --darkgray: #666666 !important;
+  --highlight: rgba(171, 125, 76, 0.1) !important;
+}
+
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}

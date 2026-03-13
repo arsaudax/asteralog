@@ -1,0 +1,15 @@
+// styles/_index.scss
+// ====================================================
+// ЦЕНТРАЛЬНЫЙ МАНИФЕСТ СТИЛЕЙ ASTERALOG
+// ====================================================
+
+// Порядок важен: сначала переменные, потом базовые стили, потом компоненты
+@use "variables";
+@use "reset";
+@use "typography";
+@use "utilities";
+@use "header";
+@use "components";
+@use "blog";
+@use "mobile";
+@use "overrides";

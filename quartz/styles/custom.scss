@@ -1,12 +1,20 @@
 // quartz/styles/custom.scss
 // ====================================================
-// ЕДИНСТВЕННАЯ ТОЧКА ВХОДА ДЛЯ QUARTZ
+// ГЛАВНЫЙ ФАЙЛ СТИЛЕЙ
 // ====================================================
 
-@use "../../styles";
+// Импортируем модули из папки modules/
+@use "modules/variables";
+@use "modules/layout";
+@use "modules/header";
+@use "modules/components";
+@use "modules/blog";
+@use "modules/mobile";
+@use "modules/overrides";
+@use "modules/utilities";
 
+/* ===== СЕМАНТИЧЕСКИЕ ПЕРЕМЕННЫЕ ===== */
 :root {
-  // Семантические алиасы (используют переменные Quartz из quartz.config.ts)
   --bg-primary: var(--light);
   --bg-secondary: var(--lightgray);
   --text-primary: var(--dark);
@@ -17,13 +25,13 @@
   --link-hover: var(--tertiary);
   --highlight-bg: var(--highlight);
   
-  // Кастомные переменные для верстки
   --header-height: 70px;
   --header-height-mobile: 60px;
   --header-padding: 8px 20px;
   --header-padding-mobile: 6px 16px;
 }
 
+/* ===== СПЕЦИФИЧНЫЕ ДЛЯ БЛОГА ===== */
 [data-theme="light"].site-blog,
 .site-blog[data-theme="light"] {
   --bg-primary: #ffffff;
@@ -32,6 +40,7 @@
   --border-color: #e0e0e0;
 }
 
+/* ===== БЛОКИРОВКА ПЕРЕХОДОВ ===== */
 html.no-transitions *,
 html.no-transitions *::before,
 html.no-transitions *::after {

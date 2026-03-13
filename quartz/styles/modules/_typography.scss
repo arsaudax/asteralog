@@ -1,0 +1,203 @@
+// styles/_typography.scss
+// ====================================================
+// ТИПОГРАФИКА
+// ====================================================
+
+body {
+  line-height: var(--line-height-base);
+  font-feature-settings: "kern", "liga", "clig", "calt";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-family-base);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  transition: background-color var(--transition-base), 
+              color var(--transition-base);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+  scroll-margin-top: var(--header-height, 2rem);
+  position: relative;
+  
+  &:first-child {
+    margin-top: 0;
+  }
+  
+  &:hover .anchor {
+    color: var(--link-color);
+    opacity: 1;
+  }
+  
+  .anchor {
+    color: var(--link-color);
+    opacity: 0.3;
+    transition: opacity var(--transition-fast);
+    margin-left: var(--spacing-xs);
+    font-size: 0.8em;
+    text-decoration: none;
+    
+    &:hover {
+      opacity: 1;
+      text-decoration: none;
+    }
+    
+    &::before {
+      content: "#";
+    }
+  }
+}
+
+h1 {
+  font-size: 2.5rem;
+  
+  @media (max-width: 500px) {
+    font-size: 2rem;
+  }
+}
+
+h2 {
+  font-size: 2rem;
+  
+  @media (max-width: 500px) {
+    font-size: 1.75rem;
+  }
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
+h5 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+h6 {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+  line-height: var(--line-height-base);
+  color: var(--text-primary);
+}
+
+a {
+  text-decoration: none;
+  color: var(--link-color);
+  transition: color var(--transition-base);
+  
+  &:hover {
+    text-decoration: underline;
+    color: var(--link-hover);
+  }
+}
+
+code {
+  font-family: var(--font-family-mono);
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  background: var(--highlight-bg);
+  color: var(--link-color);
+  transition: background var(--transition-fast);
+}
+
+pre {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  overflow-x: auto;
+  margin: var(--spacing-lg) 0;
+  box-shadow: var(--shadow-sm);
+  
+  code {
+    padding: 0;
+    background: none;
+    color: var(--text-primary);
+    font-size: 0.9em;
+    line-height: 1.6;
+    display: block;
+  }
+  
+  &[data-language] {
+    position: relative;
+    
+    &::after {
+      content: attr(data-language);
+      position: absolute;
+      top: 0;
+      right: var(--spacing-md);
+      background: var(--bg-secondary);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid var(--border-color);
+      border-top: none;
+    }
+  }
+}
+
+blockquote {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-left: 4px solid var(--link-color);
+  font-style: italic;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  
+  p {
+    margin: var(--spacing-sm) 0;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  cite {
+    display: block;
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    font-style: normal;
+    
+    &::before {
+      content: "— ";
+      opacity: 0.5;
+    }
+  }
+}
+
+.article-title {
+  color: var(--link-color) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--link-hover);
+  padding-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-xxxl);
+  line-height: var(--line-height-tight);
+  
+  @media (max-width: 500px) {
+    font-size: calc(var(--font-size-xxxl) * 0.8);
+    margin-bottom: var(--spacing-md);
+  }
+}

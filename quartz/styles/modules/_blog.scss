@@ -1,0 +1,208 @@
+/* =========================================================
+   СТИЛИ ДЛЯ БЛОГА
+   ========================================================= */
+
+@use "variables" as *;
+
+/* ===== ЦВЕТА ДЛЯ БЛОГА ===== */
+[data-theme="dark"].site-blog,
+.site-blog[data-theme="dark"] {
+  --bg-primary: #1a1c1e;
+  --bg-secondary: #2e3235;
+  --text-primary: #d4d4d4;
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --border-color: #4a4f54;
+  --link-color: #ab7d4c;
+  --link-hover: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
+}
+
+[data-theme="light"].site-blog,
+.site-blog[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f0f0;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-muted: #9a9a9a;
+  --border-color: #b8b8b8;
+  --link-color: #ab7d4c;
+  --link-hover: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.1);
+}
+
+/* ===== ПОСТЫ В ЛЕНТЕ ===== */
+.blog-index {
+  margin: var(--spacing-lg) 0;
+  
+  &-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+  }
+}
+
+.blog-index-item {
+  margin-bottom: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border-color);
+  animation: slideUp var(--transition-slow);
+  
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  h2 {
+    border-bottom: none;
+    margin-bottom: 8px;
+    padding-bottom: 0;
+    font-size: var(--font-size-xl);
+    color: var(--link-color);
+    transition: color var(--transition-fast);
+    
+    &:hover {
+      color: var(--link-hover);
+    }
+  }
+}
+
+.blog-index-date {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  
+  &::before {
+    content: "📅";
+    opacity: 0.7;
+    font-size: 0.9em;
+  }
+}
+
+.blog-index-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+  margin-bottom: 12px;
+}
+
+.blog-index-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.blog-index-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--highlight);
+  color: var(--link-color);
+  font-size: var(--font-size-xs);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    background: var(--link-color);
+    color: white;
+    border-color: var(--link-color);
+  }
+}
+
+[data-theme="dark"] .blog-index-tag:hover {
+  background: var(--link-hover);
+  color: var(--bg-primary);
+}
+
+[data-theme="light"] .blog-index-tag:hover {
+  background: var(--link-color);
+  color: white;
+}
+
+/* ===== АРХИВ ===== */
+.archive-link-container {
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-md) 0;
+  
+  .right & {
+    @media (max-width: 800px) {
+      display: none;
+    }
+  }
+}
+
+.archive-link {
+  color: var(--link-color);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+  
+  &::after {
+    content: " →";
+    opacity: 0.7;
+    transition: opacity var(--transition-fast);
+  }
+  
+  &:hover {
+    color: var(--link-hover);
+    
+    &::after {
+      opacity: 1;
+      transform: translateX(2px);
+    }
+  }
+  
+  &--sidebar {
+    width: 100%;
+    justify-content: space-between;
+    padding: var(--spacing-xs) 0;
+    
+    &::after {
+      content: " →";
+    }
+  }
+  
+  &--footer {
+    font-size: var(--font-size-sm);
+    
+    &::after {
+      content: " →📚";
+    }
+  }
+}
+
+/* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
+@media (max-width: 500px) {
+  .blog-index-item {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    
+    h2 {
+      font-size: calc(var(--font-size-xl) * 0.9);
+    }
+  }
+  
+  .blog-index-date {
+    font-size: var(--font-size-xs);
+  }
+  
+  .blog-index-description {
+    font-size: var(--font-size-sm);
+  }
+  
+  .archive-link {
+    font-size: var(--font-size-sm);
+  }
+}

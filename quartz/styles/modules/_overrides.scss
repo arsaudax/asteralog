@@ -1,0 +1,56 @@
+/* =========================================================
+   АГРЕССИВНЫЕ ПЕРЕОПРЕДЕЛЕНИЯ QUARTZ
+   ========================================================= */
+
+.external::after,
+.external::before,
+.internal::after,
+.internal::before,
+a[href^="http"]::after,
+a[href^="http"]::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  background-image: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.external svg,
+.external img,
+.internal svg,
+.internal img,
+a[href^="http"] svg,
+a[href^="http"] img {
+  display: none !important;
+}
+
+.external:not(.footer-link):not(.no-external-icon) {
+  position: relative;
+  
+  &::after {
+    content: "↗" !important;
+    display: inline-block !important;
+    margin-left: 0.25em;
+    font-size: 0.8em;
+    color: var(--text-muted) !important;
+    opacity: .6;
+    transition: opacity var(--transition-fast);
+    background: none !important;
+    width: auto !important;
+    height: auto !important;
+    visibility: visible !important;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+    color: var(--link-color) !important;
+  }
+}
+
+.footer-link::after,
+.footer-link::before {
+  display: none !important;
+}

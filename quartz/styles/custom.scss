@@ -1,11 +1,21 @@
 // quartz/styles/custom.scss
 // ====================================================
-// ПОЛНАЯ ВЕРСИЯ С ОПЦИОНАЛЬНЫМИ УЛУЧШЕНИЯМИ
+// ГЛАВНЫЙ ФАЙЛ СТИЛЕЙ ASTERALOG
 // ====================================================
+
+// Импортируем все модули
+@use "variables";
+@use "base";
+@use "elements";
+@use "header";
+@use "components";
+@use "blog";
+@use "footer";
+@use "mobile";
+@use "overrides";
 
 /* ===== БАЗОВЫЕ СЕМАНТИЧЕСКИЕ ПЕРЕМЕННЫЕ ===== */
 :root {
-  // Основные семантические алиасы
   --bg-primary: var(--light);
   --bg-secondary: var(--lightgray);
   --text-primary: var(--dark);
@@ -16,14 +26,12 @@
   --link-hover: var(--tertiary);
   --highlight-bg: var(--highlight);
   
-  // 👇 ОПЦИОНАЛЬНО: переменные для высоты header
   --header-height: 70px;
   --header-height-mobile: 60px;
   --header-padding: 8px 20px;
   --header-padding-mobile: 6px 16px;
 }
 
-// Переопределения для тёмной темы (автоматически через data-theme)
 [data-theme="dark"] {
   --bg-primary: var(--light);
   --bg-secondary: var(--lightgray);
@@ -35,7 +43,6 @@
   --highlight-bg: var(--highlight);
 }
 
-// Специфичные для блога переопределения (если нужно)
 [data-theme="light"].site-blog,
 .site-blog[data-theme="light"] {
   --bg-primary: #ffffff;
@@ -44,7 +51,7 @@
   --border-color: #e0e0e0;
 }
 
-/* ===== БЛОКИРОВКА ПЕРЕХОДОВ ПРИ ЗАГРУЗКЕ ===== */
+/* ===== БЛОКИРОВКА ПЕРЕХОДОВ ===== */
 html.no-transitions *,
 html.no-transitions *::before,
 html.no-transitions *::after {
@@ -52,7 +59,7 @@ html.no-transitions *::after {
   animation: none !important;
 }
 
-/* ===== HEADER — ВЕРХНЯЯ ПАНЕЛЬ ===== */
+/* ===== HEADER ===== */
 .page-header {
   display: flex !important;
   align-items: center !important;
@@ -152,7 +159,6 @@ html.no-transitions *::after {
   }
 }
 
-/* Иконки темы */
 [data-theme="dark"] .darkmode .dayIcon { display: none; }
 [data-theme="dark"] .darkmode .nightIcon { display: block; }
 [data-theme="light"] .darkmode .dayIcon { display: block; }
@@ -241,7 +247,7 @@ html.no-transitions *::after {
 
 @media (max-width: 500px) {
   .page-title-text {
-    display: none; /* Скрываем текст, оставляем только логотип */
+    display: none;
   }
 }
 

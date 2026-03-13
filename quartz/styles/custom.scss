@@ -3,31 +3,30 @@
 // ЕДИНСТВЕННЫЙ ФАЙЛ СТИЛЕЙ ASTERALOG
 // ====================================================
 
-/* ===== ПЕРЕМЕННЫЕ ===== */
+/* ===== ПЕРЕМЕННЫЕ ДЛЯ ОБЕИХ ТЕМ ===== */
 :root {
-  /* Размеры */
+  /* Размеры и отступы */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
+  --spacing-xxl: 3rem;
   
-  /* Скругления */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
   
-  /* Тени */
   --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
   --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
   --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
   
-  /* Анимации */
   --transition-fast: 0.15s ease;
   --transition-base: 0.2s ease;
   --transition-slow: 0.3s ease;
   
-  /* Шрифты */
   --font-family-base: 'Inter', sans-serif;
   --font-family-mono: 'JetBrains Mono', monospace;
   
@@ -36,17 +35,37 @@
   --font-size-md: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
+  --font-size-xxl: 1.5rem;
+  --font-size-xxxl: 2rem;
   
   --line-height-tight: 1.3;
   --line-height-base: 1.6;
+  --line-height-loose: 1.8;
   
-  /* Header */
   --header-height: 70px;
   --header-height-mobile: 60px;
   --header-padding: 8px 20px;
   --header-padding-mobile: 6px 16px;
   
-  /* Цвета (будут переопределены Quartz) */
+  --z-header: 100;
+  --z-search: 1000;
+  --z-modal: 2000;
+  --z-popover: 3000;
+  --z-tooltip: 4000;
+}
+
+/* ===== СВЕТЛАЯ ТЕМА (по умолчанию) ===== */
+:root,
+[data-theme="light"] {
+  --light: #f9f7f4;
+  --lightgray: #e5e5e5;
+  --gray: #9a9a9a;
+  --darkgray: #4a4a49;
+  --dark: #2b2b2b;
+  --secondary: #ab7d4c;
+  --tertiary: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
+  
   --bg-primary: var(--light);
   --bg-secondary: var(--lightgray);
   --text-primary: var(--dark);
@@ -58,7 +77,67 @@
   --highlight-bg: var(--highlight);
 }
 
-/* Блокировка переходов */
+/* ===== ТЁМНАЯ ТЕМА ===== */
+[data-theme="dark"] {
+  --light: #1a1c1e;
+  --lightgray: #2e3235;
+  --gray: #4a4f54;
+  --darkgray: #d4d4d4;
+  --dark: #ffffff;
+  --secondary: #ab7d4c;
+  --tertiary: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
+  
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --text-muted: var(--gray);
+  --border-color: var(--lightgray);
+  --link-color: var(--secondary);
+  --link-hover: var(--tertiary);
+  --highlight-bg: var(--highlight);
+}
+
+/* ===== БЛОГ: СВЕТЛАЯ ТЕМА ===== */
+[data-theme="light"].site-blog,
+.site-blog[data-theme="light"] {
+  --light: #ffffff;
+  --lightgray: #f0f0f0;
+  --gray: #9a9a9a;
+  --darkgray: #666666;
+  --dark: #333333;
+  --highlight: rgba(171, 125, 76, 0.1);
+  
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --border-color: var(--lightgray);
+}
+
+/* ===== БЛОГ: ТЁМНАЯ ТЕМА ===== */
+[data-theme="dark"].site-blog,
+.site-blog[data-theme="dark"] {
+  --light: #1a1c1e;
+  --lightgray: #2e3235;
+  --gray: #4a4f54;
+  --darkgray: #d4d4d4;
+  --dark: #ffffff;
+  --secondary: #ab7d4c;
+  --tertiary: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
+  
+  --bg-primary: var(--light);
+  --bg-secondary: var(--lightgray);
+  --text-primary: var(--dark);
+  --text-secondary: var(--darkgray);
+  --border-color: var(--lightgray);
+  --link-color: var(--secondary);
+  --link-hover: var(--tertiary);
+}
+
+/* ===== БЛОКИРОВКА ПЕРЕХОДОВ ===== */
 html.no-transitions *,
 html.no-transitions *::before,
 html.no-transitions *::after {
@@ -66,9 +145,13 @@ html.no-transitions *::after {
   animation: none !important;
 }
 
-/* Базовые сбросы */
+/* ===== БАЗОВЫЕ СБРОСЫ ===== */
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -80,7 +163,7 @@ body {
   line-height: var(--line-height-base);
 }
 
-/* Типографика */
+/* ===== ТИПОГРАФИКА ===== */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: var(--line-height-tight);
@@ -103,7 +186,6 @@ p {
 a {
   color: var(--link-color);
   text-decoration: none;
-  transition: color var(--transition-fast);
   
   &:hover {
     color: var(--link-hover);
@@ -111,7 +193,7 @@ a {
   }
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 .page-header {
   display: flex;
   align-items: center;
@@ -122,7 +204,7 @@ a {
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-header);
   min-height: var(--header-height);
   
   &.hidden {
@@ -155,7 +237,7 @@ a {
   color: var(--link-color);
 }
 
-/* Кнопки */
+/* ===== КНОПКИ ===== */
 .search-button,
 .darkmode {
   width: 40px;
@@ -184,13 +266,12 @@ a {
   background: transparent;
 }
 
-/* Иконки темы */
 [data-theme="dark"] .darkmode .dayIcon { display: none; }
 [data-theme="dark"] .darkmode .nightIcon { display: block; }
 [data-theme="light"] .darkmode .dayIcon { display: block; }
 [data-theme="light"] .darkmode .nightIcon { display: none; }
 
-/* Поиск */
+/* ===== ПОИСК ===== */
 .search-container {
   position: fixed;
   top: calc(var(--header-height) + 10px);
@@ -203,7 +284,7 @@ a {
   border-radius: var(--radius-lg);
   padding: 16px;
   box-shadow: var(--shadow-lg);
-  z-index: 1000;
+  z-index: var(--z-search);
   display: none;
   
   input {
@@ -223,12 +304,12 @@ a {
   }
 }
 
-/* Отступ для контента */
+/* ===== ОТСТУП КОНТЕНТА ===== */
 .page {
   padding-top: var(--header-height);
 }
 
-/* Футер */
+/* ===== ФУТЕР ===== */
 .footer {
   margin-top: 3rem;
   padding-top: 2rem;
@@ -272,7 +353,7 @@ a {
   }
 }
 
-/* Блог */
+/* ===== БЛОГ ===== */
 .blog-index {
   margin: var(--spacing-lg) 0;
   
@@ -336,7 +417,7 @@ a {
   }
 }
 
-/* Теги */
+/* ===== ТЕГИ ===== */
 .tag-list {
   margin: var(--spacing-md) 0;
   
@@ -374,7 +455,7 @@ a {
   }
 }
 
-/* Мобильные стили */
+/* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
 @media (max-width: 800px) {
   .page-header {
     padding: var(--header-padding-mobile);
@@ -422,7 +503,7 @@ a {
   }
 }
 
-/* Переопределения внешних ссылок */
+/* ===== ПЕРЕОПРЕДЕЛЕНИЯ ССЫЛОК ===== */
 .external::after,
 .internal::after,
 a[href^="http"]::after {
@@ -439,13 +520,4 @@ a[href^="http"]::after {
 
 .footer-link::after {
   display: none !important;
-}
-
-/* Блог специфичные цвета */
-[data-theme="light"].site-blog,
-.site-blog[data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f0f0f0;
-  --text-primary: #333333;
-  --border-color: #e0e0e0;
 }

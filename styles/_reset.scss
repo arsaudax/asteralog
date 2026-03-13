@@ -1,0 +1,109 @@
+// styles/_reset.scss
+// ====================================================
+// БАЗОВЫЕ СБРОСЫ (только то, что не касается цветов и типографики)
+// ====================================================
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  
+  &.no-scroll {
+    overflow: hidden;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background: var(--link-color);
+  color: var(--bg-primary);
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: var(--link-color);
+  color: var(--bg-primary);
+  text-shadow: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  display: block;
+  margin: var(--spacing-lg) 0;
+  
+  &.img-rounded {
+    border-radius: var(--radius-lg);
+  }
+  
+  &.img-circle {
+    border-radius: 50%;
+  }
+  
+  &.img-border {
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-xs);
+  }
+}
+
+hr {
+  border: none;
+  border-top: 2px solid var(--border-color);
+  margin: var(--spacing-xl) 0;
+  
+  &.fancy {
+    border: none;
+    text-align: center;
+    
+    &::after {
+      content: "✦ ✦ ✦";
+      color: var(--text-muted);
+      font-size: var(--font-size-sm);
+      letter-spacing: 0.5em;
+    }
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-lg) 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  
+  th, td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    text-align: left;
+  }
+  
+  th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+  }
+  
+  tr:nth-child(even) {
+    background: var(--bg-secondary);
+  }
+  
+  tr:hover {
+    background: var(--highlight-bg);
+  }
+}
+
+ul, ol {
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-xl);
+  
+  li {
+    margin: var(--spacing-xs) 0;
+  }
+}

@@ -1,4 +1,3 @@
-// quartz-custom/styles/_blog.scss
 /* =========================================================
    СТИЛИ ДЛЯ БЛОГА
    ========================================================= */
@@ -6,32 +5,30 @@
 @use "variables" as *;
 
 /* ===== ЦВЕТА ДЛЯ БЛОГА ===== */
-/* Тёмная тема блога */
 [data-theme="dark"].site-blog,
 .site-blog[data-theme="dark"] {
-  --bg-primary: #1a1c1e !important;
-  --bg-secondary: #2e3235 !important;
-  --text-primary: #d4d4d4 !important;
-  --text-secondary: #b0b0b0 !important;
-  --text-muted: #9a9a9a !important;
-  --border-color: #4a4f54 !important;
-  --link-color: #ab7d4c !important;
-  --link-hover: #7c5736 !important;
-  --highlight: rgba(171, 125, 76, 0.15) !important;
+  --bg-primary: #1a1c1e;
+  --bg-secondary: #2e3235;
+  --text-primary: #d4d4d4;
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --border-color: #4a4f54;
+  --link-color: #ab7d4c;
+  --link-hover: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.15);
 }
 
-/* Светлая тема блога */
 [data-theme="light"].site-blog,
 .site-blog[data-theme="light"] {
-  --bg-primary: #ffffff !important;
-  --bg-secondary: #f0f0f0 !important;
-  --text-primary: #333333 !important;
-  --text-secondary: #666666 !important;
-  --text-muted: #9a9a9a !important;
-  --border-color: #b8b8b8 !important;
-  --link-color: #ab7d4c !important;
-  --link-hover: #7c5736 !important;
-  --highlight: rgba(171, 125, 76, 0.1) !important;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f0f0;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-muted: #9a9a9a;
+  --border-color: #b8b8b8;
+  --link-color: #ab7d4c;
+  --link-hover: #7c5736;
+  --highlight: rgba(171, 125, 76, 0.1);
 }
 
 /* ===== ПОСТЫ В ЛЕНТЕ ===== */
@@ -46,20 +43,21 @@
 }
 
 .blog-index-item {
-  margin-bottom: 48px !important;
-  padding-bottom: 48px !important;
+  margin-bottom: 48px;
+  padding-bottom: 48px;
   border-bottom: 1px solid var(--border-color);
+  animation: slideUp var(--transition-slow);
   
   &:last-child {
     border-bottom: none;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
   
   h2 {
-    border-bottom: none !important;
-    margin-bottom: 8px !important;
-    padding-bottom: 0 !important;
+    border-bottom: none;
+    margin-bottom: 8px;
+    padding-bottom: 0;
     font-size: var(--font-size-xl);
     color: var(--link-color);
     transition: color var(--transition-fast);
@@ -118,16 +116,25 @@
   }
 }
 
+[data-theme="dark"] .blog-index-tag:hover {
+  background: var(--link-hover);
+  color: var(--bg-primary);
+}
+
+[data-theme="light"] .blog-index-tag:hover {
+  background: var(--link-color);
+  color: white;
+}
+
 /* ===== АРХИВ ===== */
 .archive-link-container {
   margin-top: auto;
   border-top: 1px solid var(--border-color);
   padding: var(--spacing-md) 0;
   
-  // В сайдбаре блога
   .right & {
     @media (max-width: 800px) {
-      display: none; // скрываем на мобильных
+      display: none;
     }
   }
 }
@@ -157,15 +164,6 @@
     }
   }
   
-  // Для использования в футере или других местах
-  &--footer {
-    font-size: var(--font-size-sm);
-    
-    &::after {
-      content: " →📚";
-    }
-  }
-  
   &--sidebar {
     width: 100%;
     justify-content: space-between;
@@ -175,13 +173,21 @@
       content: " →";
     }
   }
+  
+  &--footer {
+    font-size: var(--font-size-sm);
+    
+    &::after {
+      content: " →📚";
+    }
+  }
 }
 
-/* ===== МОБИЛЬНЫЕ СТИЛИ ДЛЯ БЛОГА ===== */
+/* ===== МОБИЛЬНЫЕ СТИЛИ ===== */
 @media (max-width: 500px) {
   .blog-index-item {
-    margin-bottom: 32px !important;
-    padding-bottom: 32px !important;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
     
     h2 {
       font-size: calc(var(--font-size-xl) * 0.9);
@@ -198,42 +204,5 @@
   
   .archive-link {
     font-size: var(--font-size-sm);
-  }
-}
-
-/* ===== ТЁМНАЯ ТЕМА (дополнительные стили) ===== */
-[data-theme="dark"] {
-  .blog-index-tag {
-    background: var(--highlight);
-    color: var(--link-color);
-    
-    &:hover {
-      background: var(--link-hover);
-      color: var(--bg-primary);
-    }
-  }
-}
-
-/* ===== СВЕТЛАЯ ТЕМА (дополнительные стили) ===== */
-[data-theme="light"] {
-  .blog-index-tag:hover {
-    background: var(--link-color);
-    color: white;
-  }
-}
-
-/* ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ===== */
-.blog-index-item {
-  animation: slideUp var(--transition-slow);
-  
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 }

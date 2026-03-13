@@ -1,9 +1,7 @@
-// quartz-custom/styles/_components.scss
+// styles/_components.scss
 // ====================================================
 // СТИЛИ ДЛЯ КАСТОМНЫХ КОМПОНЕНТОВ
 // ====================================================
-
-@use "../styles/variables" as *;
 
 /* ===== CONTENT META ===== */
 .content-meta {
@@ -19,7 +17,6 @@
     display: inline-flex;
     align-items: center;
     
-    // Разделитель
     &:not(:last-child)::after {
       content: "·";
       margin: 0 var(--spacing-xs);
@@ -27,7 +24,6 @@
     }
   }
   
-  // Иконки для разных типов
   &-date::before {
     content: "📅";
     margin-right: var(--spacing-xs);
@@ -40,22 +36,21 @@
     opacity: 0.7;
   }
   
-  // Мобильная версия
   @media (max-width: 500px) {
     font-size: var(--font-size-xs);
-    gap: var(--spacing-xxs);
+    gap: var(--spacing-xxs, 0.125rem);
     margin-bottom: var(--spacing-md);
   }
 }
 
 /* ===== FOOTER ===== */
 .footer {
-  margin-top: var(--spacing-xl);
-  padding-top: var(--spacing-lg);
+  margin-top: 3rem;
+  padding-top: 2rem;
   border-top: 1px solid var(--border-color);
+  font-size: 0.9rem;
   opacity: 0.8;
   transition: opacity var(--transition-base);
-  font-size: var(--font-size-sm);
   
   &:hover {
     opacity: 1;
@@ -66,7 +61,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: 1rem;
   }
   
   &-copyright {
@@ -81,24 +76,23 @@
   &-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-md);
+    gap: 1rem;
     list-style: none;
     margin: 0;
     padding: 0;
   }
   
   &-link {
-    color: var(--link-color);
+    color: var(--text-secondary);
     text-decoration: none;
     transition: color var(--transition-fast);
     
     &:hover {
-      color: var(--link-hover);
+      color: var(--link-color);
       text-decoration: underline;
     }
   }
   
-  // Адаптивность
   @media (max-width: 600px) {
     &-content {
       flex-direction: column;
@@ -114,102 +108,6 @@
     
     &-links {
       gap: var(--spacing-sm);
-    }
-  }
-}
-
-/* ===== ARCHIVE LINK ===== */
-.archive-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  color: var(--link-color);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-  border: 1px solid var(--border-color);
-  
-  &:hover {
-    background: var(--link-color);
-    color: var(--bg-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-    
-    .archive-arrow {
-      transform: translateX(4px);
-    }
-  }
-  
-  &-arrow {
-    transition: transform var(--transition-fast);
-  }
-  
-  // В сайдбаре
-  &--sidebar {
-    width: 100%;
-    justify-content: space-between;
-    
-    @media (max-width: 800px) {
-      display: none; // скрываем на мобильных
-    }
-  }
-}
-
-/* ===== BLOG INDEX ===== */
-.blog-index {
-  margin: var(--spacing-lg) 0;
-  
-  &-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
-  }
-  
-  &-item {
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: var(--spacing-lg);
-    
-    &:last-child {
-      border-bottom: none;
-    }
-    
-    h2 {
-      font-size: 1.2rem;
-      margin-bottom: var(--spacing-xs);
-      color: var(--link-color);
-      
-      &:hover {
-        color: var(--link-hover);
-      }
-    }
-  }
-  
-  &-date {
-    font-size: var(--font-size-sm);
-    color: var(--text-muted);
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  &-description {
-    font-size: var(--font-size-md);
-    color: var(--text-secondary);
-    line-height: var(--line-height-base);
-  }
-  
-  @media (max-width: 500px) {
-    &-item {
-      padding-bottom: var(--spacing-md);
-      margin-bottom: var(--spacing-md);
-      
-      h2 {
-        font-size: 1.1rem;
-      }
-    }
-    
-    &-description {
-      font-size: var(--font-size-sm);
     }
   }
 }
@@ -267,30 +165,7 @@
   }
 }
 
-/* ===== SCROLL BEHAVIOR ===== */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: var(--highlight-bg);
-  z-index: 1000;
-  
-  &-bar {
-    height: 100%;
-    background: var(--link-color);
-    width: 0%;
-    transition: width 0.1s ease;
-  }
-}
-
-// Скрытие header при скролле (дублируется с _header.scss, оставим для надёжности)
-.page-header.hidden {
-  transform: translateY(-100%);
-}
-
-/* ===== POPOVER (добавлено из overrides) ===== */
+/* ===== POPOVER ===== */
 .popover {
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
@@ -314,7 +189,7 @@
   }
 }
 
-/* ===== PAGINATION (добавлено из overrides) ===== */
+/* ===== PAGINATION ===== */
 .pagination {
   display: flex;
   justify-content: center;
@@ -346,7 +221,7 @@
   }
 }
 
-/* ===== CALLOUTS (добавлено из overrides) ===== */
+/* ===== CALLOUTS ===== */
 .callout {
   border-left: 4px solid var(--callout-color, var(--link-color));
   background: var(--bg-secondary);
@@ -363,22 +238,12 @@
   align-items: center;
 }
 
-/* ===== АНИМАЦИИ ===== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.callout,
-.search-result,
-.recent-note-item {
-  animation: fadeIn 0.25s ease-out;
-  will-change: opacity;
-}
-
-/* ===== ТЁМНАЯ ТЕМА ===== */
-[data-theme="dark"] {
-  .footer-link {
+/* ===== BREADCRUMBS ===== */
+.breadcrumb-container {
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  
+  a {
     color: var(--link-color);
     
     &:hover {
@@ -386,37 +251,41 @@
     }
   }
   
-  .archive-link {
-    background: var(--bg-secondary);
+  .breadcrumb-separator {
+    color: var(--text-muted);
+    margin: 0 var(--spacing-xs);
     
-    &:hover {
-      background: var(--link-hover);
-      color: var(--bg-primary);
+    &::after {
+      content: "›";
+      font-size: 1.2em;
     }
   }
   
-  .tag-list-item {
-    border-color: var(--border-color);
-    
-    &:hover {
-      background: var(--link-hover);
-      border-color: var(--link-hover);
-    }
+  .breadcrumb-current {
+    color: var(--text-primary);
+    font-weight: 500;
   }
   
-  .blog-index-item h2 {
-    color: var(--link-color);
-    
-    &:hover {
-      color: var(--link-hover);
-    }
+  .breadcrumb-home::before {
+    content: "🏡";
+    margin-right: var(--spacing-xs);
   }
 }
 
-/* ===== СВЕТЛАЯ ТЕМА (специфичные правки) ===== */
-[data-theme="light"] {
-  .archive-link:hover {
+/* ===== SCROLL PROGRESS ===== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--highlight-bg);
+  z-index: 1000;
+  
+  &-bar {
+    height: 100%;
     background: var(--link-color);
-    color: white;
+    width: 0%;
+    transition: width 0.1s ease;
   }
 }

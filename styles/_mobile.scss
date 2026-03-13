@@ -1,12 +1,9 @@
-// quartz-custom/styles/_mobile.scss
 /* =========================================================
    МОБИЛЬНЫЕ СТИЛИ
-   Все медиа-запросы в одном месте
    ========================================================= */
 
-/* ===== ТЕЛЕФОНЫ (до 500px) ===== */
+/* ----- ТЕЛЕФОНЫ (до 500px) ----- */
 @media (max-width: 500px) {
-  /* ----- HEADER ----- */
   .left.sidebar {
     display: grid;
     grid-template-columns: 1fr 40px 40px;
@@ -128,7 +125,6 @@
     }
   }
 
-  /* ----- ПРАВАЯ ПАНЕЛЬ ----- */
   .right {
     padding: 12px;
   }
@@ -167,7 +163,6 @@
     padding: 8px 0 !important;
   }
 
-  /* ----- ТИПОГРАФИКА ----- */
   h1 { font-size: 2rem; }
   h2 { font-size: 1.75rem; }
   h3 { font-size: 1.25rem; }
@@ -177,7 +172,6 @@
     margin-bottom: var(--spacing-md);
   }
   
-  /* ----- КОНТЕНТ ----- */
   article {
     padding: 1rem;
   }
@@ -195,13 +189,11 @@
     white-space: normal;
   }
   
-  /* ----- ТАБЛИЦЫ ----- */
   table {
     display: block;
     overflow-x: auto;
   }
   
-  /* ----- ФУТЕР ----- */
   .footer-content {
     flex-direction: column;
     text-align: center;
@@ -213,7 +205,7 @@
   }
 }
 
-/* ===== ПЛАНШЕТЫ И МАЛЕНЬКИЕ ДЕСКТОПЫ (501px - 800px) ===== */
+/* ----- ПЛАНШЕТЫ (501px - 800px) ----- */
 @media (min-width: 501px) and (max-width: 800px) {
   .page-logo {
     width: 48px;
@@ -244,7 +236,7 @@
   }
 }
 
-/* ===== МАЛЕНЬКИЕ ЭКРАНЫ (до 800px) ===== */
+/* ----- МАЛЕНЬКИЕ ЭКРАНЫ (до 800px) ----- */
 @media (max-width: 800px) {
   .explorer {
     display: none !important;
@@ -259,7 +251,6 @@
     padding-top: 60px;
   }
   
-  /* Скрываем некоторые элементы для экономии места */
   .breadcrumb-container {
     font-size: var(--font-size-xs);
     margin-bottom: var(--spacing-md);
@@ -272,10 +263,10 @@
   }
 }
 
-/* ===== ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ (до 360px) ===== */
+/* ----- ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ (до 360px) ----- */
 @media (max-width: 360px) {
   .page-title-text {
-    display: none; /* Прячем текст, оставляем только логотип */
+    display: none;
   }
   
   .search-button,
@@ -294,7 +285,7 @@
   }
 }
 
-/* ===== ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ ===== */
+/* ----- ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ ----- */
 @media (max-height: 500px) and (orientation: landscape) {
   .page-header {
     min-height: 50px;

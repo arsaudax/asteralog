@@ -1,9 +1,10 @@
 // quartz-custom/styles/_emergency.scss
 /* =========================================================
-   ЭКСТРЕННЫЙ ФИКС — ПЕРЕЗАПИСЫВАЕТ ВСЁ
+   ФИНАЛЬНЫЙ ФИКС — ПЕРЕЗАПИСЫВАЕТ ВСЁ
+   ДОЛЖЕН БЫТЬ ПОСЛЕДНИМ В ИМПОРТАХ
    ========================================================= */
 
-:root, [data-theme="dark"], [data-theme="light"] {
+:root, [data-theme="dark"] {
   --light: #1a1c1e !important;
   --lightgray: #2e3235 !important;
   --gray: #4a4f54 !important;
@@ -13,15 +14,15 @@
   --tertiary: #7c5736 !important;
   --highlight: rgba(171, 125, 76, 0.15) !important;
   
-  --bg-primary: var(--light) !important;
-  --bg-secondary: var(--lightgray) !important;
-  --text-primary: var(--dark) !important;
-  --text-secondary: var(--darkgray) !important;
-  --text-muted: var(--gray) !important;
-  --border-color: var(--lightgray) !important;
-  --link-color: var(--secondary) !important;
-  --link-hover: var(--tertiary) !important;
-  --highlight-bg: var(--highlight) !important;
+  --bg-primary: #1a1c1e !important;
+  --bg-secondary: #2e3235 !important;
+  --text-primary: #d4d4d4 !important;
+  --text-secondary: #b0b0b0 !important;
+  --text-muted: #9a9a9a !important;
+  --border-color: #4a4f54 !important;
+  --link-color: #ab7d4c !important;
+  --link-hover: #7c5736 !important;
+  --highlight-bg: rgba(171, 125, 76, 0.15) !important;
 }
 
 [data-theme="light"] {
@@ -30,7 +31,17 @@
   --gray: #9a9a9a !important;
   --darkgray: #4a4a49 !important;
   --dark: #2b2b2b !important;
+  --secondary: #ab7d4c !important;
+  --tertiary: #7c5736 !important;
   --highlight: rgba(171, 125, 76, 0.15) !important;
+  
+  --bg-primary: #f9f7f4 !important;
+  --bg-secondary: #e5e5e5 !important;
+  --text-primary: #2b2b2b !important;
+  --text-secondary: #4a4a49 !important;
+  --border-color: #b8b8b8 !important;
+  --link-color: #ab7d4c !important;
+  --link-hover: #7c5736 !important;
 }
 
 .site-blog[data-theme="light"] {
@@ -39,9 +50,22 @@
   --dark: #333333 !important;
   --darkgray: #666666 !important;
   --highlight: rgba(171, 125, 76, 0.1) !important;
+  
+  --bg-primary: #ffffff !important;
+  --bg-secondary: #f0f0f0 !important;
+  --text-primary: #333333 !important;
+  --text-secondary: #666666 !important;
 }
 
+/* Прямое применение к body */
 body {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Стили для header */
+.page-header {
+  background: color-mix(in srgb, var(--bg-primary) 85%, transparent) !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }

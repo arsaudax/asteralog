@@ -174,10 +174,6 @@ export const blogContentPageLayout: PageLayout = {
       component: CustomComponent.ArchiveLink({ text: "Все записи →📚", emoji: "none" }),
       condition: (props: QuartzComponentProps) => props.fileData.slug === 'index'
     }),
-    Component.ConditionalRender({
-      component: CustomComponent.BlogIndex({ limit: 1000, filter: () => true }),
-      condition: (props: QuartzComponentProps) => props.fileData.slug === 'archive'
-    }),
   ],
 }
 

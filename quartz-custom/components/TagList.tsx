@@ -2,7 +2,6 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { classNames } from "../../quartz/util/lang"
 import { i18n } from "../../quartz/i18n"
-import style from "./styles/TagList.scss"
 
 interface Options {
   title?: string
@@ -90,6 +89,5 @@ export default ((opts?: Options) => {
     )
   }
 
-  TagList.css = style
   return TagList
 }) satisfies QuartzComponentConstructor

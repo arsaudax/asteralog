@@ -167,7 +167,7 @@ export const blogContentPageLayout: PageLayout = {
   ],
   afterBody: [
     Component.ConditionalRender({
-      component: CustomComponent.BlogIndex({ limit: 5, filter: blogFilter }),
+      component: Component.RecentNotes({ limit: 5, filter: blogFilter }),
       condition: (props: QuartzComponentProps) => props.fileData.slug === 'index'
     }),
     Component.ConditionalRender({

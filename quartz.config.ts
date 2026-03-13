@@ -1,6 +1,9 @@
+// quartz.config.ts
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as CustomPlugins from "./quartz-custom/plugins"
+import { readFile } from "fs/promises"
+import { join } from "path"
 
 // Определяем, какой сайт собирается (только для title)
 const siteType = process.env.SITE_TYPE || 
@@ -26,14 +29,14 @@ const baseConfig = {
 
 const colors = {
   lightMode: {
-    light: "#ffffff",        // светлый фон (будет переопределён для сада)
-    lightgray: "#f0f0f0",    // второстепенный фон
+    light: "#f9f7f4",        // 🔥 ИЗМЕНЕНО: светло-бежевый для сада
+    lightgray: "#e5e5e5",    // 🔥 ИЗМЕНЕНО: светлый серый для карточек
     gray: "#9a9a9a",         // muted текст
-    darkgray: "#666666",     // второстепенный текст
-    dark: "#333333",         // основной текст
+    darkgray: "#4a4a49",     // 🔥 ИЗМЕНЕНО: второстепенный текст
+    dark: "#2b2b2b",         // 🔥 ИЗМЕНЕНО: основной текст
     secondary: "#ab7d4c",    // ссылки (золотой)
     tertiary: "#7c5736",     // ссылки при наведении
-    highlight: "rgba(171, 125, 76, 0.1)",
+    highlight: "rgba(171, 125, 76, 0.15)",
     textHighlight: "#fff23688",
   },
   darkMode: {
@@ -62,7 +65,7 @@ const config: QuartzConfig = {
         body: "Inter",
         code: "JetBrains Mono",
       },
-      colors: colors,  // 👈 ЕДИНЫЕ ЦВЕТА
+      colors: colors,
     },
   },
   plugins: {
@@ -97,6 +100,32 @@ const config: QuartzConfig = {
       Plugin.Assets(),
       Plugin.Static(),
       CustomPlugins.Static(),
+      
+      // 🔥 НОВЫЙ ЭМИТТЕР: кастомные стили
+      {
+        name: "custom-styles",
+        async emit({ argv }) {
+          try {
+            const customCssPath = join(argv.directory, "quartz/styles/custom.scss")
+            const content = await readFile(customCssPath, "utf-8")
+            return [{
+              content,
+              slug: "index" as any,
+              ext: ".scss",
+              frontmatter: {},
+              text: content,
+              description: "",
+              dates: {}
+            }]
+          } catch (err) {
+            console.warn("⚠️ custom.scss not found, skipping...")
+            return []
+          }
+        },
+        async *emitPartial() {},
+        async *partialEmitInfo() {}
+      } as any,
+      
       Plugin.NotFoundPage(),
     ],
   },

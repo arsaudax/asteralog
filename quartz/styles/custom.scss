@@ -5,7 +5,7 @@
    ==================================================== */
 
 :root {
-  // Системные переменные (отступы, размеры)
+  // Системные переменные
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -16,7 +16,6 @@
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
-  --radius-xl: 16px;
   --radius-full: 9999px;
   
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -25,23 +24,17 @@
   
   --transition-fast: 0.15s ease;
   --transition-base: 0.2s ease;
-  --transition-slow: 0.3s ease;
   
-  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-family-base: 'Inter', -apple-system, sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
   
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
-  --font-size-xxl: 1.5rem;
   
-  --line-height-tight: 1.3;
   --line-height-base: 1.6;
-  
-  --header-height: 70px;
-  --z-search: 1000;
 }
 
 /* ====================================================
@@ -69,10 +62,6 @@
   --code-color: #e6e6e6;
 }
 
-/* ====================================================
-   СВЕТЛАЯ ТЕМА
-   ==================================================== */
-
 [data-theme="light"] {
   --bg-primary: #f9f7f4;
   --bg-secondary: #e5e5e5;
@@ -95,7 +84,7 @@
 }
 
 /* ====================================================
-   ГЛАВНЫЙ КОНТЕЙНЕР (ПРАВИЛЬНАЯ СТРУКТУРА ДЛЯ ПОДВАЛА)
+   ГЛАВНЫЙ КОНТЕЙНЕР (РАБОТАЕТ С QUARTZ)
    ==================================================== */
 
 #quartz-root.page {
@@ -109,7 +98,7 @@
 }
 
 #quartz-body {
-  flex: 1 0 auto;  /* 🔥 Занимает всё доступное место, прижимая footer к низу */
+  flex: 1 0 auto;  /* 🔥 Прижимает footer к низу */
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -121,41 +110,31 @@
 }
 
 /* ====================================================
-   ХЕДЕР (ГОРИЗОНТАЛЬНАЯ ПАНЕЛЬ)
+   ЛЕВАЯ ПАНЕЛЬ (ЛОГОТИП, ПОИСК, ТЕМА, ЭКСПЛОРЕР)
    ==================================================== */
 
-.page-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
-  padding: 8px 20px;
-  transition: transform var(--transition-base);
-  will-change: transform;
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.left.sidebar {
+  flex: 0 0 250px;
+  min-width: 200px;
+  padding: var(--spacing-lg) 0;
 }
 
-.page-header.hidden {
-  transform: translateY(-100%);
+/* Стилизация логотипа ВНУТРИ левой панели */
+.left.sidebar .page-title {
+  margin-bottom: var(--spacing-lg);
 }
 
-.page-header .page-title {
-  margin: 0;  /* Отменяем все стандартные отступы */
-}
-
-.page-header .page-title a {
+.left.sidebar .page-title a {
   display: flex;
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  color: var(--link-color);
+  font-size: 18px;
+  font-weight: 600;
 }
 
+/* Логотип (если используете изображение) */
 .page-logo {
   width: 56px;
   height: 56px;
@@ -169,57 +148,17 @@
   border-color: var(--link-color);
 }
 
-.page-title-text {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--link-color);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Поиск и кнопка темы */
+.left.sidebar .search,
+.left.sidebar .darkmode {
+  margin-bottom: var(--spacing-md);
 }
-
-/* ====================================================
-   БОКОВЫЕ ПАНЕЛИ
-   ==================================================== */
-
-.left.sidebar,
-.right.sidebar {
-  flex: 0 0 250px;
-  min-width: 200px;
-  padding: var(--spacing-lg) 0;
-}
-
-.right.sidebar > * {
-  width: 100%;
-  margin-bottom: var(--spacing-xl);
-}
-
-/* ====================================================
-   ЦЕНТРАЛЬНАЯ КОЛОНКА
-   ==================================================== */
-
-.center {
-  flex: 1;
-  max-width: 800px;
-  width: 100%;
-  padding: var(--spacing-lg) 0;
-}
-
-.center article {
-  max-width: 700px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* ====================================================
-   КНОПКИ (ПОИСК И ТЕМА)
-   ==================================================== */
 
 .search-button,
 .darkmode {
   width: 40px;
   height: 40px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
@@ -228,7 +167,6 @@
   border: 1px solid var(--border-color);
   transition: all var(--transition-fast);
   padding: 0;
-  margin-left: 8px;
 }
 
 .search-button:hover,
@@ -242,11 +180,6 @@
   width: 20px;
   height: 20px;
   color: var(--link-color);
-  fill: var(--link-color);
-}
-
-.darkmode {
-  background: transparent;
 }
 
 /* Переключение иконок темы */
@@ -255,105 +188,96 @@
 [data-theme="light"] .darkmode .dayIcon { display: block; }
 [data-theme="light"] .darkmode .nightIcon { display: none; }
 
-/* ====================================================
-   ПОИСК
-   ==================================================== */
-
-.search-button p {
-  display: none;  /* Скрываем текст "Поиск", оставляем иконку */
-}
-
-.search-container {
-  position: fixed;
-  top: calc(var(--header-height) + 10px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 600px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-lg);
-  z-index: var(--z-search);
-  display: none;
-}
-
-.search-container.active {
-  display: block;
-}
-
-.search-bar {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-.search-bar:focus {
-  border-color: var(--link-color);
-  box-shadow: 0 0 0 3px var(--highlight-bg);
-  outline: none;
-}
-
-/* ====================================================
-   ПРОВОДНИК (EXPLORER)
-   ==================================================== */
-
-.explorer {
+/* Эксплорер */
+.left.sidebar .explorer {
   margin-top: var(--spacing-lg);
 }
 
-.explorer-content {
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
-}
+/* ====================================================
+   ЦЕНТРАЛЬНАЯ КОЛОНКА
+   ==================================================== */
 
-.folder-container {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.folder-button {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 4px 0;
-  text-align: left;
+.center {
+  flex: 1;
+  max-width: 800px;
   width: 100%;
+  padding: var(--spacing-lg) 0;
+}
+
+/* Заголовок статьи (то, что Quartz называет page-header) */
+.center .page-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.center .page-header .breadcrumb-container {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-muted);
   font-size: var(--font-size-sm);
 }
 
-.folder-button:hover {
+.center .page-header .article-title {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.center .page-header .content-meta {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.center .page-header .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.center .page-header .tags .tag-link {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: var(--font-size-xs);
+  transition: background var(--transition-fast);
+}
+
+.center .page-header .tags .tag-link:hover {
+  background: var(--highlight-bg);
   color: var(--link-color);
 }
 
-.folder-icon {
-  transition: transform var(--transition-fast);
-  width: 12px;
-  height: 12px;
-  color: var(--text-muted);
-}
-
-.folder-icon.open {
-  transform: rotate(90deg);
+/* Контент статьи */
+.center article {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
 }
 
 /* ====================================================
-   ГРАФ
+   ПРАВАЯ ПАНЕЛЬ
    ==================================================== */
 
-.graph {
-  margin-top: var(--spacing-lg);
+.right.sidebar {
+  flex: 0 0 250px;
+  min-width: 200px;
+  padding: var(--spacing-lg) 0;
 }
 
-.graph h3 {
+.right.sidebar > * {
+  width: 100%;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Граф */
+.right.sidebar .graph h3 {
   font-size: var(--font-size-md);
   margin-bottom: var(--spacing-sm);
   color: var(--text-secondary);
@@ -392,10 +316,38 @@
   border-color: var(--link-color);
 }
 
-/* ====================================================
-   ОБРАТНЫЕ ССЫЛКИ
-   ==================================================== */
+/* Оглавление */
+.table-of-contents {
+  margin-top: var(--spacing-lg);
+}
 
+.table-of-contents h3 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.table-of-contents ul {
+  list-style: none;
+  padding-left: var(--spacing-md);
+  margin: 0;
+}
+
+.table-of-contents li {
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+}
+
+.table-of-contents a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.table-of-contents a:hover {
+  color: var(--link-color);
+}
+
+/* Обратные ссылки */
 .backlinks {
   margin-top: var(--spacing-lg);
 }
@@ -427,61 +379,47 @@
 }
 
 /* ====================================================
-   ФУТЕР (ТЕПЕРЬ ПРИЖАТ К НИЗУ)
+   ФУТЕР (ПРИЖАТ К НИЗУ БЛАГОДАРЯ FLEX)
    ==================================================== */
 
-footer.footer {
+footer:not(.page-footer) {  /* Селектор для основного футера */
   width: 100%;
   padding: var(--spacing-xl) 20px;
   border-top: 1px solid var(--border-color);
   background: var(--bg-primary);
-  margin-top: auto;  /* Работает благодаря flex-контейнеру #quartz-root */
+  margin-top: auto;  /* Работает из-за flex на #quartz-root */
 }
 
-.footer-content {
+footer p {
   max-width: 1400px;
   margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.footer-copyright {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
   color: var(--text-muted);
   font-size: var(--font-size-sm);
 }
 
-.footer-emoji {
-  font-size: 1.2em;
-}
-
-.footer-links {
+footer ul {
+  max-width: 1400px;
+  margin: var(--spacing-md) auto 0;
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xl);
   list-style: none;
-  margin: 0;
   padding: 0;
 }
 
-.footer-link {
+footer ul a {
   color: var(--text-secondary);
   text-decoration: none;
   font-size: var(--font-size-sm);
   transition: color var(--transition-fast);
 }
 
-.footer-link:hover {
+footer ul a:hover {
   color: var(--link-color);
 }
 
 /* ====================================================
-   ССЫЛКИ (МИНИМАЛИСТИЧНЫЕ)
+   ССЫЛКИ
    ==================================================== */
 
 /* Отключаем стандартные иконки Quartz */
@@ -495,8 +433,8 @@ a[href^="http"]::before {
   content: none !important;
 }
 
-/* Добавляем свой минималистичный значок для внешних ссылок */
-.external:not(.footer-link):not(.no-external-icon)::after {
+/* Минималистичный значок для внешних ссылок */
+.external:not(footer a):not(.no-external-icon)::after {
   content: "↗";
   color: var(--text-muted);
   opacity: 0.6;
@@ -505,7 +443,7 @@ a[href^="http"]::before {
   transition: opacity var(--transition-fast);
 }
 
-.external:not(.footer-link):not(.no-external-icon):hover::after {
+.external:not(footer a):not(.no-external-icon):hover::after {
   opacity: 1;
   color: var(--link-color);
 }
@@ -522,7 +460,7 @@ a[href^="http"]::before {
 
   .left.sidebar,
   .right.sidebar {
-    display: none;  /* Скрываем боковые панели */
+    display: none;  /* Скрываем боковые панели на мобильных */
   }
 
   .center {
@@ -530,63 +468,23 @@ a[href^="http"]::before {
     padding: var(--spacing-md) 0;
   }
 
-  .center article {
-    max-width: 100%;
+  .center .page-header .article-title {
+    font-size: 2rem;
   }
 
-  .page-header {
-    padding: 6px 16px;
+  footer {
+    padding: var(--spacing-lg) 15px;
   }
 
-  .page-logo {
-    width: 48px;
-    height: 48px;
-  }
-
-  .page-title-text {
-    font-size: 16px;
-  }
-
-  .search-button,
-  .darkmode {
-    width: 36px;
-    height: 36px;
-    margin-left: 6px;
-  }
-
-  .search-button svg,
-  .darkmode svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .footer-content {
+  footer ul {
     flex-direction: column;
-    align-items: flex-start;
     gap: var(--spacing-md);
   }
 }
 
 @media (max-width: 500px) {
-  .page-title-text {
-    display: none;  /* Прячем текст на очень маленьких экранах */
-  }
-}
-
-@media (max-width: 360px) {
-  .page-header {
-    padding: 6px 12px;
-  }
-
-  .page-logo {
-    width: 40px;
-    height: 40px;
-  }
-
-  .search-button,
-  .darkmode {
-    width: 32px;
-    height: 32px;
+  .left.sidebar .page-title .page-title-text {
+    display: none;  /* Прячем текст логотипа на очень маленьких экранах */
   }
 }
 
@@ -595,10 +493,9 @@ a[href^="http"]::before {
    ==================================================== */
 
 @media print {
-  .page-header,
   .left.sidebar,
   .right.sidebar,
-  footer.footer {
+  footer {
     display: none;
   }
 

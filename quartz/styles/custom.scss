@@ -701,3 +701,33 @@ a[href^="http"]::after {
     max-width: 100%;
   }
 }
+
+/* ===== ПРИНУДИТЕЛЬНОЕ ИСПРАВЛЕНИЕ ФУТЕРА ===== */
+footer.footer {
+  width: 100% !important;
+  flex-shrink: 0 !important;
+  margin-top: auto !important;
+  position: relative !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  grid-column: 1 / -1 !important;  /* если используется грид */
+  clear: both !important;  /* старый добрый способ */
+}
+
+/* Убираем footer из правой панели если он туда попал */
+.right.sidebar footer,
+.right.sidebar .footer {
+  display: none !important;
+}
+
+/* Принудительно размещаем footer после всех колонок */
+#quartz-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#quartz-body {
+  flex: 1 0 auto;
+}

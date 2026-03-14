@@ -37,13 +37,13 @@ const graphConfig = {
 }
 
 // ==================================================
-// SHARED COMPONENTS — ТОЛЬКО head И footer
+// SHARED COMPONENTS — ТОЛЬКО ДЛЯ ГОЛОВЫ
 // ==================================================
 export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),
-  header: [],  // оставляем пустым
+  header: [],  // пустой header
   afterBody: [],
-  footer: CustomComponent.Footer({
+  footer: CustomComponent.Footer({  // footer здесь, но мы не будем его использовать в right
     links: {
       Telegram: "https://t.me/asteralog",
       Instagram: "https://www.instagram.com/al.bogat",
@@ -53,7 +53,7 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==================================================
-// ОСНОВНОЙ LAYOUT — КАК В СТАРОМ РАБОЧЕМ ФАЙЛЕ
+// ОСНОВНОЙ LAYOUT
 // ==================================================
 export const defaultContentPageLayout: PageLayout = {
   head: sharedPageComponents.head,
@@ -72,24 +72,18 @@ export const defaultContentPageLayout: PageLayout = {
     }),
     Component.Search(),
     Component.Darkmode(),
-    // Проводник только в саду
-    ...(siteType === 'garden' 
-      ? [Component.Explorer(explorerConfig)]
-      : []),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   
   right: [
-    // Граф только в саду
-    ...(siteType === 'garden'
-      ? [Component.Graph(graphConfig)]
-      : []),
-    Component.TableOfContents(),
+    Component.DesktopOnly(Component.Graph(graphConfig)),
+    Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
   ],
   
   afterBody: [],
   
-  footer: sharedPageComponents.footer,
+  footer: sharedPageComponents.footer,  // footer отдельно
 }
 
 export const defaultListPageLayout: PageLayout = {
@@ -105,7 +99,7 @@ export const defaultListPageLayout: PageLayout = {
     }),
     Component.Search(),
     Component.Darkmode(),
-    Component.Explorer(explorerConfig),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
   
   right: [],

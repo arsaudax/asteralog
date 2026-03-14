@@ -521,3 +521,78 @@ a[href^="http"]::after {
 .footer-link::after {
   display: none !important;
 }
+
+/* ===== LAYOUT — ОСНОВНАЯ СЕТКА ===== */
+#quartz-body {
+  display: flex;
+  flex-direction: row;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  gap: 20px;
+}
+
+.left.sidebar {
+  flex: 0 0 250px;
+  min-width: 200px;
+  padding: 20px 0;
+  
+  @media (max-width: 800px) {
+    display: none;  /* скрываем на мобильных */
+  }
+}
+
+.center {
+  flex: 1 1 auto;
+  min-width: 0;  /* важно для flex */
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.right.sidebar {
+  flex: 0 0 250px;
+  min-width: 200px;
+  padding: 20px 0;
+  
+  @media (max-width: 800px) {
+    display: none;  /* скрываем на мобильных */
+  }
+}
+
+/* Контент внутри центральной колонки */
+.center article {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Заголовок статьи */
+.article-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 800px) {
+  #quartz-body {
+    flex-direction: column;
+    padding: 0 15px;
+  }
+  
+  .center {
+    max-width: 100%;
+    padding: 15px 0;
+  }
+  
+  .center article {
+    max-width: 100%;
+  }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 500px) {
+  #quartz-body {
+    padding: 0 10px;
+  }
+}

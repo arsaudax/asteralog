@@ -1,5 +1,5 @@
 // quartz.layout.ts
-import { PageLayout } from "./quartz/cfg"
+import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import * as CustomComponent from "./quartz-custom/components"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
@@ -30,7 +30,23 @@ const graphConfig = {
 }
 
 // ==================================================
-// LAYOUT ДЛЯ САДА — со всеми панелями
+// ⚠️ ОБЯЗАТЕЛЬНО для Quartz — даже если не используем
+// ==================================================
+export const sharedPageComponents: SharedLayout = {
+  head: CustomComponent.Head(),
+  header: [],
+  afterBody: [],
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
+}
+
+// ==================================================
+// LAYOUT ДЛЯ САДА
 // ==================================================
 export const gardenLayout: PageLayout = {
   head: CustomComponent.Head(),
@@ -66,7 +82,7 @@ export const gardenLayout: PageLayout = {
 }
 
 // ==================================================
-// LAYOUT ДЛЯ БЛОГА — без графа, без проводника
+// LAYOUT ДЛЯ БЛОГА
 // ==================================================
 export const blogLayout: PageLayout = {
   head: CustomComponent.Head(),
@@ -77,7 +93,7 @@ export const blogLayout: PageLayout = {
     Component.TagList(),
   ],
   
-  left: [],  // в блоге нет левой панели
+  left: [],
   
   right: [
     Component.TableOfContents(),
@@ -96,7 +112,7 @@ export const blogLayout: PageLayout = {
 }
 
 // ==================================================
-// ВЫБОР LAYOUT В ЗАВИСИМОСТИ ОТ ТИПА САЙТА
+// ВЫБОР LAYOUT
 // ==================================================
 export const defaultContentPageLayout: PageLayout = 
   siteType === 'garden' ? gardenLayout : blogLayout

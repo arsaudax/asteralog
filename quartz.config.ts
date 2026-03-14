@@ -66,7 +66,7 @@ const config: QuartzConfig = {
       Plugin.TagPage(),
       Plugin.ContentIndex({ enableSiteMap: true, enableRSS: true }),
       Plugin.Assets(),
-      Plugin.Static(),
+      Plugin.Static(),  // ✅ копирует из quartz/static/
       Plugin.NotFoundPage(),
     ],
   },

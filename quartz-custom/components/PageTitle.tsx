@@ -1,5 +1,4 @@
-// quartz-custom/components/PageTitle.tsx
-import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
+import { QuartzComponent, QuartzComponentConstructor } from "../types"
 
 interface Options {
   logo?: string
@@ -8,23 +7,27 @@ interface Options {
 }
 
 export default ((opts?: Options) => {
-  const PageTitle: QuartzComponent = () => {
+  const PageTitle: QuartzComponent = ({ cfg }) => {
+    const title = opts?.title ?? cfg.pageTitle ?? "Asteralog"
+
     return (
       <div class="page-title">
         <a href="/">
           {opts?.logo && (
-            <img 
-              src={opts.logo} 
-              alt={opts.logoAlt || opts.title || "Logo"} 
+            <img
+              src={opts.logo}
+              alt={opts.logoAlt ?? title}
               class="page-logo"
               width="56"
               height="56"
             />
           )}
-          <span class="page-title-text">{opts?.title || "Asteralog"}</span>
+
+          <span class="page-title-text">{title}</span>
         </a>
       </div>
     )
   }
+
   return PageTitle
 }) satisfies QuartzComponentConstructor

@@ -1,90 +1,49 @@
-// quartz-custom/components/TagList.tsx
-import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
-import { classNames } from "../../quartz/util/lang"
-import { i18n } from "../../quartz/i18n"
+import {
+  QuartzComponent,
+  QuartzComponentConstructor,
+  QuartzComponentProps,
+} from "../types"
+
+import { classNames } from "../../util/lang"
 
 interface Options {
-  title?: string
-  showCount?: boolean
   limit?: number
-  minCount?: number
-  sortBy?: "count" | "name"
-  excludeTags?: string[] // дополнительные теги для исключения
 }
 
 export default ((opts?: Options) => {
-  const TagList: QuartzComponent = ({ allFiles, displayClass, cfg, fileData }: QuartzComponentProps) => {
-    const title = opts?.title ?? i18n(cfg.locale).components.tagList?.title ?? "Все теги"
-    const showCount = opts?.showCount ?? true
-    const limit = opts?.limit ?? 0
-    const minCount = opts?.minCount ?? 1
-    const sortBy = opts?.sortBy ?? "count"
-    
-    // Служебные теги, которые всегда исключаем
-    const excludeTags = new Set([
-      'garden', 'blog', 'explorer-exclude', 'graph-exclude',
-      ...(opts?.excludeTags || [])
-    ])
-    
-    // Получаем текущий тег из URL (если мы на странице тега)
-    const currentTag = fileData.slug?.startsWith('tags/') 
-      ? decodeURIComponent(fileData.slug.replace('tags/', ''))
-      : null
+  const TagList: QuartzComponent = ({
+    allFiles,
+    displayClass,
+  }: QuartzComponentProps) => {
+    const limit = opts?.limit ?? 20
 
-    // Собираем все теги и их количество (исключая служебные страницы)
     const tagCounts = new Map<string, number>()
-    allFiles.forEach(file => {
-      // Исключаем служебные страницы
-      if (file.slug === 'index' || file.slug === 'archive') return
-      
-      const tags = file.frontmatter?.tags
-      if (Array.isArray(tags)) {
-        tags.forEach(tag => {
-          if (!excludeTags.has(tag)) {
-            tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
-          }
-        })
-      }
+
+    allFiles.forEach((file) => {
+      const tags = Array.isArray(file.frontmatter?.tags)
+        ? file.frontmatter.tags
+        : []
+
+      tags.forEach((tag) => {
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1)
+      })
     })
 
-    // Фильтруем по минимальному количеству
-    const filteredTags = Array.from(tagCounts.entries())
-      .filter(([_, count]) => count >= minCount)
-
-    // Сортируем
-    const sortedTags = filteredTags.sort((a, b) => {
-      if (sortBy === "count") {
-        return b[1] - a[1] // по убыванию популярности
-      } else {
-        return a[0].localeCompare(b[0]) // по алфавиту
-      }
-    }).slice(0, limit || undefined)
-
-    if (sortedTags.length === 0) {
-      return null
-    }
+    const sorted = Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
 
     return (
       <div class={classNames(displayClass, "tag-list")}>
-        <h3 class="tag-list-header">
-          <span class="tag-list-title">{title}</span>
-          {limit > 0 && filteredTags.length >= limit && (
-            <a href="/tags" class="tag-list-all">Все →</a>
-          )}
-        </h3>
-        <div class="tag-list-content">
-          {sortedTags.map(([tag, count]) => (
-            <a 
-              href={`/tags/${encodeURIComponent(tag)}`} 
-              class={classNames("tag-list-item", { "tag-list-item--active": currentTag === tag })}
-              data-tag={tag}
-              key={tag}
-            >
-              {tag}
-              {showCount && <span class="tag-count">{count}</span>}
-            </a>
-          ))}
-        </div>
+        {sorted.map(([tag, count]) => (
+          <a
+            key={tag}
+            href={`/tags/${encodeURIComponent(tag)}`}
+            class="tag-list-item"
+          >
+            {tag} <span class="tag-count">{count}</span>
+          </a>
+        ))}
       </div>
     )
   }

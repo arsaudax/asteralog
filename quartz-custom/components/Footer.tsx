@@ -1,5 +1,4 @@
-// quartz-custom/components/Footer.tsx
-import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
+import { QuartzComponent, QuartzComponentConstructor } from "../types"
 
 interface Options {
   links?: Record<string, string>
@@ -8,19 +7,20 @@ interface Options {
 export default ((opts?: Options) => {
   const Footer: QuartzComponent = () => {
     const year = new Date().getFullYear()
-    const links = opts?.links || {}
-    
+    const links = opts?.links ?? {}
+
     return (
       <footer class="footer">
         <div class="footer-content">
           <div class="footer-copyright">
-            <span>Asteralog © {year}</span>
+            Asteralog © {year}
           </div>
+
           {Object.keys(links).length > 0 && (
             <ul class="footer-links">
               {Object.entries(links).map(([text, url]) => (
                 <li key={text}>
-                  <a href={url} target="_blank" rel="noopener noreferrer">
+                  <a href={url} rel="noopener noreferrer">
                     {text}
                   </a>
                 </li>
@@ -31,5 +31,6 @@ export default ((opts?: Options) => {
       </footer>
     )
   }
+
   return Footer
 }) satisfies QuartzComponentConstructor

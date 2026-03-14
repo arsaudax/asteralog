@@ -1,0 +1,13 @@
+/* =========================================================
+   ELEMENT STYLES
+   ========================================================= */
+
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+blockquote {
+  border-left: 3px solid var(--asteralog-accent);
+  padding-left: 1rem;
+  color: var(--gray);
+}

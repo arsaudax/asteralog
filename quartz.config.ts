@@ -2,26 +2,16 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 
-// Определяем тип сайта с отладкой
-const siteType = process.env.SITE_TYPE || 
-                 (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
-
-// Добавим отладочный вывод (будет видно в логах сборки)
-console.log(`\n🔧 Quartz Config: Building for ${siteType} site`)
-console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
-console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
-
 const config: QuartzConfig = {
   configuration: {
     pageTitle: "Asteralog",
-    pageTitleSuffix: siteType === 'blog' ? " | Блог" : " | Цифровой сад",
+    pageTitleSuffix: "",
     enableSPA: false,
     enablePopovers: true,
     analytics: { provider: "plausible" },
     locale: "ru-RU",
-    baseUrl: process.env.BASE_URL || 
-             (siteType === 'blog' ? 'blog.asteralog.ru' : 'garden.asteralog.ru'),
-    ignorePatterns: ["private", "templates", ".obsidian", "**/drafts/*"],
+    baseUrl: process.env.BASE_URL || "garden.asteralog.ru",
+    ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "created",
     theme: {
       fontOrigin: "googleFonts",
@@ -59,24 +49,11 @@ const config: QuartzConfig = {
     transformers: [
       Plugin.FrontMatter(),
       Plugin.CreatedModifiedDate({ priority: ["frontmatter", "filesystem"] }),
-      Plugin.SyntaxHighlighting({ 
-        theme: {
-          light: "github-light",
-          dark: "github-dark",
-        },
-        keepBackground: false,
-      }),
-      Plugin.ObsidianFlavoredMarkdown({ 
-        enableInHtmlEmbed: false,
-        parseTags: true,
-        enableCallouts: true,
-      }),
+      Plugin.SyntaxHighlighting({ keepBackground: false }),
+      Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
       Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
-      Plugin.CrawlLinks({ 
-        markdownLinkResolution: "shortest",
-        openLinksInNewTab: true,
-      }),
+      Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
     ],
@@ -87,13 +64,9 @@ const config: QuartzConfig = {
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),
-      Plugin.ContentIndex({ 
-        enableSiteMap: true, 
-        enableRSS: true,
-        includeEmptyFiles: false,
-      }),
+      Plugin.ContentIndex({ enableSiteMap: true, enableRSS: true }),
       Plugin.Assets(),
-      Plugin.Static(),
+      Plugin.Static(),  // ✅ копирует из quartz/static/
       Plugin.NotFoundPage(),
     ],
   },

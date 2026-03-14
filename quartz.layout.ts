@@ -1,41 +1,26 @@
 // quartz.layout.ts
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-import * as CustomComponent from "./quartz-custom/components"
 
-// Определяем тип сайта
-const siteType = (process.env?.SITE_TYPE as 'garden' | 'blog') || 'garden'
-
-// Shared компоненты
+// Shared компоненты (рендерятся отдельно от колонок)
 export const sharedPageComponents: SharedLayout = {
-  head: CustomComponent.Head(),
+  head: Component.Head(),
   header: [],
   afterBody: [],
-  footer: CustomComponent.Footer({
-    links: {
-      Telegram: "https://t.me/asteralog",
-      Instagram: "https://www.instagram.com/al.bogat",
-      Behance: "https://www.behance.net/arsaudax",
-    },
-  }),
+  footer: Component.Footer(),  // footer будет после всех колонок
 }
 
-// ==================================================
-// GARDEN LAYOUT (с графом и проводником)
-// ==================================================
-const gardenLayout: PageLayout = {
+// Основной layout для страниц контента
+export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(),
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.ContentMeta(),
     Component.TagList(),
   ],
   
   left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png", 
-      title: "Asteralog" 
-    }),
+    Component.PageTitle(),
     Component.Search(),
     Component.Darkmode(),
     Component.Explorer(),
@@ -48,43 +33,26 @@ const gardenLayout: PageLayout = {
   ],
   
   afterBody: [],
+  // footer НЕ УКАЗЫВАЕМ здесь — он берётся из shared
 }
 
-// ==================================================
-// BLOG LAYOUT (без графа, без проводника)
-// ==================================================
-const blogLayout: PageLayout = {
+// Layout для страниц-списков
+export const defaultListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(),
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
+    Component.ContentMeta(),
   ],
   
   left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png", 
-      title: "Asteralog" 
-    }),
+    Component.PageTitle(),
     Component.Search(),
     Component.Darkmode(),
-    // Component.Explorer() - НЕТ!
+    Component.Explorer(),
   ],
   
-  right: [
-    // Component.Graph() - НЕТ!
-    Component.TableOfContents(),
-    Component.Backlinks(),
-  ],
+  right: [],
   
   afterBody: [],
+  // footer НЕ УКАЗЫВАЕМ здесь
 }
-
-// ==================================================
-// ВЫБОР LAYOUT В ЗАВИСИМОСТИ ОТ ТИПА САЙТА
-// ==================================================
-export const defaultContentPageLayout: PageLayout = 
-  siteType === 'garden' ? gardenLayout : blogLayout
-
-export const defaultListPageLayout: PageLayout = 
-  siteType === 'garden' ? gardenLayout : blogLayout

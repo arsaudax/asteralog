@@ -1,0 +1,132 @@
+// quartz-custom/components/styles/footer.scss
+
+.footer {
+  margin-top: var(--spacing-xxl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--border-color);
+  opacity: 0.85;
+  transition: opacity var(--transition-base);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-lg);
+  }
+
+  &-copyright {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  &-emoji {
+    font-size: 1.2em;
+  }
+
+  &-text {
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  &-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &-link-item {
+    margin: 0;
+  }
+
+  &-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+      color: var(--link-color);
+      text-decoration: underline;
+    }
+  }
+
+  // Стили для перекрёстной ссылки (сад/блог)
+  .cross-link {
+    font-weight: 500;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--highlight-bg);
+    border-radius: var(--radius-sm);
+    
+    &:hover {
+      background: var(--link-color);
+      color: var(--bg-primary);
+    }
+  }
+
+  // Адаптивность
+  @media (max-width: 600px) {
+    &-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+    }
+
+    &-links {
+      gap: var(--spacing-sm);
+    }
+  }
+
+  @media (max-width: 500px) {
+    &-link {
+      font-size: var(--font-size-xs);
+    }
+  }
+}
+
+// Тёмная тема
+[data-theme="dark"] {
+  .footer {
+    border-top-color: var(--border-color);
+    
+    &-link {
+      color: var(--text-secondary);
+      
+      &:hover {
+        color: var(--link-hover);
+      }
+    }
+    
+    .cross-link:hover {
+      background: var(--link-hover);
+    }
+  }
+}
+
+// Для печати
+@media print {
+  .footer {
+    border-top: 1px solid #000;
+    opacity: 1;
+    color: #000;
+    
+    a {
+      color: #000;
+      
+      &[href]::after {
+        content: " (" attr(href) ")";
+      }
+    }
+  }
+}

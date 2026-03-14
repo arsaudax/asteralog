@@ -1,58 +1,121 @@
 // quartz.layout.ts
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import * as CustomComponent from "./quartz-custom/components"
+import { FileTrieNode } from "./quartz/components/scripts/spa"
 
-// Shared компоненты (рендерятся отдельно от колонок)
-export const sharedPageComponents: SharedLayout = {
-  head: Component.Head(),
-  header: [],
-  afterBody: [],
-  footer: Component.Footer(),  // footer будет после всех колонок
+// Определяем тип сайта
+const siteType = (process.env?.SITE_TYPE as 'garden' | 'blog') || 'garden'
+
+// Конфигурация проводника
+const explorerConfig = {
+  filterFn: (node: FileTrieNode) => {
+    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude")
+    return !hasExcludedTag
+  },
+  mapFn: (node: FileTrieNode) => {
+    if (!node.isFolder) {
+      node.displayName = "⊹ " + node.displayName
+    }
+  },
+  title: siteType === 'garden' ? "Сад" : "Блог",
+  folderDefaultState: "collapsed",
+  useSavedState: true,
 }
 
-// Основной layout для страниц контента
-export const defaultContentPageLayout: PageLayout = {
+// Конфигурация графа
+const graphConfig = {
+  localGraph: { showTags: false, excludeTags: ["graph-exclude"] },
+  globalGraph: { showTags: false, excludeTags: ["graph-exclude"] },
+}
+
+// ==================================================
+// ⚠️ ОБЯЗАТЕЛЬНО для Quartz — даже если не используем
+// ==================================================
+export const sharedPageComponents: SharedLayout = {
+  head: CustomComponent.Head(),
+  header: [],
+  afterBody: [],
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
+}
+
+// ==================================================
+// LAYOUT ДЛЯ САДА
+// ==================================================
+export const gardenLayout: PageLayout = {
+  head: CustomComponent.Head(),
+  
   beforeBody: [
-    Component.Breadcrumbs(),
     Component.ArticleTitle(),
-    Component.ContentMeta(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
   
   left: [
-    Component.PageTitle(),
+    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
     Component.Search(),
     Component.Darkmode(),
-    Component.Explorer(),
+    Component.Explorer(explorerConfig),
   ],
   
   right: [
-    Component.Graph(),
+    Component.Graph(graphConfig),
     Component.TableOfContents(),
     Component.Backlinks(),
   ],
   
   afterBody: [],
-  // footer НЕ УКАЗЫВАЕМ здесь — он берётся из shared
+  
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
 }
 
-// Layout для страниц-списков
-export const defaultListPageLayout: PageLayout = {
+// ==================================================
+// LAYOUT ДЛЯ БЛОГА
+// ==================================================
+export const blogLayout: PageLayout = {
+  head: CustomComponent.Head(),
+  
   beforeBody: [
-    Component.Breadcrumbs(),
     Component.ArticleTitle(),
-    Component.ContentMeta(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
   ],
   
-  left: [
-    Component.PageTitle(),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.Explorer(),
-  ],
+  left: [],
   
-  right: [],
+  right: [
+    Component.TableOfContents(),
+    Component.Backlinks(),
+  ],
   
   afterBody: [],
-  // footer НЕ УКАЗЫВАЕМ здесь
+  
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
 }
+
+// ==================================================
+// ВЫБОР LAYOUT
+// ==================================================
+export const defaultContentPageLayout: PageLayout = 
+  siteType === 'garden' ? gardenLayout : blogLayout
+
+export const defaultListPageLayout: PageLayout = 
+  siteType === 'garden' ? gardenLayout : blogLayout

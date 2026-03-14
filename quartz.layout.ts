@@ -1,8 +1,16 @@
 // quartz.layout.ts
-import { PageLayout } from "./quartz/cfg"
+import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 
-// Основной layout для страниц контента
+// Quartz требует этот экспорт (даже пустой)
+export const sharedPageComponents: SharedLayout = {
+  head: Component.Head(),
+  header: [],
+  afterBody: [],
+  footer: Component.Footer(),  // footer здесь
+}
+
+// Основной layout
 export const defaultContentPageLayout: PageLayout = {
   head: Component.Head(),
   
@@ -28,7 +36,7 @@ export const defaultContentPageLayout: PageLayout = {
   
   afterBody: [],
   
-  footer: Component.Footer(),  // ← футер отдельно, после всех колонок
+  // Здесь НЕ добавляем footer — он уже в sharedPageComponents
 }
 
 // Layout для страниц-списков
@@ -51,6 +59,4 @@ export const defaultListPageLayout: PageLayout = {
   right: [],
   
   afterBody: [],
-  
-  footer: Component.Footer(),  // ← и здесь тоже
 }

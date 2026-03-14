@@ -1,39 +1,115 @@
 // quartz/styles/custom.scss
-// ====================================================
-// ОСНОВНЫЕ ПЕРЕМЕННЫЕ
-// ====================================================
+
+/* ====================================================
+   БАЗОВЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ
+   ==================================================== */
+
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f8f8;
-  --highlight-bg: #e0f0ff;
-  --link-color: #0066cc;
-  --link-hover: #004999;
-  --text-primary: #222222;
-  --text-secondary: #555555;
-  --text-muted: #888888;
-  --border-color: #dddddd;
+  // Системные переменные (отступы, размеры)
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 3rem;
+  
+  --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
-  --font-family-base: "Inter", sans-serif;
-  --font-family-mono: "Fira Code", monospace;
-  --line-height-base: 1.6;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+  
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-xxl: 1.5rem;
+  
   --line-height-tight: 1.3;
+  --line-height-base: 1.6;
+  
   --header-height: 70px;
   --z-search: 1000;
-  --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
 }
 
-// ====================================================
-// ГЛАВНЫЙ КОНТЕЙНЕР
-// ====================================================
-#quartz-root {
+/* ====================================================
+   ТЁМНАЯ ТЕМА (ПО УМОЛЧАНИЮ)
+   ==================================================== */
+
+[data-theme="dark"] {
+  --bg-primary: #1a1c1e;
+  --bg-secondary: #2e3235;
+  --bg-tertiary: #3a3f44;
+  --highlight-bg: rgba(171, 125, 76, 0.15);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d4;
+  --text-muted: #9a9a9a;
+  
+  --link-color: #ab7d4c;
+  --link-hover: #c49a6c;
+  --link-visited: #8b5e3c;
+  
+  --border-color: #2e3235;
+  --border-light: #3a3f44;
+  
+  --code-bg: #2e3235;
+  --code-color: #e6e6e6;
+}
+
+/* ====================================================
+   СВЕТЛАЯ ТЕМА
+   ==================================================== */
+
+[data-theme="light"] {
+  --bg-primary: #f9f7f4;
+  --bg-secondary: #e5e5e5;
+  --bg-tertiary: #f0f0f0;
+  --highlight-bg: rgba(171, 125, 76, 0.1);
+  
+  --text-primary: #2b2b2b;
+  --text-secondary: #4a4a49;
+  --text-muted: #9a9a9a;
+  
+  --link-color: #ab7d4c;
+  --link-hover: #c49a6c;
+  --link-visited: #8b5e3c;
+  
+  --border-color: #e5e5e5;
+  --border-light: #d0d0d0;
+  
+  --code-bg: #f0f0f0;
+  --code-color: #2b2b2b;
+}
+
+/* ====================================================
+   ГЛАВНЫЙ КОНТЕЙНЕР (ПРАВИЛЬНАЯ СТРУКТУРА ДЛЯ ПОДВАЛА)
+   ==================================================== */
+
+#quartz-root.page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
 }
 
 #quartz-body {
-  flex: 1 0 auto;
+  flex: 1 0 auto;  /* 🔥 Занимает всё доступное место, прижимая footer к низу */
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -41,49 +117,39 @@
   margin: 0 auto;
   gap: 30px;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
-// ====================================================
-// БОКОВЫЕ ПАНЕЛИ
-// ====================================================
-.left {
-  flex: 0 0 250px;
-  min-width: 200px;
-}
+/* ====================================================
+   ХЕДЕР (ГОРИЗОНТАЛЬНАЯ ПАНЕЛЬ)
+   ==================================================== */
 
-.right {
-  flex: 0 0 250px;
-  min-width: 200px;
-}
-
-.right > * {
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 20px;
+  transition: transform var(--transition-base);
+  will-change: transform;
+  box-sizing: border-box;
   width: 100%;
-  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-// ====================================================
-// ЦЕНТРАЛЬНАЯ КОЛОНКА
-// ====================================================
-.center {
-  flex: 1;
-  max-width: 800px;
-  width: 100%;
+.page-header.hidden {
+  transform: translateY(-100%);
 }
 
-.center article {
-  max-width: 700px;
-  margin: 0 auto;
-  width: 100%;
+.page-header .page-title {
+  margin: 0;  /* Отменяем все стандартные отступы */
 }
 
-// ====================================================
-// ХЕДЕР
-// ====================================================
-.page-title {
-  margin-bottom: 1rem;
-}
-
-.page-title a {
+.page-header .page-title a {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -96,7 +162,7 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--border-color);
-  transition: border-color 0.2s ease;
+  transition: border-color var(--transition-fast);
 }
 
 .page-logo:hover {
@@ -112,22 +178,57 @@
   text-overflow: ellipsis;
 }
 
-// ====================================================
-// КНОПКИ
-// ====================================================
+/* ====================================================
+   БОКОВЫЕ ПАНЕЛИ
+   ==================================================== */
+
+.left.sidebar,
+.right.sidebar {
+  flex: 0 0 250px;
+  min-width: 200px;
+  padding: var(--spacing-lg) 0;
+}
+
+.right.sidebar > * {
+  width: 100%;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ====================================================
+   ЦЕНТРАЛЬНАЯ КОЛОНКА
+   ==================================================== */
+
+.center {
+  flex: 1;
+  max-width: 800px;
+  width: 100%;
+  padding: var(--spacing-lg) 0;
+}
+
+.center article {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ====================================================
+   КНОПКИ (ПОИСК И ТЕМА)
+   ==================================================== */
+
 .search-button,
 .darkmode {
   width: 40px;
   height: 40px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
   cursor: pointer;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  transition: all 0.2s ease;
-  margin-bottom: 0.5rem;
+  transition: all var(--transition-fast);
+  padding: 0;
+  margin-left: 8px;
 }
 
 .search-button:hover,
@@ -141,37 +242,48 @@
   width: 20px;
   height: 20px;
   color: var(--link-color);
+  fill: var(--link-color);
 }
 
 .darkmode {
   background: transparent;
 }
 
+/* Переключение иконок темы */
 [data-theme="dark"] .darkmode .dayIcon { display: none; }
 [data-theme="dark"] .darkmode .nightIcon { display: block; }
 [data-theme="light"] .darkmode .dayIcon { display: block; }
 [data-theme="light"] .darkmode .nightIcon { display: none; }
 
-// ====================================================
-// ПОИСК
-// ====================================================
+/* ====================================================
+   ПОИСК
+   ==================================================== */
+
+.search-button p {
+  display: none;  /* Скрываем текст "Поиск", оставляем иконку */
+}
+
 .search-container {
   position: fixed;
   top: calc(var(--header-height) + 10px);
-  left: 20px;
-  right: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
   max-width: 600px;
-  margin: 0 auto;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 16px;
+  padding: var(--spacing-lg);
   box-shadow: var(--shadow-lg);
   z-index: var(--z-search);
   display: none;
 }
 
-.search-container input {
+.search-container.active {
+  display: block;
+}
+
+.search-bar {
   width: 100%;
   padding: 12px 16px;
   border-radius: var(--radius-md);
@@ -182,21 +294,148 @@
   box-sizing: border-box;
 }
 
-.search-container input:focus {
+.search-bar:focus {
   border-color: var(--link-color);
   box-shadow: 0 0 0 3px var(--highlight-bg);
   outline: none;
 }
 
-// ====================================================
-// ФУТЕР
-// ====================================================
-footer.footer {
-  margin-top: auto;
+/* ====================================================
+   ПРОВОДНИК (EXPLORER)
+   ==================================================== */
+
+.explorer {
+  margin-top: var(--spacing-lg);
+}
+
+.explorer-content {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.folder-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.folder-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
   width: 100%;
-  padding: 2rem 20px;
+  font-size: var(--font-size-sm);
+}
+
+.folder-button:hover {
+  color: var(--link-color);
+}
+
+.folder-icon {
+  transition: transform var(--transition-fast);
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+}
+
+.folder-icon.open {
+  transform: rotate(90deg);
+}
+
+/* ====================================================
+   ГРАФ
+   ==================================================== */
+
+.graph {
+  margin-top: var(--spacing-lg);
+}
+
+.graph h3 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.graph-outer {
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.graph-container {
+  width: 100%;
+  height: 200px;
+}
+
+.global-graph-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.global-graph-icon:hover {
+  opacity: 1;
+  border-color: var(--link-color);
+}
+
+/* ====================================================
+   ОБРАТНЫЕ ССЫЛКИ
+   ==================================================== */
+
+.backlinks {
+  margin-top: var(--spacing-lg);
+}
+
+.backlinks h3 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.backlinks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.backlinks li {
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.backlinks a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.backlinks a:hover {
+  text-decoration: underline;
+}
+
+/* ====================================================
+   ФУТЕР (ТЕПЕРЬ ПРИЖАТ К НИЗУ)
+   ==================================================== */
+
+footer.footer {
+  width: 100%;
+  padding: var(--spacing-xl) 20px;
   border-top: 1px solid var(--border-color);
   background: var(--bg-primary);
+  margin-top: auto;  /* Работает благодаря flex-контейнеру #quartz-root */
 }
 
 .footer-content {
@@ -206,18 +445,25 @@ footer.footer {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: var(--spacing-lg);
 }
 
 .footer-copyright {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
+}
+
+.footer-emoji {
+  font-size: 1.2em;
 }
 
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -226,38 +472,143 @@ footer.footer {
 .footer-link {
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s ease;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-fast);
 }
 
 .footer-link:hover {
   color: var(--link-color);
 }
 
-// ====================================================
-// МОБИЛЬНЫЕ СТИЛИ
-// ====================================================
+/* ====================================================
+   ССЫЛКИ (МИНИМАЛИСТИЧНЫЕ)
+   ==================================================== */
+
+/* Отключаем стандартные иконки Quartz */
+.external::after,
+.external::before,
+.internal::after,
+.internal::before,
+a[href^="http"]::after,
+a[href^="http"]::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Добавляем свой минималистичный значок для внешних ссылок */
+.external:not(.footer-link):not(.no-external-icon)::after {
+  content: "↗";
+  color: var(--text-muted);
+  opacity: 0.6;
+  margin-left: 0.25em;
+  font-size: 0.8em;
+  transition: opacity var(--transition-fast);
+}
+
+.external:not(.footer-link):not(.no-external-icon):hover::after {
+  opacity: 1;
+  color: var(--link-color);
+}
+
+/* ====================================================
+   МОБИЛЬНЫЕ СТИЛИ
+   ==================================================== */
+
 @media (max-width: 800px) {
   #quartz-body {
     flex-direction: column;
     padding: 0 15px;
   }
 
-  .left, .right { display: none; }
+  .left.sidebar,
+  .right.sidebar {
+    display: none;  /* Скрываем боковые панели */
+  }
 
-  .center { max-width: 100%; }
-  .center article { max-width: 100%; }
+  .center {
+    max-width: 100%;
+    padding: var(--spacing-md) 0;
+  }
 
-  .search-button, .darkmode { width: 36px; height: 36px; }
-  .page-logo { width: 48px; height: 48px; }
-  .page-title-text { font-size: 16px; }
+  .center article {
+    max-width: 100%;
+  }
+
+  .page-header {
+    padding: 6px 16px;
+  }
+
+  .page-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .page-title-text {
+    font-size: 16px;
+  }
+
+  .search-button,
+  .darkmode {
+    width: 36px;
+    height: 36px;
+    margin-left: 6px;
+  }
+
+  .search-button svg,
+  .darkmode svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
 }
 
 @media (max-width: 500px) {
-  .page-title-text { display: none; }
+  .page-title-text {
+    display: none;  /* Прячем текст на очень маленьких экранах */
+  }
 }
 
 @media (max-width: 360px) {
-  .page-title a { gap: 8px; }
-  .page-logo { width: 40px; height: 40px; }
+  .page-header {
+    padding: 6px 12px;
+  }
+
+  .page-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .search-button,
+  .darkmode {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ====================================================
+   ПЕЧАТЬ
+   ==================================================== */
+
+@media print {
+  .page-header,
+  .left.sidebar,
+  .right.sidebar,
+  footer.footer {
+    display: none;
+  }
+
+  #quartz-root.page {
+    display: block;
+    min-height: auto;
+  }
+
+  .center {
+    max-width: 100%;
+    padding: 0;
+  }
 }

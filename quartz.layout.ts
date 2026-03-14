@@ -2,15 +2,15 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 
-// Shared компоненты (рендерятся отдельно)
+// Shared компоненты (рендерятся отдельно от колонок)
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
   afterBody: [],
-  footer: Component.Footer(),  // footer будет после всего контента
+  footer: Component.Footer(),  // footer будет после всех колонок
 }
 
-// Основной layout
+// Основной layout для страниц контента
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(),
@@ -33,7 +33,7 @@ export const defaultContentPageLayout: PageLayout = {
   ],
   
   afterBody: [],
-  // footer НЕ ДОБАВЛЯЕМ здесь — он уже в shared
+  // footer НЕ УКАЗЫВАЕМ здесь — он берётся из shared
 }
 
 // Layout для страниц-списков
@@ -54,5 +54,5 @@ export const defaultListPageLayout: PageLayout = {
   right: [],
   
   afterBody: [],
-  // footer НЕ ДОБАВЛЯЕМ здесь
+  // footer НЕ УКАЗЫВАЕМ здесь
 }

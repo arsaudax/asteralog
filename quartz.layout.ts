@@ -36,22 +36,12 @@ const graphConfig = {
   },
 }
 
-// Конфигурация обратных ссылок
-const backlinksConfig = {
-  hideWhenEmpty: true,
-}
-
-// Конфигурация хлебных крошек
-const breadcrumbsConfig = {
-  rootName: "🏡",
-}
-
 // ==================================================
-// SHARED COMPONENTS — ТОЛЬКО ДЛЯ ГОЛОВЫ И ФУТЕРА
+// SHARED COMPONENTS — ТОЛЬКО head И footer
 // ==================================================
 export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),
-  header: [],  // оставляем пустым, так как PageTitle в левой панели
+  header: [],  // оставляем пустым
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -63,80 +53,59 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==================================================
-// ОСНОВНОЙ LAYOUT — БЕЗ ФУТЕРА В ПРАВОЙ ПАНЕЛИ
+// ОСНОВНОЙ LAYOUT — КАК В СТАРОМ РАБОЧЕМ ФАЙЛЕ
 // ==================================================
 export const defaultContentPageLayout: PageLayout = {
-  // head и header из shared, но НЕ footer
   head: sharedPageComponents.head,
   header: sharedPageComponents.header,
   
   beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
   
-  // Левая панель
   left: [
     CustomComponent.PageTitle({ 
       logo: "/static/thistle.png",
       title: "Asteralog"
     }),
-    Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    // Проводник только в саду и только на десктопе
+    // Проводник только в саду
     ...(siteType === 'garden' 
-      ? [Component.DesktopOnly(Component.Explorer(explorerConfig))]
+      ? [Component.Explorer(explorerConfig)]
       : []),
   ],
   
-  // Правая панель
   right: [
     // Граф только в саду
     ...(siteType === 'garden'
-      ? [Component.DesktopOnly(Component.Graph(graphConfig))]
+      ? [Component.Graph(graphConfig)]
       : []),
-    Component.DesktopOnly(Component.TableOfContents()),
-    // Недавние заметки
-    Component.RecentNotes({
-      limit: siteType === 'blog' ? 8 : 5,
-      showTags: siteType === 'blog',
-      title: siteType === 'blog' ? "Последние записи" : "Недавние заметки",
-      filter: siteType === 'blog' ? blogFilter : gardenFilter,
-    }),
-    CustomComponent.TagList(),
-    Component.Backlinks(backlinksConfig),
+    Component.TableOfContents(),
+    Component.Backlinks(),
   ],
   
-  // afterBody — пусто
   afterBody: [],
   
-  // footer — отдельно, после right
   footer: sharedPageComponents.footer,
 }
 
-// Макет для страниц-списков
 export const defaultListPageLayout: PageLayout = {
   head: sharedPageComponents.head,
   header: sharedPageComponents.header,
   
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-  ],
+  beforeBody: [Component.ArticleTitle()],
   
   left: [
     CustomComponent.PageTitle({ 
       logo: "/static/thistle.png",
       title: "Asteralog"
     }),
-    Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+    Component.Explorer(explorerConfig),
   ],
   
   right: [],

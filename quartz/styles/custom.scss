@@ -206,6 +206,8 @@ a {
   top: 0;
   z-index: var(--z-header);
   min-height: var(--header-height);
+  width: 100%;
+  flex-shrink: 0;
   
   &.hidden {
     transform: translateY(-100%);
@@ -315,6 +317,8 @@ a {
   padding-top: 2rem;
   border-top: 1px solid var(--border-color);
   font-size: 0.9rem;
+  width: 100%;
+  flex-shrink: 0;
   
   &-content {
     display: flex;
@@ -322,6 +326,9 @@ a {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
   
   &-copyright {
@@ -351,6 +358,75 @@ a {
       text-decoration: underline;
     }
   }
+}
+
+/* ===== LAYOUT — ИСПРАВЛЕННАЯ СТРУКТУРА ===== */
+#quartz-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Основной контейнер с колонками */
+#quartz-body {
+  display: flex;
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Левая панель */
+.left.sidebar {
+  flex: 0 0 250px;
+  padding: 20px 0;
+  
+  @media (max-width: 800px) {
+    display: none;
+  }
+}
+
+/* Центр — здесь БУДЕТ header, но мы его перепозиционируем */
+.center {
+  flex: 1;
+  max-width: 800px;
+  min-width: 0;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Временный фикс: переносим header из центра наверх */
+.center .page-header {
+  order: -1;
+  margin-bottom: 20px;
+  position: relative; /* отключаем sticky */
+  top: auto;
+}
+
+/* Правая панель */
+.right.sidebar {
+  flex: 0 0 250px;
+  padding: 20px 0;
+  
+  @media (max-width: 800px) {
+    display: none;
+  }
+}
+
+/* Контент в центре */
+.center article {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Заголовок статьи */
+.article-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
 /* ===== БЛОГ ===== */
@@ -462,16 +538,29 @@ a {
     min-height: var(--header-height-mobile);
   }
   
-  .page {
-    padding-top: var(--header-height-mobile);
+  #quartz-body {
+    flex-direction: column;
+    padding: 0 15px;
   }
   
-  .explorer {
-    display: none !important;
+  .center {
+    max-width: 100%;
+  }
+  
+  .left.sidebar,
+  .right.sidebar {
+    display: none;
   }
   
   .search-container {
     top: calc(var(--header-height-mobile) + 10px);
+  }
+  
+  .center .page-header {
+    margin-left: -15px;
+    margin-right: -15px;
+    width: calc(100% + 30px);
+    border-radius: 0;
   }
 }
 
@@ -520,79 +609,4 @@ a[href^="http"]::after {
 
 .footer-link::after {
   display: none !important;
-}
-
-/* ===== LAYOUT — ОСНОВНАЯ СЕТКА ===== */
-#quartz-body {
-  display: flex;
-  flex-direction: row;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
-  gap: 20px;
-}
-
-.left.sidebar {
-  flex: 0 0 250px;
-  min-width: 200px;
-  padding: 20px 0;
-  
-  @media (max-width: 800px) {
-    display: none;  /* скрываем на мобильных */
-  }
-}
-
-.center {
-  flex: 1 1 auto;
-  min-width: 0;  /* важно для flex */
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px 0;
-}
-
-.right.sidebar {
-  flex: 0 0 250px;
-  min-width: 200px;
-  padding: 20px 0;
-  
-  @media (max-width: 800px) {
-    display: none;  /* скрываем на мобильных */
-  }
-}
-
-/* Контент внутри центральной колонки */
-.center article {
-  max-width: 700px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* Заголовок статьи */
-.article-title {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-/* Для мобильных устройств */
-@media (max-width: 800px) {
-  #quartz-body {
-    flex-direction: column;
-    padding: 0 15px;
-  }
-  
-  .center {
-    max-width: 100%;
-    padding: 15px 0;
-  }
-  
-  .center article {
-    max-width: 100%;
-  }
-}
-
-/* Для очень маленьких экранов */
-@media (max-width: 500px) {
-  #quartz-body {
-    padding: 0 10px;
-  }
 }

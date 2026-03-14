@@ -2,16 +2,20 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 
+// Определяем тип сайта из переменной окружения
+const siteType = process.env.SITE_TYPE || 'garden'
+
 const config: QuartzConfig = {
   configuration: {
+    // Динамический заголовок в зависимости от типа сайта
     pageTitle: "Asteralog",
-    pageTitleSuffix: "",
+    pageTitleSuffix: siteType === 'blog' ? " | Блог" : " | Цифровой сад",
     enableSPA: false,
     enablePopovers: true,
     analytics: { provider: "plausible" },
     locale: "ru-RU",
     baseUrl: process.env.BASE_URL || "garden.asteralog.ru",
-    ignorePatterns: ["private", "templates", ".obsidian"],
+    ignorePatterns: ["private", "templates", ".obsidian", "**/drafts/*"],
     defaultDateType: "created",
     theme: {
       fontOrigin: "googleFonts",
@@ -49,11 +53,24 @@ const config: QuartzConfig = {
     transformers: [
       Plugin.FrontMatter(),
       Plugin.CreatedModifiedDate({ priority: ["frontmatter", "filesystem"] }),
-      Plugin.SyntaxHighlighting({ keepBackground: false }),
-      Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
+      Plugin.SyntaxHighlighting({ 
+        theme: {
+          light: "github-light",
+          dark: "github-dark",
+        },
+        keepBackground: false,
+      }),
+      Plugin.ObsidianFlavoredMarkdown({ 
+        enableInHtmlEmbed: false,
+        parseTags: true,
+        enableCallouts: true,
+      }),
       Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
-      Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
+      Plugin.CrawlLinks({ 
+        markdownLinkResolution: "shortest",
+        openLinksInNewTab: true,
+      }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
     ],
@@ -64,9 +81,13 @@ const config: QuartzConfig = {
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),
-      Plugin.ContentIndex({ enableSiteMap: true, enableRSS: true }),
+      Plugin.ContentIndex({ 
+        enableSiteMap: true, 
+        enableRSS: true,
+        includeEmptyFiles: false,
+      }),
       Plugin.Assets(),
-      Plugin.Static(),  // ✅ копирует из quartz/static/
+      Plugin.Static(),
       Plugin.NotFoundPage(),
     ],
   },

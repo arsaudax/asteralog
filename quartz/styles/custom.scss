@@ -1,6 +1,8 @@
 // quartz/styles/custom.scss
 
-@use "variables" as *;  // 🔥 Импортируем переменные Quartz
+@use "./variables.scss" as *;  // Импортируем переменные Quartz
+@use "sass:map";
+
 
 /* ====================================================
    БАЗОВЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ

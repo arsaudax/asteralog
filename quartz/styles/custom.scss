@@ -25,3 +25,34 @@
 .right > * {
   width: 100%;
 }
+
+/* ===== ОСНОВНАЯ СЕТКА ===== */
+#quartz-body {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 30px;
+  padding: 0 20px;
+}
+
+.left {
+  flex: 0 0 250px;
+  min-width: 200px;
+}
+
+.center {
+  flex: 1;
+  max-width: 800px;
+  width: 100%;
+}
+
+.right {
+  flex: 0 0 250px;
+  min-width: 200px;
+}
+
+.right > * {
+  width: 100%;
+}

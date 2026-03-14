@@ -1,13 +1,24 @@
 // quartz.layout.ts
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
+import { FileTrieNode } from "./quartz/components/scripts/spa"
 
 // Определяем тип сайта
 const siteType = (process.env?.SITE_TYPE as 'garden' | 'blog') || 'garden'
 
 // Конфигурация проводника
 const explorerConfig = {
+  filterFn: (node: FileTrieNode) => {
+    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude")
+    return !hasExcludedTag
+  },
+  mapFn: (node: FileTrieNode) => {
+    if (!node.isFolder) {
+      node.displayName = "⊹ " + node.displayName
+    }
+  },
   title: siteType === 'garden' ? "Сад" : "Блог",
   folderDefaultState: "collapsed",
   useSavedState: true,
@@ -25,25 +36,64 @@ const graphConfig = {
   },
 }
 
-// ==================================================
-// КОМПОНЕНТЫ ВЕРХНЕЙ ПАНЕЛИ
-// ==================================================
-const headerComponents = [
-  CustomComponent.PageTitle({ 
-    logo: "/static/thistle.png",
-    title: "Asteralog"
-  }),
-  Component.Search(),
-  Component.Darkmode(),
-]
+// Конфигурация обратных ссылок
+const backlinksConfig = {
+  hideWhenEmpty: true,
+}
+
+// Конфигурация хлебных крошек
+const breadcrumbsConfig = {
+  rootName: "🏡",
+}
 
 // ==================================================
-// БАЗОВЫЙ LAYOUT (ОБЩИЙ ДЛЯ ВСЕХ)
+// ОСНОВНОЙ LAYOUT (как в старом рабочем файле)
 // ==================================================
-export const sharedPageComponents: SharedLayout = {
-  head: CustomComponent.Head(),
-  header: headerComponents,
+export const defaultContentPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
+  ],
+  
+  // Левая панель содержит PageTitle, поиск, тему и проводник
+  left: [
+    CustomComponent.PageTitle({ 
+      logo: "/static/thistle.png",
+      title: "Asteralog"
+    }),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+    // Проводник только в саду и только на десктопе
+    ...(siteType === 'garden' 
+      ? [Component.DesktopOnly(Component.Explorer(explorerConfig))]
+      : []),
+  ],
+  
+  // Правая панель
+  right: [
+    // Граф только в саду
+    ...(siteType === 'garden'
+      ? [Component.DesktopOnly(Component.Graph(graphConfig))]
+      : []),
+    Component.DesktopOnly(Component.TableOfContents()),
+    // Недавние заметки с фильтром по типу сайта
+    Component.RecentNotes({
+      limit: siteType === 'blog' ? 8 : 5,
+      showTags: siteType === 'blog',
+      title: siteType === 'blog' ? "Последние записи" : "Недавние заметки",
+      filter: siteType === 'blog' ? blogFilter : gardenFilter,
+    }),
+    CustomComponent.TagList(),
+    Component.Backlinks(backlinksConfig),
+  ],
+  
+  // После основного контента
   afterBody: [],
+  
+  // Футер
   footer: CustomComponent.Footer({
     links: {
       Telegram: "https://t.me/asteralog",
@@ -53,64 +103,34 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// ==================================================
-// GARDEN (САД) — ПОЛНЫЙ НАБОР ПАНЕЛЕЙ
-// ==================================================
-export const gardenContentPageLayout: PageLayout = {
-  ...sharedPageComponents,
+// Макет для страниц-списков (теги, папки)
+export const defaultListPageLayout: PageLayout = {
   beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
     CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
   ],
+  
   left: [
+    CustomComponent.PageTitle({ 
+      logo: "/static/thistle.png",
+      title: "Asteralog"
+    }),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
-  right: [
-    Component.DesktopOnly(Component.Graph(graphConfig)),
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(),
-  ],
-}
-
-export const gardenListPageLayout: PageLayout = {
-  ...sharedPageComponents,
-  beforeBody: [Component.ArticleTitle()],
-  left: [
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
+  
   right: [],
+  
+  afterBody: [],
+  
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
 }
-
-// ==================================================
-// BLOG — МИНИМАЛИСТИЧНЫЙ (ТОЛЬКО ОГЛАВЛЕНИЕ)
-// ==================================================
-export const blogContentPageLayout: PageLayout = {
-  ...sharedPageComponents,
-  beforeBody: [
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
-  ],
-  left: [],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(),
-  ],
-}
-
-export const blogListPageLayout: PageLayout = {
-  ...sharedPageComponents,
-  beforeBody: [Component.ArticleTitle()],
-  left: [],
-  right: [],
-}
-
-// ==================================================
-// ВЫБОР LAYOUT В ЗАВИСИМОСТИ ОТ ТИПА САЙТА
-// ==================================================
-export const defaultContentPageLayout: PageLayout =
-  siteType === 'garden' ? gardenContentPageLayout : blogContentPageLayout
-
-export const defaultListPageLayout: PageLayout =
-  siteType === 'garden' ? gardenListPageLayout : blogListPageLayout

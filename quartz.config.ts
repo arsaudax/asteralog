@@ -2,19 +2,25 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 
-// Определяем тип сайта из переменной окружения
-const siteType = process.env.SITE_TYPE || 'garden'
+// Определяем тип сайта с отладкой
+const siteType = process.env.SITE_TYPE || 
+                 (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
+
+// Добавим отладочный вывод (будет видно в логах сборки)
+console.log(`\n🔧 Quartz Config: Building for ${siteType} site`)
+console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
+console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
 
 const config: QuartzConfig = {
   configuration: {
-    // Динамический заголовок в зависимости от типа сайта
     pageTitle: "Asteralog",
     pageTitleSuffix: siteType === 'blog' ? " | Блог" : " | Цифровой сад",
     enableSPA: false,
     enablePopovers: true,
     analytics: { provider: "plausible" },
     locale: "ru-RU",
-    baseUrl: process.env.BASE_URL || "garden.asteralog.ru",
+    baseUrl: process.env.BASE_URL || 
+             (siteType === 'blog' ? 'blog.asteralog.ru' : 'garden.asteralog.ru'),
     ignorePatterns: ["private", "templates", ".obsidian", "**/drafts/*"],
     defaultDateType: "created",
     theme: {

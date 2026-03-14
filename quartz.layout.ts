@@ -1,58 +1,86 @@
-// quartz.layout.ts
-import { PageLayout, SharedLayout } from "./quartz/cfg"
-import * as Component from "./quartz/components"
+// quartz.config.ts
+import { QuartzConfig } from "./quartz/cfg"
+import * as Plugin from "./quartz/plugins"
 
-// Shared компоненты (рендерятся отдельно от колонок)
-export const sharedPageComponents: SharedLayout = {
-  head: Component.Head(),
-  header: [],
-  afterBody: [],
-  footer: Component.Footer(),  // footer будет после всех колонок
+// Определяем тип сайта
+const siteType = process.env.SITE_TYPE || "garden";
+console.log(`🔧 Building site for: ${siteType}`);
+
+const config: QuartzConfig = {
+  configuration: {
+    pageTitle: siteType === "blog" ? "📝 Asteralog Blog" : "🌿 Asteralog Garden",
+    pageTitleSuffix: "", // Добавим для ясности
+    enableSPA: false,
+    enablePopovers: true,
+    analytics: { provider: "plausible" },
+    locale: "ru-RU",
+    baseUrl: process.env.BASE_URL || "localhost:8080",
+    
+    // 🔥 ВАЖНО: добавляем defaultDateType
+    defaultDateType: "created", // или "modified", или "published"
+    
+    theme: {
+      fontOrigin: "googleFonts",
+      cdnCaching: true,
+      typography: {
+        header: "Inter",
+        body: "Inter",
+        code: "JetBrains Mono",
+      },
+      colors: {
+        lightMode: {
+          light: "#faf8f8",
+          lightgray: "#e5e5e5",
+          gray: "#b8b8b8",
+          darkgray: "#4e4e4e",
+          dark: "#2b2b2b",
+          secondary: "#284b63",
+          tertiary: "#84a59d",
+          highlight: "rgba(143, 159, 169, 0.15)",
+        },
+        darkMode: {
+          light: "#161618",
+          lightgray: "#393639",
+          gray: "#646464",
+          darkgray: "#d4d4d4",
+          dark: "#ebebec",
+          secondary: "#7b97aa",
+          tertiary: "#84a59d",
+          highlight: "rgba(143, 159, 169, 0.15)",
+        },
+      },
+    },
+  },
+  plugins: {
+    transformers: [
+      Plugin.FrontMatter(),
+      Plugin.CreatedModifiedDate({ 
+        priority: ["frontmatter", "filesystem"] 
+      }),
+      Plugin.Latex({ renderEngine: "katex" }),
+      Plugin.SyntaxHighlighting(),
+      Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
+      Plugin.GitHubFlavoredMarkdown(),
+      Plugin.TableOfContents(),
+      Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
+      Plugin.Description(),
+    ],
+    filters: [Plugin.RemoveDrafts()],
+    emitters: [
+      Plugin.AliasRedirects(),
+      Plugin.ComponentResources(),
+      Plugin.ContentPage(),
+      Plugin.FolderPage(),
+      Plugin.TagPage(),
+      Plugin.ContentIndex({ 
+        enableSiteMap: true, 
+        enableRSS: true 
+      }),
+      Plugin.Assets(),
+      Plugin.Static(),
+      Plugin.NotFoundPage(),
+    ],
+  },
 }
 
-// Основной layout для страниц контента
-export const defaultContentPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(),
-    Component.ArticleTitle(),
-    Component.ContentMeta(),
-    Component.TagList(),
-  ],
-  
-  left: [
-    Component.PageTitle(),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.Explorer(),
-  ],
-  
-  right: [
-    Component.Graph(),
-    Component.TableOfContents(),
-    Component.Backlinks(),
-  ],
-  
-  afterBody: [],
-  // footer НЕ УКАЗЫВАЕМ здесь — он берётся из shared
-}
-
-// Layout для страниц-списков
-export const defaultListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(),
-    Component.ArticleTitle(),
-    Component.ContentMeta(),
-  ],
-  
-  left: [
-    Component.PageTitle(),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.Explorer(),
-  ],
-  
-  right: [],
-  
-  afterBody: [],
-  // footer НЕ УКАЗЫВАЕМ здесь
-}
+export default config

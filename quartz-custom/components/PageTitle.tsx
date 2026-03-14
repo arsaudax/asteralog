@@ -19,14 +19,6 @@ export default ((opts?: Options) => {
               class="page-logo"
               width="56"
               height="56"
-              loading="eager"
-              onError={(e) => {
-                // Если логотип не загрузился, скрываем его
-                const img = e.target as HTMLImageElement
-                img.style.display = 'none'
-                // Можно также добавить запасной текст или иконку
-                console.warn(`Logo failed to load: ${img.src}`)
-              }}
             />
           )}
           <span class="page-title-text">{opts?.title || "Asteralog"}</span>
@@ -34,6 +26,5 @@ export default ((opts?: Options) => {
       </div>
     )
   }
-
   return PageTitle
 }) satisfies QuartzComponentConstructor

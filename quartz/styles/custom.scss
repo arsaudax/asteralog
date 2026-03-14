@@ -1,15 +1,21 @@
 // quartz/styles/custom.scss
 // ====================================================
-// МИНИМАЛЬНЫЙ ТЕСТОВЫЙ ФАЙЛ
+// МИНИМАЛЬНЫЙ CSS ТОЛЬКО ДЛЯ СЕТКИ
 // ====================================================
 
-:root {
-  --header-height: 70px;
+/* Задаём ширину боковым панелям */
+.left {
+  flex: 0 0 250px !important;
+  min-width: 200px;
 }
 
-.page-header {
-  background: #ab7d4c;
-  color: white;
-  padding: 1rem;
-  text-align: center;
+.right {
+  flex: 0 0 250px !important;
+  min-width: 200px;
+}
+
+/* Ограничиваем ширину контента */
+.center {
+  max-width: 800px;
+  margin: 0 auto;
 }

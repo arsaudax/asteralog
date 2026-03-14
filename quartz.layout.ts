@@ -47,9 +47,26 @@ const breadcrumbsConfig = {
 }
 
 // ==================================================
-// ОСНОВНОЙ LAYOUT (как в старом рабочем файле)
+// SHARED COMPONENTS — ОБЯЗАТЕЛЬНО ДЛЯ QUARTZ!
+// ==================================================
+export const sharedPageComponents: SharedLayout = {
+  head: CustomComponent.Head(),
+  header: [],
+  afterBody: [],
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
+}
+
+// ==================================================
+// ОСНОВНОЙ LAYOUT
 // ==================================================
 export const defaultContentPageLayout: PageLayout = {
+  ...sharedPageComponents,
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -89,22 +106,11 @@ export const defaultContentPageLayout: PageLayout = {
     CustomComponent.TagList(),
     Component.Backlinks(backlinksConfig),
   ],
-  
-  // После основного контента
-  afterBody: [],
-  
-  // Футер
-  footer: CustomComponent.Footer({
-    links: {
-      Telegram: "https://t.me/asteralog",
-      Instagram: "https://www.instagram.com/al.bogat",
-      Behance: "https://www.behance.net/arsaudax",
-    },
-  }),
 }
 
 // Макет для страниц-списков (теги, папки)
 export const defaultListPageLayout: PageLayout = {
+  ...sharedPageComponents,
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -123,14 +129,4 @@ export const defaultListPageLayout: PageLayout = {
   ],
   
   right: [],
-  
-  afterBody: [],
-  
-  footer: CustomComponent.Footer({
-    links: {
-      Telegram: "https://t.me/asteralog",
-      Instagram: "https://www.instagram.com/al.bogat",
-      Behance: "https://www.behance.net/arsaudax",
-    },
-  }),
 }

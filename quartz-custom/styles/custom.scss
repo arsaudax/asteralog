@@ -1,0 +1,11 @@
+@import "./asteralog.scss";
+@import "./elements.scss";
+
+.page-header {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

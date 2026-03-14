@@ -1,0 +1,22 @@
+/* Asteralog Color Variables */
+/* Чистый CSS без Sass-переменных */
+
+:root {
+  /* Dark mode colors */
+  --asteralog-bg-dark: #343434;
+  --asteralog-bg-dark-alt: #393639;
+  --asteralog-fg-dark: #ffffff;
+  --asteralog-comment-dark: #ededed;
+  --asteralog-selection-dark: #575756;
+
+  /* Light mode colors */
+  --asteralog-bg-light: #f9f7f4;
+  --asteralog-bg-light-alt: #e5e5e5;
+  --asteralog-fg-light: #2b2b2b;
+  --asteralog-comment-light: #4a4a49;
+  --asteralog-selection-light: #b8b8b8;
+
+  /* Accent colors */
+  --asteralog-accent: #ab7d4c;
+  --asteralog-accent-alt: #7c5736;
+}

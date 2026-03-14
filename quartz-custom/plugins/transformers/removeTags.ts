@@ -1,31 +1,31 @@
 import { QuartzTransformerPlugin } from "../../../quartz/plugins/types"
 
-interface Options {
+interface RemoveTagsOptions {
   tags: string[]
 }
 
-export const removeTags: QuartzTransformerPlugin<Options> = (opts) => ({
-  name: "RemoveTags",
-
-  markdownPlugins() {
-    return [
-      () => {
-        return (_tree, file) => {
-          const tags = file.data.frontmatter?.tags
-
-          if (!Array.isArray(tags)) return
-
-          const filtered = tags.filter(
-            (tag: string) => !opts?.tags?.includes(tag)
-          )
-
-          if (filtered.length === 0) {
-            delete file.data.frontmatter.tags
-          } else {
-            file.data.frontmatter.tags = filtered
+export const RemoveTags: QuartzTransformerPlugin<RemoveTagsOptions> = (options) => {
+  return {
+    name: "RemoveTags",
+    markdownPlugins() {
+      return [
+        () => {
+          return (_tree, file) => {
+            if (file.data.frontmatter && file.data.frontmatter.tags) {
+              // Фильтруем только служебные теги, оставляем тематические
+              file.data.frontmatter.tags = file.data.frontmatter.tags.filter(
+                tag => !options?.tags.includes(tag)
+              )
+            }
           }
-        }
-      },
-    ]
-  },
-})
+        },
+      ]
+    },
+  }
+}
+
+declare module "vfile" {
+  interface DataMap {
+    wordcount: number
+  }
+}

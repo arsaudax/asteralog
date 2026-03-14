@@ -1,2 +1,2 @@
-export { customStyles as CustomStyles } from "./customStyles"
-export { staticPlugin as Static } from "./static"
+export { Static } from "./static"
+export { CustomStyles } from "./customStyles"

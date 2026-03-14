@@ -1,24 +1,11 @@
-/* =========================================================
-   ГЛАВНЫЙ ФАЙЛ СТИЛЕЙ ASTERALOG
-   ========================================================= */
+@import "./asteralog.scss";
+@import "./elements.scss";
 
-/* переменные всегда первыми */
-@use "variables";
-
-/* базовые стили */
-@use "base";
-
-/* элементы интерфейса */
-@use "elements";
-
-/* компоненты */
-@use "components";
-
-/* блог */
-@use "blog";
-
-/* мобильная адаптация */
-@use "mobile";
-
-/* overrides Quartz */
-@use "overrides";
+.page-header {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

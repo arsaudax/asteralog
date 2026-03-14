@@ -1,36 +1,30 @@
-import { QuartzComponent, QuartzComponentConstructor } from "../types"
+import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
+import style from "./styles/footer.scss"
 
 interface Options {
-  links?: Record<string, string>
+  links: Record<string, string>
 }
 
 export default ((opts?: Options) => {
-  const Footer: QuartzComponent = () => {
+  const Footer: QuartzComponent = ({ displayClass }: QuartzComponentProps) => {
     const year = new Date().getFullYear()
-    const links = opts?.links ?? {}
-
+    const links = opts?.links ?? []
     return (
-      <footer class="footer">
-        <div class="footer-content">
-          <div class="footer-copyright">
-            Asteralog © {year}
-          </div>
-
-          {Object.keys(links).length > 0 && (
-            <ul class="footer-links">
-              {Object.entries(links).map(([text, url]) => (
-                <li key={text}>
-                  <a href={url} rel="noopener noreferrer">
-                    {text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+      <footer class={`${displayClass ?? ""}`}>
+        <p>
+          🌱 Asteralog © {year}
+        </p>
+        <ul>
+          {Object.entries(links).map(([text, link]) => (
+            <li key={text}>
+              <a href={link}>{text}</a>
+            </li>
+          ))}
+        </ul>
       </footer>
     )
   }
 
+  Footer.css = style
   return Footer
 }) satisfies QuartzComponentConstructor

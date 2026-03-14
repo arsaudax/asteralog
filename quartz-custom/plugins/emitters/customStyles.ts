@@ -1,70 +1,46 @@
+import { FullSlug, joinSegments } from "../../../quartz/util/path"
 import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"
+import customStyles from "../../styles/custom.scss"
 import { BuildCtx } from "../../../quartz/util/ctx"
-import { transform } from "lightningcss"
-import fs from "fs/promises"
-import path from "path"
+import { Features, transform } from "lightningcss"
+import { write } from "../../../quartz/plugins/emitters/helpers"
 
-async function writeFile(ctx: BuildCtx, name: string, content: string) {
-  const filePath = path.join(ctx.argv.output, name)
-  await fs.mkdir(path.dirname(filePath), { recursive: true })
-  await fs.writeFile(filePath, content)
-  return filePath
-}
-
-export const customStyles: QuartzEmitterPlugin = () => ({
-  name: "CustomStyles",
-
-  async *emit(ctx) {
-    const root = process.cwd()
-
-    const files = [
-      "quartz-custom/styles/_variables.scss",
-      "quartz-custom/styles/_overrides.scss",
-      "quartz-custom/styles/custom.scss",
-    ]
-
-    let combined = ""
-
-    for (const file of files) {
-      try {
-        const filePath = path.join(root, file)
-        const content = await fs.readFile(filePath, "utf-8")
-
-        const cleaned = content.replace(/@use .*;/g, "")
-
-        combined += "\n" + cleaned
-      } catch {
-        console.warn(`⚠️ Style file missing: ${file}`)
-      }
-    }
-
-    if (!combined) {
-      console.warn("⚠️ No custom styles found")
-      return
-    }
-
-    let css = combined
-
-    try {
-      const result = transform({
+export const CustomStyles: QuartzEmitterPlugin = () => {
+  return {
+    name: "CustomStyles",
+    async *emit(ctx: BuildCtx, _content, _resources) {
+      // Transform and minify the custom SCSS
+      const transformedStyles = transform({
         filename: "custom.css",
-        code: Buffer.from(combined),
+        code: Buffer.from(customStyles),
         minify: true,
+        targets: {
+          safari: (15 << 16) | (6 << 8),
+          ios_saf: (15 << 16) | (6 << 8),
+          edge: 115 << 16,
+          firefox: 102 << 16,
+          chrome: 109 << 16,
+        },
+        include: Features.MediaQueries,
       })
 
-      css = result.code.toString()
-    } catch (e) {
-      console.warn("⚠️ lightningcss failed, using raw CSS")
-    }
-
-    const filePath = await writeFile(ctx, "custom.css", css)
-
-    yield filePath
-  },
-
-  externalResources() {
-    return {
-      css: [{ content: "/custom.css" }],
-    }
-  },
-})
+      // Emit the custom stylesheet
+      yield write({
+        ctx,
+        slug: "custom" as FullSlug,
+        ext: ".css",
+        content: transformedStyles.code.toString(),
+      })
+    },
+    async *partialEmit() {},
+    externalResources: () => {
+      return {
+        css: [
+          {
+            content: "/custom.css",
+          },
+        ],
+      }
+    },
+  }
+}

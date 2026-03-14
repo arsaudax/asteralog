@@ -9,10 +9,6 @@ tsconfig.tsbuildinfo
 private/
 .replit
 replit.nix
-# Build outputs
-public/
-public-garden/
-public-blog/
+# Синхронизированный контент
 
 
-"utils/content-sync/node_modules/" 

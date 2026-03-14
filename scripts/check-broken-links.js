@@ -1,26 +1,22 @@
-// scripts/check-links.js
 import fs from 'fs'
 import path from 'path'
-import { load } from 'cheerio'
-import { fileURLToPath } from 'url'
-
+import {load} from 'cheerio'
+import {fileURLToPath} from 'url'
 // Credits to catcodeme https://github.com/CatCodeMe/catcodeme.github.io/commit/39c0c7601e6aeb0e9bf7b9097136b54ce03be901
-
+// ES modules 中获取 __dirname
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Получаем путь к public из аргументов командной строки
-const publicDir = process.argv[2] || path.resolve(__dirname, '../public')
-
-// Глобальные счетчики
+// 全局计数器和收集器
 let totalBrokenLinks = 0
 const allBrokenLinks = []
 
-// Проверка существования файла
+// 检查文件是否存在
 function checkFileExists(filePath) {
     try {
+        // 先检查原始路径
         if (fs.existsSync(filePath)) return true
-        // Пробуем без .html
+        // 如果带 .html 后缀的不存在，检查不带后缀的路径
         const pathWithoutExt = filePath.replace(/\.html$/, '')
         return fs.existsSync(pathWithoutExt)
     } catch (err) {
@@ -28,51 +24,70 @@ function checkFileExists(filePath) {
     }
 }
 
-// Обработка HTML файла
+// 处理HTML文件
 function processHtmlFile(filePath) {
     const html = fs.readFileSync(filePath, 'utf-8')
     const $ = load(html, {
-        xml: { xmlMode: false },
+        xml: {
+            xmlMode: false
+        },
         decodeEntities: false
     })
-    
     let modified = false
     let brokenLinks = []
 
     $('a.internal:not(.tag-link)').each((_, element) => {
-        const oldHref = $(element).attr('href')
-        if (!oldHref || oldHref.startsWith('#')) return
-        
-        const href = oldHref.includes('#') ? oldHref.split('#')[0] : oldHref
+        const oldhref = $(element).attr('href')
+        if (!oldhref || oldhref.startsWith('#')) return
+        const href = oldhref.includes('#') ? oldhref.split('#')[0] : oldhref;
+        // 获取 data-slug 属性，这是相对于 public 的标准路径
         const slug = $(element).attr('data-slug')
         
-        // Нормализуем путь
+        // 处理以 / 开头的路径
         let normalizedPath
         if (slug) {
-            normalizedPath = path.join(publicDir, slug + '.html')
+            // 如果有 data-slug，直接使用它
+            normalizedPath = path.join(
+                path.resolve(__dirname, '../public'),
+                slug + '.html'
+            )
         } else {
+            // 处理各种相对路径的情况
             const currentDir = path.dirname(filePath)
             let targetPath
             
             if (href.startsWith('/')) {
+                // 绝对路径（相对于 public）
                 targetPath = href === '/' ? 'index.html' : href.slice(1)
+            } else if (href.startsWith('..')) {
+                // 相对路径（../）
+                targetPath = path.normalize(path.join(
+                    path.relative(path.resolve(__dirname, '../public'), currentDir),
+                    href
+                ))
             } else {
-                const relativeToPublic = path.relative(publicDir, currentDir)
-                targetPath = path.normalize(path.join(relativeToPublic, href))
+                // 其他相对路径
+                targetPath = path.normalize(path.join(
+                    path.relative(path.resolve(__dirname, '../public'), currentDir),
+                    href
+                ))
             }
             
-            normalizedPath = path.join(publicDir, targetPath.replace(/\/?$/, '.html'))
-        }
+            normalizedPath = path.join(
+                path.resolve(__dirname, '../public'),
+                targetPath.replace(/\/?$/, '.html')
+            )
+        }    
 
         if (!checkFileExists(normalizedPath)) {
-            // Сохраняем оригинальные атрибуты
+            // 保持原有属性
             const existingClass = $(element).attr('class') || ''
-            const existingAttrs = { ...element.attribs }
+            const existingAttrs = element.attribs || {}
             
-            // Добавляем класс broken-link
+            // 添加 broken-link class
             $(element).attr('class', `${existingClass} broken-link`.trim())
             
-            // Восстанавливаем остальные атрибуты
+            // 确保其他必要的属性保持不变
             Object.keys(existingAttrs).forEach(attr => {
                 if (attr !== 'class') {
                     $(element).attr(attr, existingAttrs[attr])
@@ -81,11 +96,10 @@ function processHtmlFile(filePath) {
             
             brokenLinks.push({
                 file: filePath,
-                link: oldHref,
-                text: $(element).text().trim() || '[без текста]',
+                link: href,
+                text: $(element).text(),
                 expectedPath: normalizedPath
             })
-            
             modified = true
             totalBrokenLinks++
         }
@@ -100,7 +114,7 @@ function processHtmlFile(filePath) {
     }
 }
 
-// Рекурсивная обработка директории
+// 递归处理目录
 function processDirectory(directory) {
     const files = fs.readdirSync(directory)
     
@@ -116,41 +130,29 @@ function processDirectory(directory) {
     })
 }
 
-// Запуск
-console.log(`🔍 Checking internal links in: ${publicDir}`)
-console.time('Link check completed in')
+// 开始处理
+console.log('检查损坏的内部链接...')
+processDirectory(path.resolve(__dirname, '../public'))
 
-try {
-    processDirectory(publicDir)
+if (totalBrokenLinks > 0) {
+    console.log(`\n发现 ${totalBrokenLinks} 个损坏的链接：\n`)
+    // 按文件分组显示损坏的链接
+    const groupedLinks = allBrokenLinks.reduce((acc, link) => {
+        if (!acc[link.file]) {
+            acc[link.file] = []
+        }
+        acc[link.file].push(link)
+        return acc
+    }, {})
     
-    if (totalBrokenLinks > 0) {
-        console.log(`\n❌ Found ${totalBrokenLinks} broken links:\n`)
-        
-        // Группируем по файлам
-        const groupedLinks = allBrokenLinks.reduce((acc, link) => {
-            if (!acc[link.file]) acc[link.file] = []
-            acc[link.file].push(link)
-            return acc
-        }, {})
-        
-        Object.entries(groupedLinks).forEach(([file, links]) => {
-            console.log(`📄 ${path.relative(publicDir, file)}:`)
-            links.forEach(link => {
-                console.log(`   - "${link.text}" -> ${link.link}`)
-                console.log(`     expected: ${path.relative(publicDir, link.expectedPath)}`)
-            })
-            console.log('')
+    Object.entries(groupedLinks).forEach(([file, links]) => {
+        console.log(`文件: ${file}`)
+        links.forEach(link => {
+            console.log(`  - "${link.text}"`)
+            console.log(`    链接: ${link.link}`)
+            console.log(`    期望: ${link.expectedPath}\n`)
         })
-        
-        console.log(`Total: ${totalBrokenLinks} broken links`)
-        process.exit(1) // Ошибка для CI/CD
-    } else {
-        console.log('\n✅ No broken links found!')
-        process.exit(0)
-    }
-} catch (error) {
-    console.error('❌ Error checking links:', error)
-    process.exit(1)
-} finally {
-    console.timeEnd('Link check completed in')
-}
+    })
+} else {
+    console.log('\n未发现损坏的链接')
+} 

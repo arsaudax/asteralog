@@ -1,1 +1,1 @@
-export { removeTags as RemoveTags } from "./removeTags"
+export { RemoveTags } from "./removeTags"

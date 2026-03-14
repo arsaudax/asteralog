@@ -610,3 +610,94 @@ a[href^="http"]::after {
 .footer-link::after {
   display: none !important;
 }
+
+/* ===== LAYOUT — ИСПРАВЛЕННАЯ СЕТКА ===== */
+#quartz-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Основной контейнер с колонками */
+#quartz-body {
+  display: flex;
+  flex: 1 0 auto;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  gap: 30px;
+  width: 100%;
+}
+
+/* Левая панель */
+.left.sidebar {
+  flex: 0 0 250px;
+  min-width: 200px;
+  padding: 20px 0;
+  
+  @media (max-width: 800px) {
+    display: none;
+  }
+}
+
+/* Центр — занимает всё доступное место */
+.center {
+  flex: 1 1 auto;
+  max-width: 800px;
+  min-width: 0; /* важно для flex */
+  padding: 20px 0;
+}
+
+/* Правая панель */
+.right.sidebar {
+  flex: 0 0 250px;
+  min-width: 200px;
+  padding: 20px 0;
+  
+  @media (max-width: 800px) {
+    display: none;
+  }
+}
+
+/* Контент в центре */
+.center article {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Элементы в правой панели */
+.right.sidebar > * {
+  margin-bottom: 2rem;
+}
+
+.right.sidebar h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+/* Мобильные */
+@media (max-width: 800px) {
+  #quartz-body {
+    flex-direction: column;
+    padding: 0 15px;
+    gap: 0;
+  }
+  
+  .center {
+    max-width: 100%;
+    padding: 15px 0;
+  }
+  
+  .left.sidebar,
+  .right.sidebar {
+    display: none;
+  }
+  
+  .center article {
+    max-width: 100%;
+  }
+}

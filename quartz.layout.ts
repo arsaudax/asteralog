@@ -47,11 +47,11 @@ const breadcrumbsConfig = {
 }
 
 // ==================================================
-// SHARED COMPONENTS — ОБЯЗАТЕЛЬНО ДЛЯ QUARTZ!
+// SHARED COMPONENTS — ТОЛЬКО ДЛЯ ГОЛОВЫ И ФУТЕРА
 // ==================================================
 export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),
-  header: [],
+  header: [],  // оставляем пустым, так как PageTitle в левой панели
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -63,10 +63,13 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==================================================
-// ОСНОВНОЙ LAYOUT
+// ОСНОВНОЙ LAYOUT — БЕЗ ФУТЕРА В ПРАВОЙ ПАНЕЛИ
 // ==================================================
 export const defaultContentPageLayout: PageLayout = {
-  ...sharedPageComponents,
+  // head и header из shared, но НЕ footer
+  head: sharedPageComponents.head,
+  header: sharedPageComponents.header,
+  
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -74,7 +77,7 @@ export const defaultContentPageLayout: PageLayout = {
     Component.TagList(),
   ],
   
-  // Левая панель содержит PageTitle, поиск, тему и проводник
+  // Левая панель
   left: [
     CustomComponent.PageTitle({ 
       logo: "/static/thistle.png",
@@ -96,7 +99,7 @@ export const defaultContentPageLayout: PageLayout = {
       ? [Component.DesktopOnly(Component.Graph(graphConfig))]
       : []),
     Component.DesktopOnly(Component.TableOfContents()),
-    // Недавние заметки с фильтром по типу сайта
+    // Недавние заметки
     Component.RecentNotes({
       limit: siteType === 'blog' ? 8 : 5,
       showTags: siteType === 'blog',
@@ -106,11 +109,19 @@ export const defaultContentPageLayout: PageLayout = {
     CustomComponent.TagList(),
     Component.Backlinks(backlinksConfig),
   ],
+  
+  // afterBody — пусто
+  afterBody: [],
+  
+  // footer — отдельно, после right
+  footer: sharedPageComponents.footer,
 }
 
-// Макет для страниц-списков (теги, папки)
+// Макет для страниц-списков
 export const defaultListPageLayout: PageLayout = {
-  ...sharedPageComponents,
+  head: sharedPageComponents.head,
+  header: sharedPageComponents.header,
+  
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -129,4 +140,8 @@ export const defaultListPageLayout: PageLayout = {
   ],
   
   right: [],
+  
+  afterBody: [],
+  
+  footer: sharedPageComponents.footer,
 }

@@ -13,12 +13,12 @@ export default ((opts?: Options) => {
     return (
       <div class="content-meta">
         {date && (
-          <span class="meta-item meta-created">
+          <span>
             <Date date={date} locale={cfg.locale} />
           </span>
         )}
         {opts?.showReadingTime && fileData.readingTime && (
-          <span class="meta-item meta-reading">
+          <span>
             {Math.ceil(fileData.readingTime.minutes)} мин. чтения
           </span>
         )}

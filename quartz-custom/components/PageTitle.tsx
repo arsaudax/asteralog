@@ -3,6 +3,7 @@ import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/compon
 
 interface Options {
   logo?: string
+  logoAlt?: string
   title?: string
 }
 
@@ -14,9 +15,9 @@ export default ((opts?: Options) => {
           {opts?.logo && (
             <img 
               src={opts.logo} 
-              alt="Asteralog" 
-              class="page-logo" 
-              width="56" 
+              alt={opts.logoAlt || opts.title || "Logo"} 
+              class="page-logo"
+              width="56"
               height="56"
             />
           )}

@@ -1,7 +1,6 @@
 // quartz.layout.ts
-import { PageLayout, SharedLayout } from "./quartz/cfg"
+import { PageLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
 import * as CustomComponent from "./quartz-custom/components"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
@@ -26,24 +25,38 @@ const explorerConfig = {
 
 // Конфигурация графа
 const graphConfig = {
-  localGraph: {
-    showTags: false,
-    excludeTags: ["graph-exclude"],
-  },
-  globalGraph: {
-    showTags: false,
-    excludeTags: ["graph-exclude"],
-  },
+  localGraph: { showTags: false, excludeTags: ["graph-exclude"] },
+  globalGraph: { showTags: false, excludeTags: ["graph-exclude"] },
 }
 
 // ==================================================
-// SHARED COMPONENTS — ТОЛЬКО ДЛЯ ГОЛОВЫ
+// LAYOUT ДЛЯ САДА — со всеми панелями
 // ==================================================
-export const sharedPageComponents: SharedLayout = {
+export const gardenLayout: PageLayout = {
   head: CustomComponent.Head(),
-  header: [],  // пустой header
+  
+  beforeBody: [
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    Component.TagList(),
+  ],
+  
+  left: [
+    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.Explorer(explorerConfig),
+  ],
+  
+  right: [
+    Component.Graph(graphConfig),
+    Component.TableOfContents(),
+    Component.Backlinks(),
+  ],
+  
   afterBody: [],
-  footer: CustomComponent.Footer({  // footer здесь, но мы не будем его использовать в right
+  
+  footer: CustomComponent.Footer({
     links: {
       Telegram: "https://t.me/asteralog",
       Instagram: "https://www.instagram.com/al.bogat",
@@ -53,11 +66,10 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==================================================
-// ОСНОВНОЙ LAYOUT
+// LAYOUT ДЛЯ БЛОГА — без графа, без проводника
 // ==================================================
-export const defaultContentPageLayout: PageLayout = {
-  head: sharedPageComponents.head,
-  header: sharedPageComponents.header,
+export const blogLayout: PageLayout = {
+  head: CustomComponent.Head(),
   
   beforeBody: [
     Component.ArticleTitle(),
@@ -65,46 +77,29 @@ export const defaultContentPageLayout: PageLayout = {
     Component.TagList(),
   ],
   
-  left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png",
-      title: "Asteralog"
-    }),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
+  left: [],  // в блоге нет левой панели
   
   right: [
-    Component.DesktopOnly(Component.Graph(graphConfig)),
-    Component.DesktopOnly(Component.TableOfContents()),
+    Component.TableOfContents(),
     Component.Backlinks(),
   ],
   
   afterBody: [],
   
-  footer: sharedPageComponents.footer,  // footer отдельно
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
 }
 
-export const defaultListPageLayout: PageLayout = {
-  head: sharedPageComponents.head,
-  header: sharedPageComponents.header,
-  
-  beforeBody: [Component.ArticleTitle()],
-  
-  left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png",
-      title: "Asteralog"
-    }),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
-  
-  right: [],
-  
-  afterBody: [],
-  
-  footer: sharedPageComponents.footer,
-}
+// ==================================================
+// ВЫБОР LAYOUT В ЗАВИСИМОСТИ ОТ ТИПА САЙТА
+// ==================================================
+export const defaultContentPageLayout: PageLayout = 
+  siteType === 'garden' ? gardenLayout : blogLayout
+
+export const defaultListPageLayout: PageLayout = 
+  siteType === 'garden' ? gardenLayout : blogLayout

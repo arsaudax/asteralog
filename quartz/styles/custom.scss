@@ -1,5 +1,7 @@
 // quartz/styles/custom.scss
 
+@use "variables" as *;  // 🔥 Импортируем переменные Quartz
+
 /* ====================================================
    БАЗОВЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ
    ==================================================== */
@@ -36,7 +38,7 @@
   
   --line-height-base: 1.6;
   
-  // Цвета по умолчанию (будут переопределены темами)
+  // Цвета по умолчанию
   --bg-primary: #1a1c1e;
   --bg-secondary: #2e3235;
   --highlight-bg: rgba(171, 125, 76, 0.15);
@@ -49,7 +51,7 @@
 }
 
 /* ====================================================
-   ТЁМНАЯ ТЕМА (ПО УМОЛЧАНИЮ)
+   ТЁМНАЯ ТЕМА
    ==================================================== */
 
 [data-theme="dark"] {
@@ -89,14 +91,7 @@
 }
 
 /* ====================================================
-   СЕТКА QUARTZ (НЕ ПЕРЕОПРЕДЕЛЯТЬ!)
-   ==================================================== */
-
-// Quartz уже определяет сетку в base.scss
-// Мы только стилизуем элементы внутри ячеек
-
-/* ====================================================
-   ЛЕВАЯ ПАНЕЛЬ (grid-sidebar-left)
+   ЛЕВАЯ ПАНЕЛЬ
    ==================================================== */
 
 .sidebar.left {
@@ -104,7 +99,6 @@
   border-right: 1px solid var(--border-color);
 }
 
-/* Логотип */
 .sidebar.left .page-title {
   margin-bottom: var(--spacing-xl);
 }
@@ -132,12 +126,6 @@
   border-color: var(--link-color);
 }
 
-/* Поиск и кнопка темы */
-.sidebar.left .search,
-.sidebar.left .darkmode {
-  margin-bottom: var(--spacing-md);
-}
-
 .search-button,
 .darkmode {
   width: 40px;
@@ -151,6 +139,7 @@
   border: 1px solid var(--border-color);
   transition: all var(--transition-fast);
   padding: 0;
+  margin-bottom: var(--spacing-md);
 }
 
 .search-button:hover,
@@ -166,13 +155,11 @@
   color: var(--link-color);
 }
 
-/* Переключение иконок темы */
 [data-theme="dark"] .darkmode .dayIcon { display: none; }
 [data-theme="dark"] .darkmode .nightIcon { display: block; }
 [data-theme="light"] .darkmode .dayIcon { display: block; }
 [data-theme="light"] .darkmode .nightIcon { display: none; }
 
-/* Эксплорер */
 .sidebar.left .explorer {
   margin-top: var(--spacing-lg);
   overflow-y: auto;
@@ -180,7 +167,7 @@
 }
 
 /* ====================================================
-   ХЕДЕР СТРАНИЦЫ (grid-header)
+   ХЕДЕР СТРАНИЦЫ
    ==================================================== */
 
 .page-header {
@@ -215,10 +202,6 @@
   color: var(--text-muted);
   font-size: var(--font-size-sm);
   margin-bottom: var(--spacing-md);
-  
-  time {
-    color: var(--text-secondary);
-  }
 }
 
 .tags {
@@ -249,7 +232,7 @@
 }
 
 /* ====================================================
-   ЦЕНТРАЛЬНАЯ ПАНЕЛЬ (grid-center)
+   ЦЕНТРАЛЬНАЯ ПАНЕЛЬ
    ==================================================== */
 
 .center article {
@@ -306,7 +289,7 @@
 }
 
 /* ====================================================
-   ПРАВАЯ ПАНЕЛЬ (grid-sidebar-right)
+   ПРАВАЯ ПАНЕЛЬ
    ==================================================== */
 
 .sidebar.right {
@@ -318,13 +301,12 @@
   }
 }
 
-/* Граф */
-.graph {
-  h3 {
-    font-size: var(--font-size-md);
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-secondary);
-  }
+.graph h3,
+.table-of-contents h3,
+.backlinks h3 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
 }
 
 .graph-outer {
@@ -359,66 +341,48 @@
   }
 }
 
-/* Оглавление */
-.table-of-contents {
-  h3 {
-    font-size: var(--font-size-md);
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-secondary);
-  }
+.table-of-contents ul {
+  list-style: none;
+  padding-left: var(--spacing-md);
+  margin: 0;
   
-  ul {
-    list-style: none;
-    padding-left: var(--spacing-md);
-    margin: 0;
+  li {
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
     
-    li {
-      margin-bottom: var(--spacing-xs);
-      font-size: var(--font-size-sm);
+    a {
+      color: var(--text-secondary);
+      text-decoration: none;
       
-      a {
-        color: var(--text-secondary);
-        text-decoration: none;
-        
-        &:hover {
-          color: var(--link-color);
-        }
+      &:hover {
+        color: var(--link-color);
       }
     }
   }
 }
 
-/* Обратные ссылки */
-.backlinks {
-  h3 {
-    font-size: var(--font-size-md);
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-secondary);
-  }
+.backlinks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  li {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
     
-    li {
-      margin-bottom: var(--spacing-sm);
-      font-size: var(--font-size-sm);
+    a {
+      color: var(--link-color);
+      text-decoration: none;
       
-      a {
-        color: var(--link-color);
-        text-decoration: none;
-        
-        &:hover {
-          text-decoration: underline;
-        }
+      &:hover {
+        text-decoration: underline;
       }
     }
   }
 }
 
 /* ====================================================
-   ФУТЕР (grid-footer)
+   ФУТЕР
    ==================================================== */
 
 footer {
@@ -453,10 +417,9 @@ footer {
 }
 
 /* ====================================================
-   ССЫЛКИ (МИНИМАЛИСТИЧНЫЕ)
+   ССЫЛКИ
    ==================================================== */
 
-/* Отключаем стандартные иконки Quartz */
 .external::after,
 .external::before,
 .internal::after,
@@ -467,7 +430,6 @@ a[href^="http"]::before {
   content: none !important;
 }
 
-/* Добавляем свой минималистичный значок */
 .external:not(footer a):not(.no-external-icon)::after {
   content: "↗";
   color: var(--text-muted);
@@ -484,10 +446,10 @@ a[href^="http"]::before {
 }
 
 /* ====================================================
-   МОБИЛЬНЫЕ СТИЛИ (через медиа-запросы Quartz)
+   МОБИЛЬНЫЕ СТИЛИ (теперь с правильным импортом)
    ==================================================== */
 
-@media all and (max-width: $mobileBreakpoint) {
+@media all and (max-width: $mobileBreakpoint) {  // 🔥 Теперь работает!
   .sidebar.left {
     padding: 1rem !important;
     

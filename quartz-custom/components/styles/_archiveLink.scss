@@ -1,5 +1,3 @@
-// quartz-custom/components/styles/archiveLink.scss
-
 .archive-link-container {
   margin-top: var(--spacing-lg);
   padding: var(--spacing-sm) 0;
@@ -10,7 +8,7 @@
     padding: var(--spacing-md) 0;
     
     @media (max-width: 800px) {
-      display: none; // скрываем в сайдбаре на мобильных
+      display: none;
     }
   }
   
@@ -38,14 +36,12 @@
     font-size: 1.1em;
   }
   
-  // Для сайдбара ссылка на всю ширину
   &--sidebar .archive-link {
     width: 100%;
     justify-content: space-between;
   }
 }
 
-// Мобильная версия
 @media (max-width: 500px) {
   .archive-link-container {
     margin-top: var(--spacing-md);
@@ -56,7 +52,6 @@
   }
 }
 
-// Тёмная тема
 [data-theme="dark"] {
   .archive-link-container {
     &--sidebar {
@@ -73,7 +68,6 @@
   }
 }
 
-// Для печати
 @media print {
   .archive-link-container {
     display: none;

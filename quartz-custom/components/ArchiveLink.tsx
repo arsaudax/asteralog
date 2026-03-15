@@ -1,7 +1,7 @@
 // quartz-custom/components/ArchiveLink.tsx
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { classNames } from "../../quartz/util/lang"
-import style from "./styles/archiveLink.scss"
+import style from "./styles/_archiveLink.scss"
 
 interface Options {
   sidebar?: boolean

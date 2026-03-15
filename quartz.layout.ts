@@ -53,7 +53,7 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // Макет для страниц сада (с Explorer)
-export const gardenPageLayout: PageLayout = {
+const gardenPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -79,7 +79,7 @@ export const gardenPageLayout: PageLayout = {
 }
 
 // Макет для страниц блога (без Explorer)
-export const blogPageLayout: PageLayout = {
+const blogPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -90,7 +90,6 @@ export const blogPageLayout: PageLayout = {
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    // Explorer отсутствует
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
@@ -100,8 +99,10 @@ export const blogPageLayout: PageLayout = {
 }
 
 // Макет для главной страницы блога (со списком постов)
-export const blogHomeLayout: PageLayout = {
-  beforeBody: [],
+const blogHomeLayout: PageLayout = {
+  beforeBody: [
+    CustomComponent.BlogIndex(), // BlogIndex только на главной
+  ],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
@@ -113,7 +114,23 @@ export const blogHomeLayout: PageLayout = {
   ],
 }
 
-// Определяем, какой макет использовать
+// Макет для страниц-списков (теги, папки) - ЭТОТ ЭКСПОРТ НУЖЕН QUARTZ
+export const defaultListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+  ],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [],
+}
+
+// Основной макет для страниц контента
 export const defaultContentPageLayout: PageLayout = (props) => {
   const baseUrl = typeof window === 'undefined' 
     ? process.env?.BASE_URL || ''
@@ -130,3 +147,6 @@ export const defaultContentPageLayout: PageLayout = (props) => {
     return gardenPageLayout
   }
 }
+
+// Экспорты, которые ожидает Quartz
+export { defaultContentPageLayout as default } // для обратной совместимости

@@ -2,14 +2,18 @@ import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as CustomPlugins from "./quartz-custom/plugins"
 
-// Определяем тип сайта
+// ==================================================
+// ОПРЕДЕЛЕНИЕ ТИПА САЙТА
+// ==================================================
 const siteType = process.env.SITE_TYPE || 
                  (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
 
 console.log(`\n🔧 Quartz Config: Building for ${siteType} site`)
 console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
 
-// Базовая конфигурация
+// ==================================================
+// БАЗОВАЯ КОНФИГУРАЦИЯ
+// ==================================================
 const baseConfig = {
   pageTitle: "Asteralog",
   pageTitleSuffix: siteType === 'blog' ? " | Блог" : " | Цифровой сад",
@@ -19,9 +23,13 @@ const baseConfig = {
     provider: "plausible",
   },
   locale: "ru-RU",
-  ignorePatterns: ["private", "templates", ".obsidian"],
+  ignorePatterns: ["private", "templates", ".obsidian", "**/draft*"],
   defaultDateType: "created",
 }
+
+// ==================================================
+// ЦВЕТОВЫЕ СХЕМЫ
+// ==================================================
 
 // Цвета для сада (darkMode = тема по умолчанию)
 const gardenColors = {
@@ -75,6 +83,9 @@ const blogColors = {
   },
 }
 
+// ==================================================
+// ОСНОВНАЯ КОНФИГУРАЦИЯ
+// ==================================================
 const config: QuartzConfig = {
   configuration: {
     ...baseConfig,
@@ -90,6 +101,9 @@ const config: QuartzConfig = {
     },
   },
   plugins: {
+    // ==================================================
+    // ТРАНСФОРМЕРЫ (обрабатывают Markdown)
+    // ==================================================
     transformers: [
       Plugin.FrontMatter(),
       Plugin.CreatedModifiedDate({
@@ -102,7 +116,9 @@ const config: QuartzConfig = {
         },
         keepBackground: false,
       }),
-      Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
+      Plugin.ObsidianFlavoredMarkdown({ 
+        enableInHtmlEmbed: false 
+      }),
       Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
       Plugin.CrawlLinks({
@@ -110,27 +126,51 @@ const config: QuartzConfig = {
         openLinksInNewTab: true,
       }),
       Plugin.Description(),
-      Plugin.Latex({ renderEngine: "katex" }),
-      CustomPlugins.RemoveTags({ tags: ["garden", "blog", "graph-exclude", "explorer-exclude"] }),
+      Plugin.Latex({ 
+        renderEngine: "katex" 
+      }),
+      // Кастомные трансформеры
+      CustomPlugins.RemoveTags({ 
+        tags: ["garden", "blog", "graph-exclude", "explorer-exclude", "backlinks-exclude"] 
+      }),
       CustomPlugins.Img(),
     ],
-    filters: [Plugin.RemoveDrafts()],
+
+    // ==================================================
+    // ФИЛЬТРЫ (исключают файлы)
+    // ==================================================
+    filters: [
+      Plugin.RemoveDrafts(),
+    ],
+
+    // ==================================================
+    // ЭМИТТЕРЫ (генерируют файлы)
+    // ==================================================
     emitters: [
+      // Сначала базовые
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),
+      
+      // Потом индексы
       Plugin.ContentIndex({
         enableSiteMap: true,
         enableRSS: true,
         rssFullHtml: false,
         includeEmptyFiles: false,
       }),
+      
+      // Потом ассеты
       Plugin.Assets(),
       Plugin.Static(),
-      CustomPlugins.Static(),
-      CustomPlugins.CustomStyles(),
+      
+      // Затем кастомные (ВАЖНО: после стандартных)
+      CustomPlugins.Static(),      // копирует файлы из quartz-custom/static
+      CustomPlugins.CustomStyles(), // компилирует custom.scss
+      
+      // И наконец 404
       Plugin.NotFoundPage(),
     ],
   },

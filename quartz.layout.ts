@@ -3,61 +3,34 @@ import * as Component from "./quartz/components"
 import * as CustomComponent from "./quartz-custom/components"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 
-// ==================================================
-// ОПРЕДЕЛЕНИЕ ТИПА САЙТА
-// ==================================================
-const siteType = (process.env?.SITE_TYPE as 'garden' | 'blog') || 'garden'
-
-// ==================================================
-// КОНФИГУРАЦИЯ КОМПОНЕНТОВ
-// ==================================================
-
-// Конфигурация проводника
+// Конфигурация (без siteType, потому что layout один для всех)
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
     const hasExcludedTag = node.data?.frontmatter?.tags?.includes("explorer-exclude") === true
     return !hasExcludedTag
   },
   mapFn: (node: FileTrieNode) => {
-    if (!node.isFolder) {
-      node.displayName = "⊹ " + node.displayName
-    }
+    if (!node.isFolder) node.displayName = "⊹ " + node.displayName
   },
-  title: siteType === 'garden' ? "Сад" : "Блог",
+  title: "Сад",
   folderDefaultState: "collapsed",
   useSavedState: true,
 }
 
-// Конфигурация графа
 const graphConfig = {
-  localGraph: { 
-    showTags: false, 
-    excludeTags: ["graph-exclude"] 
-  },
-  globalGraph: { 
-    showTags: false, 
-    excludeTags: ["graph-exclude"] 
-  },
+  localGraph: { showTags: false, excludeTags: ["graph-exclude"] },
+  globalGraph: { showTags: false, excludeTags: ["graph-exclude"] },
 }
 
-// Конфигурация обратных ссылок
-const backlinksConfig = {
-  hideWhenEmpty: true
-}
-
-// Конфигурация хлебных крошек
-const breadcrumbsConfig = {
-  rootName: "🏠"
-}
+const backlinksConfig = { hideWhenEmpty: true }
+const breadcrumbsConfig = { rootName: "🏠" }
 
 // ==================================================
 // ОБЩИЕ КОМПОНЕНТЫ
 // ==================================================
 export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),
-  header: [
-    CustomComponent.ScrollBehavior(),
-  ],
+  header: [CustomComponent.ScrollBehavior()],
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -69,9 +42,9 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==================================================
-// LAYOUT ДЛЯ САДА (ПОЛНЫЙ, БЕЗ SPREAD)
+// ЕДИНСТВЕННЫЙ МАКЕТ ДЛЯ ВСЕХ СТРАНИЦ
 // ==================================================
-export const gardenLayout: PageLayout = {
+export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -80,10 +53,7 @@ export const gardenLayout: PageLayout = {
   ],
   
   left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png", 
-      title: "Asteralog" 
-    }),
+    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
@@ -101,73 +71,7 @@ export const gardenLayout: PageLayout = {
 }
 
 // ==================================================
-// LAYOUT ДЛЯ БЛОГА (ПОЛНЫЙ, БЕЗ SPREAD)
-// ==================================================
-export const blogLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    CustomComponent.TagList(),
-  ],
-  
-  left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png", 
-      title: "Asteralog" 
-    }),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-    // без Explorer для блога
-  ],
-  
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    CustomComponent.TagList(),
-    CustomComponent.ArchiveLink({ 
-      sidebar: true, 
-      emoji: "after",
-      hideIfEmpty: true 
-    }),
-    Component.Backlinks(backlinksConfig),
-  ],
-  
-  afterBody: [],
-}
-
-// ==================================================
-// LAYOUT ДЛЯ ГЛАВНОЙ СТРАНИЦЫ БЛОГА
-// ==================================================
-export const blogHomeLayout: PageLayout = {
-  beforeBody: [
-    CustomComponent.BlogIndex(),
-  ],
-  
-  left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png", 
-      title: "Asteralog" 
-    }),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-  ],
-  
-  right: [
-    CustomComponent.TagList(),
-    CustomComponent.ArchiveLink({ 
-      sidebar: true, 
-      emoji: "after",
-      hideIfEmpty: true 
-    }),
-  ],
-  
-  afterBody: [],
-}
-
-// ==================================================
-// LAYOUT ДЛЯ СТРАНИЦ-СПИСКОВ
+// МАКЕТ ДЛЯ СТРАНИЦ-СПИСКОВ
 // ==================================================
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [
@@ -176,10 +80,7 @@ export const defaultListPageLayout: PageLayout = {
   ],
   
   left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png", 
-      title: "Asteralog" 
-    }),
+    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
@@ -189,45 +90,6 @@ export const defaultListPageLayout: PageLayout = {
   right: [],
   
   afterBody: [],
-}
-
-// ==================================================
-// LAYOUT ДЛЯ 404 СТРАНИЦЫ
-// ==================================================
-export const notFoundLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  
-  left: [
-    CustomComponent.PageTitle({ 
-      logo: "/static/thistle.png", 
-      title: "Asteralog" 
-    }),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-  ],
-  
-  right: [],
-  
-  afterBody: [],
-}
-
-// ==================================================
-// ВЫБОР LAYOUT
-// ==================================================
-export const defaultContentPageLayout: PageLayout = (props) => {
-  const isBlog = siteType === 'blog'
-  const isHomePage = props.fileData.slug === 'index'
-  
-  if (isBlog && isHomePage) {
-    return blogHomeLayout
-  } else if (isBlog) {
-    return blogLayout
-  } else {
-    return gardenLayout
-  }
 }
 
 export default defaultContentPageLayout

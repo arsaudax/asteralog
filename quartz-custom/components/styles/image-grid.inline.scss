@@ -1,0 +1,47 @@
+/* Image grid styles for multiple images */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+/* Two-column layout for specific cases */
+.image-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Three-column layout */
+.image-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .image-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    
+    img {
+      height: auto;
+      max-height: 300px;
+    }
+  }
+  
+  .image-grid-2,
+  .image-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}

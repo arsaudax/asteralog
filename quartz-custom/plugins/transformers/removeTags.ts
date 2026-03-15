@@ -9,23 +9,15 @@ export const RemoveTags: QuartzTransformerPlugin<RemoveTagsOptions> = (options) 
     name: "RemoveTags",
     markdownPlugins() {
       return [
-        () => {
-          return (_tree, file) => {
-            if (file.data.frontmatter && file.data.frontmatter.tags) {
-              // Фильтруем только служебные теги, оставляем тематические
-              file.data.frontmatter.tags = file.data.frontmatter.tags.filter(
-                tag => !options?.tags.includes(tag)
-              )
-            }
+        () => (_tree, file) => {
+          if (file.data.frontmatter?.tags) {
+            // Сохраняем только тематические теги, удаляем служебные
+            file.data.frontmatter.tags = file.data.frontmatter.tags.filter(
+              (tag: string) => !options?.tags.includes(tag)
+            )
           }
         },
       ]
     },
-  }
-}
-
-declare module "vfile" {
-  interface DataMap {
-    wordcount: number
   }
 }

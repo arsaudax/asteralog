@@ -2,16 +2,14 @@ import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as CustomPlugins from "./quartz-custom/plugins"
 
-// Определяем, какой сайт собирается с поддержкой SITE_TYPE и отладкой
+// Определяем тип сайта
 const siteType = process.env.SITE_TYPE || 
                  (process.env.BASE_URL?.includes('blog') ? 'blog' : 'garden')
 
-// Добавляем отладочный вывод (будет видно в логах GitHub Actions)
 console.log(`\n🔧 Quartz Config: Building for ${siteType} site`)
 console.log(`🔧 BASE_URL: ${process.env.BASE_URL || 'не задан'}`)
-console.log(`🔧 SITE_TYPE: ${process.env.SITE_TYPE || 'не задан'}`)
 
-// Базовая конфигурация (общая для обоих сайтов)
+// Базовая конфигурация
 const baseConfig = {
   pageTitle: "Asteralog",
   pageTitleSuffix: siteType === 'blog' ? " | Блог" : " | Цифровой сад",
@@ -25,9 +23,9 @@ const baseConfig = {
   defaultDateType: "created",
 }
 
-// Цвета для сада (СВЕТЛАЯ тема по умолчанию)
+// Цвета для сада (darkMode = тема по умолчанию)
 const gardenColors = {
-  lightMode: {   // Светлая тема для сада (по умолчанию)
+  lightMode: {
     light: "#f9f7f4",
     lightgray: "#e5e5e5",
     gray: "#9a9a9a",
@@ -38,47 +36,44 @@ const gardenColors = {
     highlight: "rgba(162, 132, 94, 0.15)",
     textHighlight: "#fff23688",
   },
-  darkMode: {    // Тёмная тема для сада (переключаемая)
-    light: "#343434",
-    lightgray: "#393639",
-    gray: "#aaaaaa",
-    darkgray: "#ededed",
+  darkMode: {
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
     dark: "#ffffff",
-    secondary: "#ab7d4c",
-    tertiary: "#7c5736",
-    highlight: "rgba(162, 132, 94, 0.15)",
+    secondary: "#b5977a",
+    tertiary: "#ab7d4c",
+    highlight: "rgba(181, 151, 122, 0.15)",
     textHighlight: "#b3aa0288",
   },
 }
 
-// Цвета для блога (ТЁМНАЯ тема по умолчанию)
+// Цвета для блога (darkMode = тема по умолчанию)
 const blogColors = {
-  lightMode: {   // Светлая тема для блога (переключаемая)
-    light: "#ffffff",
-    lightgray: "#f0f0f0",
+  lightMode: {
+    light: "#f9f7f4",
+    lightgray: "#e5e5e5",
     gray: "#9a9a9a",
-    darkgray: "#666666",
-    dark: "#333333",
+    darkgray: "#4a4a49",
+    dark: "#2b2b2b",
     secondary: "#ab7d4c",
     tertiary: "#7c5736",
-    highlight: "rgba(162, 132, 94, 0.1)",
+    highlight: "rgba(162, 132, 94, 0.15)",
     textHighlight: "#fff23688",
   },
-  darkMode: {    // Тёмная тема для блога (по умолчанию)
-    light: "#343434",
-    lightgray: "#393639",
-    gray: "#aaaaaa",
-    darkgray: "#ededed",
+  darkMode: {
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
     dark: "#ffffff",
-    secondary: "#ab7d4c",
-    tertiary: "#7c5736",
-    highlight: "rgba(162, 132, 94, 0.15)",
+    secondary: "#b5977a",
+    tertiary: "#ab7d4c",
+    highlight: "rgba(181, 151, 122, 0.15)",
     textHighlight: "#b3aa0288",
   },
 }
-
-// Выбираем нужные цвета на основе siteType
-const colors = siteType === 'blog' ? blogColors : gardenColors
 
 const config: QuartzConfig = {
   configuration: {
@@ -91,7 +86,7 @@ const config: QuartzConfig = {
         body: "Inter",
         code: "JetBrains Mono",
       },
-      colors: colors,
+      colors: siteType === 'blog' ? blogColors : gardenColors,
     },
   },
   plugins: {
@@ -116,7 +111,8 @@ const config: QuartzConfig = {
       }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
-      CustomPlugins.RemoveTags({ tags: ["garden", "blog"] }),
+      CustomPlugins.RemoveTags({ tags: ["garden", "blog", "graph-exclude", "explorer-exclude"] }),
+      CustomPlugins.Img(),
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [

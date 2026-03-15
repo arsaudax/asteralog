@@ -11,7 +11,8 @@ const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
       const tags = file.frontmatter?.tags
       return Array.isArray(tags) && 
              tags.includes('blog') && 
-             file.slug !== 'index'
+             file.slug !== 'index' && 
+             file.slug !== 'archive'
     })
     .sort((a, b) => {
       const dateA = a.dates?.created ? new Date(a.dates.created).getTime() : 0
@@ -86,7 +87,7 @@ const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
   )
 }
 
-// Добавляем стили как статическое свойство
+// Стили компонента
 BlogIndex.css = `
 .blog-index {
   max-width: 800px;

@@ -1,5 +1,11 @@
-@import "./asteralog.scss";
-@import "./elements.scss";
+// Asteralog Theme Enhancements
+// Custom styling для цифрового сада и блога
+
+// Import variables and overrides
+@import "./variables";
+@import "./overrides";
+@import "./asteralog";
+@import "./elements";
 
 .page-header {
   header {

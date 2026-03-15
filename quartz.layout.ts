@@ -1,9 +1,10 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import * as CustomComponent from "./quartz-custom/components" 
 
 // Минимальные общие компоненты
 export const sharedPageComponents: SharedLayout = {
-  head: Component.Head(),
+  head: CustomComponent.Head(),
   header: [],
   afterBody: [],
   footer: Component.Footer(),  // стандартный футер Quartz

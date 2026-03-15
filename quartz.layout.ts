@@ -7,7 +7,11 @@ export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),
   header: [],
   afterBody: [],
-  footer: Component.Footer(),  // стандартный футер Quartz
+   footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+    },
+  }),
 }
 
 // Минимальный макет

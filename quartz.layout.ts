@@ -55,7 +55,7 @@ const breadcrumbsConfig = {
 // ==================================================
 export const sharedPageComponents: SharedLayout = {
   head: CustomComponent.Head(),
-  header: [],
+  header: [CustomComponent.ScrollBehavior()], // Добавляем скролл-поведение
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -93,7 +93,7 @@ export const gardenLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
-    CustomComponent.TagList(),
+    CustomComponent.TagList(), // Дублируется? Проверить
     Component.Backlinks(backlinksConfig),
   ],
   
@@ -135,8 +135,12 @@ export const blogLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     CustomComponent.TagList(),
+    CustomComponent.ArchiveLink({ 
+      sidebar: true, 
+      emoji: "after",
+      hideIfEmpty: true 
+    }),
     Component.Backlinks(backlinksConfig),
-    // RecentNotes для главной страницы блога будет обрабатываться отдельно
   ],
   
   afterBody: [],
@@ -172,6 +176,11 @@ export const blogHomeLayout: PageLayout = {
   
   right: [
     CustomComponent.TagList(),
+    CustomComponent.ArchiveLink({ 
+      sidebar: true, 
+      emoji: "after",
+      hideIfEmpty: true 
+    }),
   ],
   
   afterBody: [],

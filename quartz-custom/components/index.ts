@@ -1,6 +1,12 @@
-import ContentMeta from "./ContentMeta"
-import Footer from "./Footer"
-import TagList from "./TagList"
-import BlogIndex from "./BlogIndex"
+// Экспортируем все кастомные компоненты
+export { default as Head } from "./Head"
+export { default as PageTitle } from "./PageTitle"
+export { default as ContentMeta } from "./ContentMeta"
+export { default as Footer } from "./Footer"
+export { default as TagList } from "./TagList"
+export { default as BlogIndex } from "./BlogIndex"
+export { default as ArchiveLink } from "./ArchiveLink"
+export { default as ScrollBehavior } from "./ScrollBehavior"
 
-export { ContentMeta, Footer, TagList, BlogIndex }
+// Для обратной совместимости (если где-то используются)
+export { default as ArchiveLink as ArchiveLinkComponent } from "./ArchiveLink"

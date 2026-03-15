@@ -52,8 +52,8 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Макет для страниц сада
-const gardenLayout: PageLayout = {
+// Макет для страниц контента (САД) - по умолчанию
+export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -78,42 +78,6 @@ const gardenLayout: PageLayout = {
   ],
 }
 
-// Макет для страниц блога
-const blogLayout: PageLayout = {
-  beforeBody: [
-    Component.Breadcrumbs(breadcrumbsConfig),
-    Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-  ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-  ],
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    CustomComponent.TagList(),
-    Component.Backlinks(backlinksConfig),
-  ],
-}
-
-// Макет для главной страницы блога
-const blogHomeLayout: PageLayout = {
-  beforeBody: [
-    CustomComponent.BlogIndex(),
-  ],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-  ],
-  right: [
-    CustomComponent.TagList(),
-  ],
-}
-
 // Макет для страниц-списков (теги, папки)
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [
@@ -127,10 +91,10 @@ export const defaultListPageLayout: PageLayout = {
     Component.Darkmode(),
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
-  right: [], // Пустой массив, но это ок
+  right: [],
 }
 
-// Макет для страниц ошибок (404)
+// Макет для 404 страницы
 export const notFoundLayout: PageLayout = {
   beforeBody: [],
   left: [
@@ -142,23 +106,3 @@ export const notFoundLayout: PageLayout = {
   right: [],
 }
 
-// Основная функция выбора макета
-export const defaultContentPageLayout: PageLayout = (props) => {
-  const baseUrl = typeof window === 'undefined' 
-    ? process.env?.BASE_URL || ''
-    : window.location.hostname
-  
-  const isBlog = baseUrl.includes('blog')
-  const isHomePage = props.fileData.slug === 'index'
-  
-  if (isBlog && isHomePage) {
-    return blogHomeLayout
-  } else if (isBlog) {
-    return blogLayout
-  } else {
-    return gardenLayout
-  }
-}
-
-// Экспорты для Quartz
-export { defaultContentPageLayout as default }

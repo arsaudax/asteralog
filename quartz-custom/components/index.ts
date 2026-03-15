@@ -8,5 +8,5 @@ export { default as BlogIndex } from "./BlogIndex"
 export { default as ArchiveLink } from "./ArchiveLink"
 export { default as ScrollBehavior } from "./ScrollBehavior"
 
-// Для обратной совместимости (если где-то используются)
-export { default as ArchiveLink as ArchiveLinkComponent } from "./ArchiveLink"
+// Для обратной совместимости - правильный синтаксис
+export { ArchiveLink as ArchiveLinkComponent } from "./ArchiveLink"

@@ -51,47 +51,39 @@ const breadcrumbsConfig = {
 }
 
 // ==================================================
-// ОБЩИЕ КОМПОНЕНТЫ (рендерятся отдельно от колонок)
+// ОБЩИЕ КОМПОНЕНТЫ
 // ==================================================
 export const sharedPageComponents: SharedLayout = {
-  // head: CustomComponent.Head(),                  // [1] КАСТОМНЫЙ HEAD
-  head: Component.Head(),                           // [1] СТАНДАРТНЫЙ HEAD (временная замена)
-  
+  head: CustomComponent.Head(),
   header: [
-    // CustomComponent.ScrollBehavior(),            // [2] КАСТОМНЫЙ СКРОЛЛ
+    CustomComponent.ScrollBehavior(),
   ],
-  
   afterBody: [],
-  
-  // footer: CustomComponent.Footer({                // [3] КАСТОМНЫЙ ФУТЕР
-  //   links: {
-  //     Telegram: "https://t.me/asteralog",
-  //     Instagram: "https://www.instagram.com/al.bogat",
-  //     Behance: "https://www.behance.net/arsaudax",
-  //   },
-  // }),
-  footer: Component.Footer(),                        // [3] СТАНДАРТНЫЙ ФУТЕР (временная замена)
+  footer: CustomComponent.Footer({
+    links: {
+      Telegram: "https://t.me/asteralog",
+      Instagram: "https://www.instagram.com/al.bogat",
+      Behance: "https://www.behance.net/arsaudax",
+    },
+  }),
 }
 
 // ==================================================
-// БАЗОВЫЙ МАКЕТ (для всех страниц)
+// LAYOUT ДЛЯ САДА (ПОЛНЫЙ, БЕЗ SPREAD)
 // ==================================================
-const baseLayout: PageLayout = {
+export const gardenLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
-    // CustomComponent.ContentMeta({ showReadingTime: true }),  // [4] КАСТОМНЫЙ CONTENT META
-    Component.ContentMeta(),                                   // [4] СТАНДАРТНЫЙ CONTENT META
-    // Component.TagList(),                                     // [5] СТАНДАРТНЫЙ TAGLIST
-    // CustomComponent.TagList(),                               // [5] КАСТОМНЫЙ TAGLIST (закомментирован)
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    CustomComponent.TagList(),
   ],
   
   left: [
-    // CustomComponent.PageTitle({                             // [6] КАСТОМНЫЙ PAGE TITLE
-    //   logo: "/static/thistle.png", 
-    //   title: "Asteralog" 
-    // }),
-    Component.PageTitle(),                                     // [6] СТАНДАРТНЫЙ PAGE TITLE
+    CustomComponent.PageTitle({ 
+      logo: "/static/thistle.png", 
+      title: "Asteralog" 
+    }),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
@@ -101,12 +93,7 @@ const baseLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
-    // CustomComponent.TagList(),                               // [7] КАСТОМНЫЙ TAGLIST
-    // CustomComponent.ArchiveLink({                            // [8] КАСТОМНЫЙ ARCHIVE LINK
-    //   sidebar: true, 
-    //   emoji: "after",
-    //   hideIfEmpty: true 
-    // }),
+    CustomComponent.TagList(),
     Component.Backlinks(backlinksConfig),
   ],
   
@@ -114,39 +101,39 @@ const baseLayout: PageLayout = {
 }
 
 // ==================================================
-// LAYOUT ДЛЯ САДА
-// ==================================================
-export const gardenLayout: PageLayout = {
-  ...baseLayout,
-  // здесь можно добавить специфичные для сада компоненты
-}
-
-// ==================================================
-// LAYOUT ДЛЯ БЛОГА
+// LAYOUT ДЛЯ БЛОГА (ПОЛНЫЙ, БЕЗ SPREAD)
 // ==================================================
 export const blogLayout: PageLayout = {
-  ...baseLayout,
+  beforeBody: [
+    Component.Breadcrumbs(breadcrumbsConfig),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
+    CustomComponent.TagList(),
+  ],
+  
   left: [
-    // CustomComponent.PageTitle({ 
-    //   logo: "/static/thistle.png", 
-    //   title: "Asteralog" 
-    // }),
-    Component.PageTitle(),
+    CustomComponent.PageTitle({ 
+      logo: "/static/thistle.png", 
+      title: "Asteralog" 
+    }),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
     // без Explorer для блога
   ],
+  
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // CustomComponent.TagList(),
-    // CustomComponent.ArchiveLink({ 
-    //   sidebar: true, 
-    //   emoji: "after",
-    //   hideIfEmpty: true 
-    // }),
+    CustomComponent.TagList(),
+    CustomComponent.ArchiveLink({ 
+      sidebar: true, 
+      emoji: "after",
+      hideIfEmpty: true 
+    }),
     Component.Backlinks(backlinksConfig),
   ],
+  
+  afterBody: [],
 }
 
 // ==================================================
@@ -154,34 +141,33 @@ export const blogLayout: PageLayout = {
 // ==================================================
 export const blogHomeLayout: PageLayout = {
   beforeBody: [
-    // CustomComponent.BlogIndex(),  // [9] КАСТОМНЫЙ BLOG INDEX
+    CustomComponent.BlogIndex(),
   ],
   
   left: [
-    // CustomComponent.PageTitle({ 
-    //   logo: "/static/thistle.png", 
-    //   title: "Asteralog" 
-    // }),
-    Component.PageTitle(),
+    CustomComponent.PageTitle({ 
+      logo: "/static/thistle.png", 
+      title: "Asteralog" 
+    }),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
   ],
   
   right: [
-    // CustomComponent.TagList(),
-    // CustomComponent.ArchiveLink({ 
-    //   sidebar: true, 
-    //   emoji: "after",
-    //   hideIfEmpty: true 
-    // }),
+    CustomComponent.TagList(),
+    CustomComponent.ArchiveLink({ 
+      sidebar: true, 
+      emoji: "after",
+      hideIfEmpty: true 
+    }),
   ],
   
   afterBody: [],
 }
 
 // ==================================================
-// LAYOUT ДЛЯ СТРАНИЦ-СПИСКОВ (теги, папки)
+// LAYOUT ДЛЯ СТРАНИЦ-СПИСКОВ
 // ==================================================
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [
@@ -190,11 +176,10 @@ export const defaultListPageLayout: PageLayout = {
   ],
   
   left: [
-    // CustomComponent.PageTitle({ 
-    //   logo: "/static/thistle.png", 
-    //   title: "Asteralog" 
-    // }),
-    Component.PageTitle(),
+    CustomComponent.PageTitle({ 
+      logo: "/static/thistle.png", 
+      title: "Asteralog" 
+    }),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
@@ -215,11 +200,10 @@ export const notFoundLayout: PageLayout = {
   ],
   
   left: [
-    // CustomComponent.PageTitle({ 
-    //   logo: "/static/thistle.png", 
-    //   title: "Asteralog" 
-    // }),
-    Component.PageTitle(),
+    CustomComponent.PageTitle({ 
+      logo: "/static/thistle.png", 
+      title: "Asteralog" 
+    }),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
@@ -231,7 +215,7 @@ export const notFoundLayout: PageLayout = {
 }
 
 // ==================================================
-// ВЫБОР LAYOUT В ЗАВИСИМОСТИ ОТ ТИПА САЙТА И СТРАНИЦЫ
+// ВЫБОР LAYOUT
 // ==================================================
 export const defaultContentPageLayout: PageLayout = (props) => {
   const isBlog = siteType === 'blog'

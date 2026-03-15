@@ -18,6 +18,7 @@ export const sharedPageComponents: SharedLayout = {
 const baseLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
   ],
   left: [
     CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),

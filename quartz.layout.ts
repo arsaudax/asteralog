@@ -52,8 +52,8 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Макет для страниц сада (с Explorer)
-const gardenPageLayout: PageLayout = {
+// Макет для страниц сада
+const gardenLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -78,8 +78,8 @@ const gardenPageLayout: PageLayout = {
   ],
 }
 
-// Макет для страниц блога (без Explorer)
-const blogPageLayout: PageLayout = {
+// Макет для страниц блога
+const blogLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
     Component.ArticleTitle(),
@@ -98,10 +98,10 @@ const blogPageLayout: PageLayout = {
   ],
 }
 
-// Макет для главной страницы блога (со списком постов)
+// Макет для главной страницы блога
 const blogHomeLayout: PageLayout = {
   beforeBody: [
-    CustomComponent.BlogIndex(), // BlogIndex только на главной
+    CustomComponent.BlogIndex(),
   ],
   left: [
     Component.PageTitle(),
@@ -114,7 +114,7 @@ const blogHomeLayout: PageLayout = {
   ],
 }
 
-// Макет для страниц-списков (теги, папки) - ЭТОТ ЭКСПОРТ НУЖЕН QUARTZ
+// Макет для страниц-списков (теги, папки)
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(breadcrumbsConfig),
@@ -127,10 +127,22 @@ export const defaultListPageLayout: PageLayout = {
     Component.Darkmode(),
     Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
+  right: [], // Пустой массив, но это ок
+}
+
+// Макет для страниц ошибок (404)
+export const notFoundLayout: PageLayout = {
+  beforeBody: [],
+  left: [
+    Component.PageTitle(),
+    Component.MobileOnly(Component.Spacer()),
+    Component.Search(),
+    Component.Darkmode(),
+  ],
   right: [],
 }
 
-// Основной макет для страниц контента
+// Основная функция выбора макета
 export const defaultContentPageLayout: PageLayout = (props) => {
   const baseUrl = typeof window === 'undefined' 
     ? process.env?.BASE_URL || ''
@@ -142,11 +154,11 @@ export const defaultContentPageLayout: PageLayout = (props) => {
   if (isBlog && isHomePage) {
     return blogHomeLayout
   } else if (isBlog) {
-    return blogPageLayout
+    return blogLayout
   } else {
-    return gardenPageLayout
+    return gardenLayout
   }
 }
 
-// Экспорты, которые ожидает Quartz
-export { defaultContentPageLayout as default } // для обратной совместимости
+// Экспорты для Quartz
+export { defaultContentPageLayout as default }

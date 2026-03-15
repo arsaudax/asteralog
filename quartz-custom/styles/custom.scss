@@ -1,11 +1,11 @@
 // Asteralog Theme Enhancements
 // Custom styling для цифрового сада и блога
 
-// Import variables and overrides
-@import "./variables";
-@import "./overrides";
-@import "./asteralog";
-@import "./elements";
+// Используем @use вместо @import
+@use "variables";
+@use "overrides";
+@use "asteralog";
+@use "elements";
 
 .page-header {
   header {

@@ -1,9 +1,10 @@
 import { Date, getDate } from "../../quartz/components/Date"
 import { QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
-import style from "./styles/contentMeta.scss"
 import readingTime from "reading-time"
 import { JSX } from "preact"
 import { classNames } from "../../quartz/util/lang"
+// Исправленный импорт
+import style from "./styles/_contentMeta.scss"
 
 interface ContentMetaOptions {
   showReadingTime: boolean
@@ -37,7 +38,6 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
         segments.push(<Date date={getDate(cfg, fileData)!} locale={cfg.locale} />)
       }
 
-      // Display reading time if enabled
       if (options.showReadingTime) {
         const { minutes } = readingTime(text)
         const displayedTime = formatReadingTime(Math.ceil(minutes))
@@ -55,6 +55,5 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
   }
 
   ContentMetadata.css = style
-
   return ContentMetadata
 }) satisfies QuartzComponentConstructor

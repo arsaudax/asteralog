@@ -1,5 +1,6 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
-import style from "./styles/footer.scss"
+// Исправленный импорт
+import style from "./styles/_footer.scss"
 
 interface Options {
   links: Record<string, string>

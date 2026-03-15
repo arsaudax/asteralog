@@ -1,6 +1,7 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { classNames } from "../../quartz/util/lang"
-import style from "./styles/TagList.scss"
+// Исправленный импорт
+import style from "./styles/_tagList.scss"
 
 interface TagCount {
   tag: string
@@ -8,23 +9,20 @@ interface TagCount {
 }
 
 const TagList: QuartzComponent = ({ cfg, fileData, allFiles, displayClass }: QuartzComponentProps) => {
-  // Служебные теги, которые нужно скрыть
   const excludeTags = new Set(['garden', 'blog', 'graph-exclude', 'explorer-exclude', 'backlinks-exclude', 'recents-exclude'])
   
   const tagCounts = new Map<string, number>()
   
-  // Собираем все теги из всех файлов
   for (const file of allFiles) {
     const tags = file.frontmatter?.tags
     if (!Array.isArray(tags)) continue
     
     for (const tag of tags) {
-      if (excludeTags.has(tag)) continue // Пропускаем служебные теги
+      if (excludeTags.has(tag)) continue
       tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
     }
   }
   
-  // Сортируем теги по алфавиту
   const sortedTags = Array.from(tagCounts.entries())
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([tag, count]) => ({ tag, count }))

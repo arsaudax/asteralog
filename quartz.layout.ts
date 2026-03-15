@@ -20,7 +20,7 @@ const baseLayout: PageLayout = {
     Component.ArticleTitle(),
   ],
   left: [
-    Component.PageTitle(),
+    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
     Component.Search(),
     Component.Darkmode(),
   ],

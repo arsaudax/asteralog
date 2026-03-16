@@ -3,13 +3,7 @@ name: Deploy Asteralog Sites
 on:
   push:
     branches: [main]
-  repository_dispatch:
-    types: [content-updated]
   workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -32,24 +26,16 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          cd utils/content-sync && npm ci --no-package-lock
+          cd utils/content-sync && npm install
 
-      - name: Clone or update garden content
+      - name: Clone garden content
         run: |
-          if [ -d "content-garden" ]; then
-            cd content-garden && git pull origin main && cd ..
-          else
-            git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git content-garden
-          fi
+          git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/garden-content.git content-garden
           cd content-garden && git log -1 --oneline && cd ..
 
-      - name: Clone or update blog content
+      - name: Clone blog content
         run: |
-          if [ -d "content-blog" ]; then
-            cd content-blog && git pull origin main && cd ..
-          else
-            git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git content-blog
-          fi
+          git clone https://x-access-token:${{ secrets.ASTERALOG_DEPLOY }}@github.com/arsaudax/blog-content.git content-blog
           cd content-blog && git log -1 --oneline && cd ..
 
       - name: Sync content
@@ -58,16 +44,8 @@ jobs:
           NODE_ENV: production
 
       # ========== GARDEN BUILD ==========
-      - name: Print Garden env
-        run: |
-          echo "SITE_TYPE=$SITE_TYPE"
-          echo "BASE_URL=$BASE_URL"
-        env:
-          SITE_TYPE: garden
-          BASE_URL: garden.asteralog.ru
-
       - name: Build Garden
-        run: node quartz/bootstrap-cli.mjs build --directory content-garden --output public-garden
+        run: npx quartz build --directory content-garden --output public-garden
         env:
           BASE_URL: garden.asteralog.ru
           SITE_TYPE: garden
@@ -116,16 +94,8 @@ jobs:
           user_email: 'github-actions[bot]@users.noreply.github.com'
 
       # ========== BLOG BUILD ==========
-      - name: Print Blog env
-        run: |
-          echo "SITE_TYPE=$SITE_TYPE"
-          echo "BASE_URL=$BASE_URL"
-        env:
-          SITE_TYPE: blog
-          BASE_URL: blog.asteralog.ru
-
       - name: Build Blog
-        run: node quartz/bootstrap-cli.mjs build --directory content-blog --output public-blog
+        run: npx quartz build --directory content-blog --output public-blog
         env:
           BASE_URL: blog.asteralog.ru
           SITE_TYPE: blog

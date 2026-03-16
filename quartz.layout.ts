@@ -77,10 +77,13 @@ export const defaultContentPageLayout: PageLayout = {
     }),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.RecentNotes({
-      limit: (props) => getSiteType() === 'blog' ? 8 : 5,
-      showTags: (props) => getSiteType() === 'blog',
-      title: (props) => getSiteType() === 'blog' ? "Последние записи" : "Недавние заметки",
-      filter: (file) => getSiteType() === 'blog' ? blogFilter(file) : gardenFilter(file)
+      limit: 5,
+      showTags: true,
+      title: "Последние записи",
+      filter: (file) => {
+        const tags = file.frontmatter?.tags
+        return Array.isArray(tags) && tags.includes('blog')
+      }
     }),
     CustomComponent.TagList(),
     Component.ConditionalRender({

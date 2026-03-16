@@ -49,27 +49,60 @@ export default (() => {
         <link rel="stylesheet" href="/index.css" />
         <link rel="stylesheet" href="/custom.css" />
 
-        {/* ===== РЕИНИЦИАЛИЗАЦИЯ КОМПОНЕНТОВ ПОСЛЕ SPA-ПЕРЕХОДОВ ===== */}
+        {/* ===== УСИЛЕННАЯ РЕИНИЦИАЛИЗАЦИЯ КОМПОНЕНТОВ ===== */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              document.addEventListener('nav', () => {
-                // Принудительно перерисовываем компоненты
+              // Функция принудительной перезагрузки всех компонентов
+              function forceReinitialize() {
+                console.log('🔄 Принудительная реинициализация компонентов...');
+                
+                // 1. Перезапускаем поиск
+                const searchBtn = document.querySelector('.search-button');
+                if (searchBtn) {
+                  searchBtn.click();
+                  setTimeout(() => searchBtn.click(), 10);
+                }
+                
+                // 2. Обновляем граф
+                const graph = document.querySelector('#graph-container');
+                if (graph) {
+                  // Принудительно перерисовываем
+                  const event = new Event('resize');
+                  window.dispatchEvent(event);
+                }
+                
+                // 3. Перезапускаем переключатель темы
+                const darkmode = document.querySelector('.darkmode button');
+                if (darkmode) {
+                  // Эмулируем клик для переинициализации
+                  darkmode.dispatchEvent(new Event('mouseover'));
+                }
+                
+                // 4. Обновляем все интерактивные элементы
                 setTimeout(() => {
                   window.dispatchEvent(new Event('resize'));
-                  
-                  // Реинициализация поиска
-                  const search = document.querySelector('.search');
-                  if (search && (search as any).__onNav) {
-                    (search as any).__onNav();
-                  }
-                  
-                  // Реинициализация графа
-                  const graph = document.querySelector('#graph-container');
-                  if (graph && (graph as any).__onNav) {
-                    (graph as any).__onNav();
-                  }
-                }, 100);
+                  document.querySelectorAll('*').forEach(el => {
+                    if (el.__reinitialize) el.__reinitialize();
+                  });
+                }, 50);
+              }
+              
+              // Слушаем все возможные события навигации
+              document.addEventListener('nav', () => {
+                setTimeout(forceReinitialize, 100);
+              });
+              
+              // Также запускаем после загрузки страницы
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', forceReinitialize);
+              } else {
+                setTimeout(forceReinitialize, 200);
+              }
+              
+              // Дополнительная проверка после полной загрузки
+              window.addEventListener('load', () => {
+                setTimeout(forceReinitialize, 500);
               });
             `
           }}

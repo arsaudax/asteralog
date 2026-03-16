@@ -1,145 +1,155 @@
-// Quartz Component Overrides for Asteralog Theme
+/* =========================================================
+   ASTERALOG — Quartz Component Overrides
+   ========================================================= */
 
-// Callout/Admonition color overrides
-.callout {
-  &[data-callout="note"],
-  &[data-callout="info"] {
-    --callout-color: var(--asteralog-accent);
-  }
+/* =========================================================
+   ТЕМЫ ЧЕРЕЗ КЛАССЫ
+   ========================================================= */
 
-  &[data-callout="tip"],
-  &[data-callout="success"] {
-    --callout-color: var(--asteralog-accent-alt);
-  }
-
-  border-left-color: var(--callout-color);
-
-  .callout-title {
-    color: var(--callout-color);
-  }
+html[saved-theme="dark"] {
+  --bg-primary: #1a1c1e;
+  --bg-secondary: #2e3235;
+  --text-primary: #d4d4d4;
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --border-color: #4a4f54;
+  --link-color: #ab7d4c;
+  --link-hover: #ab7d4c;
+  --highlight: rgba(171,125,76,.15);
+  
+  --secondary: #ab7d4c;
+  --tertiary: #ab7d4c;
+  --dark: var(--text-primary);
+  --darkgray: var(--text-secondary);
+  --light: var(--bg-primary);
+  --lightgray: var(--bg-secondary);
+  --gray: var(--border-color);
 }
 
-// Search component styling
-#search-container {
-  input {
-    border-color: var(--gray);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+html[saved-theme="light"] {
+  --bg-primary: #f9f7f4;
+  --bg-secondary: #e5e5e5;
+  --text-primary: #2b2b2b;
+  --text-secondary: #4a4a49;
+  --text-muted: #9a9a9a;
+  --border-color: #b8b8b8;
+  --link-color: #ab7d4c;
+  --link-hover: #ab7d4c;
+  --highlight: rgba(171,125,76,.15);
+  
+  --secondary: #ab7d4c;
+  --tertiary: #ab7d4c;
+  --dark: var(--text-primary);
+  --darkgray: var(--text-secondary);
+  --light: var(--bg-primary);
+  --lightgray: var(--bg-secondary);
+  --gray: var(--border-color);
+}
 
-    &:focus {
-      border-color: var(--asteralog-accent);
-      box-shadow: 0 0 0 2px rgba(171, 125, 76, 0.2);
-      outline: none;
-    }
+/* =========================================================
+   ССЫЛКИ — ВСЕ ОДНОГО ЦВЕТА
+   ========================================================= */
+
+a {
+  color: var(--secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  
+  &:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+    opacity: 0.9;
   }
-
-  .search-result {
-    transition: background-color 0.2s ease;
-
+  
+  &.internal {
+    border-bottom: 1px dashed var(--secondary);
+    
     &:hover {
-      background: var(--highlight);
+      border-bottom-color: var(--secondary);
+      text-decoration: none;
     }
+  }
+  
+  &[href^="http"]:not(.internal):not(.no-external)::after {
+    content: " ↗";
+    font-size: 0.8em;
+    opacity: 0.7;
   }
 }
 
-// Graph component colors
+/* =========================================================
+   ЗАГОЛОВОК СТАТЬИ — ТОЖЕ ЯРКИЙ ЗОЛОТОЙ
+   ========================================================= */
+
+.article-title {
+  color: var(--secondary) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--secondary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* =========================================================
+   ТЕГИ — ВСЕ ЯРКИЕ
+   ========================================================= */
+
+.tag, .tags a, .post-tag, .tag-list-item {
+  background: transparent;
+  color: var(--secondary) !important;
+  border: 1px solid var(--gray);
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+  margin: 0.25rem;
+  
+  &:hover {
+    background: var(--secondary) !important;
+    color: var(--light) !important;
+    border-color: var(--secondary);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+}
+
+/* =========================================================
+   ГРАФ
+   ========================================================= */
+
 #graph-container {
   .node {
-    fill: var(--asteralog-accent);
-    transition: fill 0.2s ease;
-
+    fill: var(--secondary);
+    
     &:hover {
-      fill: var(--asteralog-accent-alt);
+      fill: var(--secondary);
+      opacity: 0.9;
     }
   }
-
+  
   .link {
     stroke: var(--gray);
-    transition: stroke 0.2s ease;
-
+    
     &:hover {
-      stroke: var(--asteralog-accent);
+      stroke: var(--secondary);
     }
   }
 }
 
-// Explorer component
-.explorer {
-  .folder-button {
-    transition: background-color 0.2s ease, color 0.2s ease;
+/* =========================================================
+   КНОПКА ТЕМЫ
+   ========================================================= */
 
-    &:hover {
-      background: var(--highlight);
-      color: var(--asteralog-accent);
-    }
-  }
-
-  .folder-title,
-  .explorer-link {
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: var(--asteralog-accent-alt);
-    }
-  }
-
-  .explorer-link.active {
-    color: var(--asteralog-accent);
-    font-weight: 600;
-  }
-}
-
-// Breadcrumbs enhancement
-.breadcrumb-container {
-  a {
+.darkmode button {
+  svg {
     color: var(--secondary);
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: var(--asteralog-accent-alt);
-    }
   }
-
-  .breadcrumb-separator {
-    color: var(--gray);
-    margin: 0 0.5rem;
-  }
-}
-
-// Table of Contents styling
-.toc {
-  a {
-    transition: color 0.2s ease, background-color 0.2s ease;
-
-    &.active {
-      color: var(--asteralog-accent);
-      background: var(--highlight);
-      border-left: 3px solid var(--asteralog-accent);
-      padding-left: 0.75rem;
-    }
-
-    &:hover {
-      color: var(--asteralog-accent-alt);
-    }
-  }
-}
-
-// Dark mode toggle button
-.darkmode {
-  button {
-    background: var(--lightgray);
-    border: 1px solid var(--gray);
-    border-radius: 6px;
-    padding: 0.5rem;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: var(--highlight);
-      border-color: var(--asteralog-accent);
-      transform: scale(1.05);
-    }
-
+  
+  &:hover {
+    border-color: var(--secondary);
+    
     svg {
-      color: var(--asteralog-accent);
+      color: var(--secondary);
     }
   }
 }

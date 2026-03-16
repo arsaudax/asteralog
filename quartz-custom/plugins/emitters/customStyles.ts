@@ -11,8 +11,10 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
   return {
     name: "CustomStyles",
     async *emit(ctx) {
-      // Правильный путь: поднимаемся на два уровня вверх, затем в styles/
-      const customCssPath = join(__dirname, "../../styles/custom.scss")
+      // ПРАВИЛЬНЫЙ ПУТЬ: поднимаемся на 3 уровня до quartz-custom/, затем в styles/
+      const customCssPath = join(__dirname, "../../../styles/custom.scss")
+      
+      console.log(`📁 Загрузка стилей из: ${customCssPath}`)
       
       try {
         const customCss = readFileSync(customCssPath, "utf-8")
@@ -24,6 +26,21 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
         }
       } catch (error) {
         console.error(`❌ Не удалось загрузить custom.scss по пути: ${customCssPath}`)
+        console.error(`📁 Текущая директория: ${__dirname}`)
+        
+        // Попробуем найти файл для отладки
+        const fs = require('fs')
+        const findFile = (startPath: string) => {
+          console.log(`🔍 Поиск в: ${startPath}`)
+          if (fs.existsSync(startPath)) {
+            const files = fs.readdirSync(startPath)
+            console.log(`   Найдено: ${files.join(', ')}`)
+          }
+        }
+        
+        findFile(join(__dirname, "../../../"))
+        findFile(join(__dirname, "../../../styles/"))
+        
         throw error
       }
     },

@@ -10,12 +10,12 @@ html[saved-theme="dark"] {
   --text-muted: #9a9a9a;
   --border-color: #4a4f54;
   --link-color: #ab7d4c;  /* яркий золотой */
-  --link-hover: #7c5736;   /* тёмный золотой для hover */
+  --link-hover: #ab7d4c;   /* ТОЖЕ ЯРКИЙ ЗОЛОТОЙ (убрали тёмный) */
   --highlight: rgba(171, 125, 76, 0.15);
   
   /* Quartz переменные (совместимость) */
   --secondary: #ab7d4c;    /* яркий золотой */
-  --tertiary: #7c5736;      /* тёмный золотой */
+  --tertiary: #ab7d4c;     /* ТОЖЕ ЯРКИЙ ЗОЛОТОЙ (убрали тёмный) */
   --dark: var(--text-primary);
   --darkgray: var(--text-secondary);
   --light: var(--bg-primary);
@@ -31,12 +31,12 @@ html[saved-theme="light"] {
   --text-muted: #9a9a9a;
   --border-color: #b8b8b8;
   --link-color: #ab7d4c;  /* яркий золотой */
-  --link-hover: #7c5736;   /* тёмный золотой для hover */
+  --link-hover: #ab7d4c;   /* ТОЖЕ ЯРКИЙ ЗОЛОТОЙ (убрали тёмный) */
   --highlight: rgba(171, 125, 76, 0.15);
   
   /* Quartz переменные (совместимость) */
   --secondary: #ab7d4c;    /* яркий золотой */
-  --tertiary: #7c5736;      /* тёмный золотой */
+  --tertiary: #ab7d4c;     /* ТОЖЕ ЯРКИЙ ЗОЛОТОЙ (убрали тёмный) */
   --dark: var(--text-primary);
   --darkgray: var(--text-secondary);
   --light: var(--bg-primary);
@@ -53,12 +53,12 @@ html {
   --text-muted: #9a9a9a;
   --border-color: #4a4f54;
   --link-color: #ab7d4c;  /* яркий золотой */
-  --link-hover: #7c5736;   /* тёмный золотой для hover */
+  --link-hover: #ab7d4c;   /* ТОЖЕ ЯРКИЙ ЗОЛОТОЙ (убрали тёмный) */
   --highlight: rgba(171, 125, 76, 0.15);
   
   /* Quartz переменные (совместимость) */
   --secondary: #ab7d4c;    /* яркий золотой */
-  --tertiary: #7c5736;      /* тёмный золотой */
+  --tertiary: #ab7d4c;     /* ТОЖЕ ЯРКИЙ ЗОЛОТОЙ (убрали тёмный) */
   --dark: var(--text-primary);
   --darkgray: var(--text-secondary);
   --light: var(--bg-primary);

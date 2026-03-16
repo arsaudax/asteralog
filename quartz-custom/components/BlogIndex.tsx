@@ -2,7 +2,6 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { classNames } from "../../quartz/util/lang"
 import { Date } from "../../quartz/components/Date"
 import { i18n } from "../../quartz/i18n"
-import style from "./styles/blogIndex.scss"
 
 const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
   const { cfg, allFiles, displayClass } = props
@@ -91,7 +90,5 @@ const BlogIndex: QuartzComponent = (props: QuartzComponentProps) => {
     </div>
   )
 }
-
-BlogIndex.css = style
 
 export default (() => BlogIndex) satisfies QuartzComponentConstructor

@@ -1,4 +1,4 @@
-import { registerEscapeHandler } from "../../../quartz/components/scripts/util"
+import { registerEscapeHandler } from "../../quartz/components/scripts/util"
 
 function setupZoom() {
   const zoomableImages = document.querySelectorAll('img.img-zoom')

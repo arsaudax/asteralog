@@ -16,7 +16,7 @@ export default (() => {
         <meta name="description" content={fileData.frontmatter?.description ?? "Asteralog — цифровой сад и блог"} />
         <link rel="icon" href="/static/icon.png" />
 
-        {/* ===== КРИТИЧЕСКИЙ СКРИПТ ДЛЯ ТЕМЫ ===== */}
+        {/* ===== КРИТИЧЕСКИЙ СКРИПТ ДЛЯ ТЕМЫ (БЕЗ FOUC) ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
@@ -25,13 +25,16 @@ export default (() => {
                 const html = document.documentElement;
                 const saved = localStorage.getItem('saved-theme');
                 
+                // Устанавливаем атрибут в зависимости от сохранённой темы
                 if (saved === 'dark') {
                   html.setAttribute('saved-theme', 'dark');
                 } else if (saved === 'light') {
                   html.setAttribute('saved-theme', 'light');
                 } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                  // Если нет сохранённой темы, но системная тёмная
                   html.setAttribute('saved-theme', 'dark');
                 } else {
+                  // По умолчанию тёмная тема (согласно дизайну)
                   html.setAttribute('saved-theme', 'dark');
                 }
               })();
@@ -45,35 +48,17 @@ export default (() => {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
         {/* ===== CSS ===== */}
-        <link rel="stylesheet" href="/custom.css" />  {/* ← ПЕРВЫМ! */}
-        <link rel="stylesheet" href="/index.css" />    {/* ← ВТОРЫМ! */}
+        <link rel="stylesheet" href="/custom.css" />
+        <link rel="stylesheet" href="/index.css" />
 
-        {/* ===== РЕИНИЦИАЛИЗАЦИЯ КОМПОНЕНТОВ ===== */}
+        {/* ===== ПРОСТОЙ СКРИПТ РЕИНИЦИАЛИЗАЦИИ ===== */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              function forceReinitialize() {
-                console.log('🔄 Принудительная реинициализация...');
-                
-                // Принудительно вызываем событие resize
-                window.dispatchEvent(new Event('resize'));
-                
-                // Эмулируем клик для активации компонентов
-                const searchBtn = document.querySelector('.search-button');
-                if (searchBtn) {
-                  searchBtn.dispatchEvent(new Event('mouseover'));
-                }
-              }
-              
               document.addEventListener('nav', () => {
-                setTimeout(forceReinitialize, 100);
+                // Просто вызываем resize для обновления компонентов
+                window.dispatchEvent(new Event('resize'));
               });
-              
-              if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', forceReinitialize);
-              } else {
-                setTimeout(forceReinitialize, 200);
-              }
             `
           }}
         />

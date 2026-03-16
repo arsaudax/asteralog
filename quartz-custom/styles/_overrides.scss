@@ -3,22 +3,47 @@
    ========================================================= */
 
 /* =========================================================
+   Asteralog Color Variables
+   ========================================================= */
+
+:root {
+  /* Dark mode colors */
+  --asteralog-bg-dark: #1a1c1e;
+  --asteralog-bg-dark-alt: #2e3235;
+  --asteralog-fg-dark: #ffffff;
+  --asteralog-comment-dark: #d4d4d4;
+  --asteralog-selection-dark: #4a4f54;
+
+  /* Light mode colors */
+  --asteralog-bg-light: #f9f7f4;
+  --asteralog-bg-light-alt: #e5e5e5;
+  --asteralog-fg-light: #2b2b2b;
+  --asteralog-comment-light: #4a4a49;
+  --asteralog-selection-light: #b8b8b8;
+
+  /* Accent colors */
+  --asteralog-accent: #ab7d4c;      /* яркий золотой */
+  --asteralog-accent-alt: #7c5736;   /* тёмный золотой для hover */
+}
+
+/* =========================================================
    ТЕМЫ ЧЕРЕЗ КЛАССЫ
    ========================================================= */
 
 html[saved-theme="dark"] {
-  --bg-primary: #1a1c1e;
-  --bg-secondary: #2e3235;
-  --text-primary: #d4d4d4;
+  --bg-primary: var(--asteralog-bg-dark);
+  --bg-secondary: var(--asteralog-bg-dark-alt);
+  --text-primary: var(--asteralog-fg-dark);
   --text-secondary: #b0b0b0;
   --text-muted: #9a9a9a;
-  --border-color: #4a4f54;
-  --link-color: #ab7d4c;
-  --link-hover: #ab7d4c;
+  --border-color: var(--asteralog-selection-dark);
+  --link-color: var(--asteralog-accent);
+  --link-hover: var(--asteralog-accent-alt);
   --highlight: rgba(171,125,76,.15);
   
-  --secondary: #ab7d4c;
-  --tertiary: #ab7d4c;
+  /* Quartz переменные */
+  --secondary: var(--asteralog-accent);
+  --tertiary: var(--asteralog-accent-alt);
   --dark: var(--text-primary);
   --darkgray: var(--text-secondary);
   --light: var(--bg-primary);
@@ -27,18 +52,19 @@ html[saved-theme="dark"] {
 }
 
 html[saved-theme="light"] {
-  --bg-primary: #f9f7f4;
-  --bg-secondary: #e5e5e5;
-  --text-primary: #2b2b2b;
-  --text-secondary: #4a4a49;
-  --text-muted: #9a9a9a;
-  --border-color: #b8b8b8;
-  --link-color: #ab7d4c;
-  --link-hover: #ab7d4c;
-  --highlight: rgba(171,125,76,.15);
+  --bg-primary: var(--asteralog-bg-light);
+  --bg-secondary: var(--asteralog-bg-light-alt);
+  --text-primary: var(--asteralog-fg-light);
+  --text-secondary: var(--asteralog-comment-light);
+  --text-muted: color-mix(in srgb, var(--text-secondary) 80%, transparent);
+  --border-color: var(--asteralog-selection-light);
+  --link-color: var(--asteralog-accent);
+  --link-hover: var(--asteralog-accent-alt);
+  --highlight: rgba(162,132,94,.15);
   
-  --secondary: #ab7d4c;
-  --tertiary: #ab7d4c;
+  /* Quartz переменные */
+  --secondary: var(--asteralog-accent);
+  --tertiary: var(--asteralog-accent-alt);
   --dark: var(--text-primary);
   --darkgray: var(--text-secondary);
   --light: var(--bg-primary);
@@ -47,7 +73,19 @@ html[saved-theme="light"] {
 }
 
 /* =========================================================
-   ССЫЛКИ — ВСЕ ОДНОГО ЦВЕТА
+   СТИЛИ ДЛЯ ЗАГОЛОВКОВ СТАТЕЙ
+   ========================================================= */
+
+.article-title {
+  color: var(--secondary) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--tertiary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* =========================================================
+   ССЫЛКИ
    ========================================================= */
 
 a {
@@ -56,41 +94,22 @@ a {
   transition: color var(--transition-fast);
   
   &:hover {
-    color: var(--secondary);
+    color: var(--tertiary);
     text-decoration: underline;
-    opacity: 0.9;
   }
   
   &.internal {
     border-bottom: 1px dashed var(--secondary);
     
     &:hover {
-      border-bottom-color: var(--secondary);
+      border-bottom-color: var(--tertiary);
       text-decoration: none;
     }
   }
-  
-  &[href^="http"]:not(.internal):not(.no-external)::after {
-    content: " ↗";
-    font-size: 0.8em;
-    opacity: 0.7;
-  }
 }
 
 /* =========================================================
-   ЗАГОЛОВОК СТАТЬИ — ТОЖЕ ЯРКИЙ ЗОЛОТОЙ
-   ========================================================= */
-
-.article-title {
-  color: var(--secondary) !important;
-  font-weight: 600;
-  border-bottom: 2px solid var(--secondary);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-/* =========================================================
-   ТЕГИ — ВСЕ ЯРКИЕ
+   ТЕГИ
    ========================================================= */
 
 .tag, .tags a, .post-tag, .tag-list-item {
@@ -101,15 +120,12 @@ a {
   padding: 0.25rem 0.75rem;
   font-size: 0.9rem;
   transition: all 0.2s ease;
-  display: inline-block;
-  margin: 0.25rem;
   
   &:hover {
     background: var(--secondary) !important;
     color: var(--light) !important;
     border-color: var(--secondary);
     transform: translateY(-1px);
-    text-decoration: none;
   }
 }
 
@@ -120,16 +136,17 @@ a {
 #graph-container {
   .node {
     fill: var(--secondary);
-    
+    transition: fill 0.2s ease;
+
     &:hover {
-      fill: var(--secondary);
-      opacity: 0.9;
+      fill: var(--tertiary);
     }
   }
-  
+
   .link {
     stroke: var(--gray);
-    
+    transition: stroke 0.2s ease;
+
     &:hover {
       stroke: var(--secondary);
     }
@@ -149,7 +166,7 @@ a {
     border-color: var(--secondary);
     
     svg {
-      color: var(--secondary);
+      color: var(--tertiary);
     }
   }
 }

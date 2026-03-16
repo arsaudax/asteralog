@@ -31,10 +31,9 @@ export default (() => {
                 } else if (saved === 'light') {
                   html.setAttribute('saved-theme', 'light');
                 } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                  // Если нет сохранённой темы, но системная тёмная
                   html.setAttribute('saved-theme', 'dark');
                 } else {
-                  // По умолчанию тёмная тема (согласно дизайну)
+                  // По умолчанию тёмная тема
                   html.setAttribute('saved-theme', 'dark');
                 }
               })();

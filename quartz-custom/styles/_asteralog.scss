@@ -14,12 +14,22 @@
   --asteralog-comment-light: #4a4a49;
   --asteralog-selection-light: #b8b8b8;
 
-  /* Accent colors */
-  --asteralog-accent: #b5977a;
-  --asteralog-accent-alt: #ab7d4c;
+  /* Accent colors - ЕДИНЫЙ ЗОЛОТОЙ */
+  --asteralog-accent: #ab7d4c;  /* яркий золотой (было b5977a) */
+  --asteralog-accent-alt: #ab7d4c;  /* тоже яркий золотой для единообразия */
+  --asteralog-accent-hover: #7c5736;  /* тёмный золотой для hover */
 }
 
-// Callout overrides
+/* Article Title - золотой */
+.article-title {
+  color: var(--asteralog-accent) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--asteralog-accent-alt);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Callout overrides */
 .callout {
   &[data-callout="note"],
   &[data-callout="info"] {
@@ -28,7 +38,7 @@
 
   &[data-callout="tip"],
   &[data-callout="success"] {
-    --callout-color: var(--asteralog-accent-alt);
+    --callout-color: var(--asteralog-accent);
   }
 
   border-left-color: var(--callout-color);
@@ -38,7 +48,7 @@
   }
 }
 
-// Search
+/* Search */
 #search-container {
   input {
     border-color: var(--gray);
@@ -46,7 +56,7 @@
 
     &:focus {
       border-color: var(--asteralog-accent);
-      box-shadow: 0 0 0 2px rgba(181, 151, 122, 0.2);
+      box-shadow: 0 0 0 2px rgba(171, 125, 76, 0.2);
       outline: none;
     }
   }
@@ -60,14 +70,14 @@
   }
 }
 
-// Graph
+/* Graph */
 #graph-container {
   .node {
     fill: var(--asteralog-accent);
     transition: fill 0.2s ease;
 
     &:hover {
-      fill: var(--asteralog-accent-alt);
+      fill: var(--asteralog-accent-hover);
     }
   }
 
@@ -81,7 +91,7 @@
   }
 }
 
-// Explorer
+/* Explorer */
 .explorer {
   .folder-button {
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -97,7 +107,7 @@
     transition: color 0.2s ease;
 
     &:hover {
-      color: var(--asteralog-accent-alt);
+      color: var(--asteralog-accent-hover);
     }
   }
 
@@ -107,14 +117,14 @@
   }
 }
 
-// Breadcrumbs
+/* Breadcrumbs */
 .breadcrumb-container {
   a {
-    color: var(--secondary);
+    color: var(--asteralog-accent);
     transition: color 0.2s ease;
 
     &:hover {
-      color: var(--asteralog-accent-alt);
+      color: var(--asteralog-accent-hover);
     }
   }
 
@@ -124,7 +134,7 @@
   }
 }
 
-// TOC
+/* TOC */
 .toc {
   a {
     transition: color 0.2s ease, background-color 0.2s ease;
@@ -137,12 +147,12 @@
     }
 
     &:hover {
-      color: var(--asteralog-accent-alt);
+      color: var(--asteralog-accent-hover);
     }
   }
 }
 
-// Dark mode button
+/* Dark mode button */
 .darkmode {
   button {
     background: var(--lightgray);
@@ -159,6 +169,35 @@
 
     svg {
       color: var(--asteralog-accent);
+    }
+  }
+}
+
+/* Tags */
+.tag, .tags a, .post-tag {
+  color: var(--asteralog-accent) !important;
+  border: 1px solid var(--gray);
+  
+  &:hover {
+    background: var(--asteralog-accent) !important;
+    color: var(--light) !important;
+    border-color: var(--asteralog-accent);
+  }
+}
+
+/* Links */
+a {
+  color: var(--asteralog-accent);
+  
+  &:hover {
+    color: var(--asteralog-accent-hover);
+  }
+  
+  &.internal {
+    border-bottom: 1px dashed var(--asteralog-accent);
+    
+    &:hover {
+      border-bottom-color: var(--asteralog-accent-hover);
     }
   }
 }

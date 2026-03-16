@@ -230,3 +230,369 @@ button {
     color: var(--link-hover);
   }
 }
+
+/* =========================================================
+   СТИЛИ ДЛЯ ЗАГОЛОВКОВ СТАТЕЙ
+   ========================================================= */
+
+.article-title {
+  color: var(--secondary) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--tertiary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* =========================================================
+   СТИЛИ ДЛЯ ЗАГОЛОВКОВ В ТЕКСТЕ
+   ========================================================= */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--dark);
+  scroll-margin-top: 2rem;
+  
+  &:hover .anchor {
+    color: var(--secondary);
+    opacity: 1;
+  }
+  
+  .anchor {
+    color: var(--secondary);
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* =========================================================
+   СТИЛИ ДЛЯ ТЕГОВ
+   ========================================================= */
+
+.tag, .tags a, .post-tag, .tag-list-item {
+  background: transparent;
+  color: var(--secondary) !important;
+  border: 1px solid var(--gray);
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+  margin: 0.25rem;
+  
+  &:hover {
+    background: var(--secondary) !important;
+    color: var(--light) !important;
+    border-color: var(--secondary);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  
+  .tag-count {
+    color: var(--gray);
+    transition: color 0.2s ease;
+    margin-left: 0.1rem;
+    
+    &:hover {
+      color: var(--light);
+    }
+  }
+}
+
+/* =========================================================
+   СТИЛИ ДЛЯ МЕТАДАННЫХ
+   ========================================================= */
+
+.content-meta {
+  color: var(--gray);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 1rem 0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  
+  svg {
+    fill: var(--secondary);
+    margin-right: 0.25rem;
+  }
+  
+  time, span {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* =========================================================
+   СТИЛИ ДЛЯ ХЛЕБНЫХ КРОШЕК
+   ========================================================= */
+
+.breadcrumb-container {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  
+  a {
+    color: var(--secondary);
+    
+    &:hover {
+      color: var(--tertiary);
+    }
+  }
+  
+  .breadcrumb-separator {
+    color: var(--gray);
+    margin: 0 0.5rem;
+  }
+  
+  .breadcrumb-current {
+    color: var(--darkgray);
+    font-weight: 500;
+  }
+}
+
+/* =========================================================
+   Quartz Component Overrides
+   ========================================================= */
+
+/* Callout */
+.callout {
+  &[data-callout="note"],
+  &[data-callout="info"] {
+    --callout-color: var(--secondary);
+  }
+
+  &[data-callout="tip"],
+  &[data-callout="success"] {
+    --callout-color: var(--tertiary);
+  }
+
+  border-left-color: var(--callout-color);
+
+  .callout-title {
+    color: var(--callout-color);
+  }
+}
+
+/* Search */
+#search-container {
+  input {
+    border-color: var(--gray);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(171, 125, 76, 0.2);
+      outline: none;
+    }
+  }
+
+  .search-result {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: var(--highlight);
+    }
+  }
+}
+
+/* Graph */
+#graph-container {
+  .node {
+    fill: var(--secondary);
+    transition: fill 0.2s ease;
+
+    &:hover {
+      fill: var(--tertiary);
+    }
+  }
+
+  .link {
+    stroke: var(--gray);
+    transition: stroke 0.2s ease;
+
+    &:hover {
+      stroke: var(--secondary);
+    }
+  }
+}
+
+/* Explorer */
+.explorer {
+  .folder-button {
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background: var(--highlight);
+      color: var(--secondary);
+    }
+  }
+
+  .folder-title,
+  .explorer-link {
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--tertiary);
+    }
+  }
+
+  .explorer-link.active {
+    color: var(--secondary);
+    font-weight: 600;
+  }
+}
+
+/* TOC */
+.toc {
+  a {
+    transition: color 0.2s ease, background-color 0.2s ease;
+
+    &.active {
+      color: var(--secondary);
+      background: var(--highlight);
+      border-left: 3px solid var(--secondary);
+      padding-left: 0.75rem;
+    }
+
+    &:hover {
+      color: var(--tertiary);
+    }
+  }
+}
+
+/* Dark mode button */
+.darkmode {
+  button {
+    background: var(--lightgray);
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--highlight);
+      border-color: var(--secondary);
+      transform: scale(1.05);
+    }
+
+    svg {
+      color: var(--secondary);
+    }
+  }
+}
+
+/* =========================================================
+   Archive Link
+   ========================================================= */
+
+.archive-link-container {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-sm) 0;
+  
+  &--sidebar {
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+    padding: var(--spacing-md) 0;
+    
+    @media (max-width: 800px) {
+      display: none;
+    }
+  }
+  
+  .archive-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--link-color);
+    text-decoration: none;
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    transition: color var(--transition-fast);
+    
+    &:hover {
+      color: var(--link-hover);
+      
+      .archive-arrow {
+        transform: translateX(4px);
+      }
+    }
+  }
+  
+  .archive-arrow {
+    transition: transform var(--transition-fast);
+    font-size: 1.1em;
+  }
+  
+  &--sidebar .archive-link {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 500px) {
+  .archive-link-container {
+    margin-top: var(--spacing-md);
+    
+    .archive-link {
+      font-size: var(--font-size-sm);
+    }
+  }
+}
+
+/* =========================================================
+   Image Zoom
+   ========================================================= */
+
+.zoom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: fadeIn 0.2s ease;
+}
+
+.zoomed-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: zoomIn 0.2s ease;
+}
+
+.img-zoom {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+:root.dark .zoom-overlay {
+  background: rgba(0, 0, 0, 0.95);
+}

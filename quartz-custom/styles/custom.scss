@@ -1,17 +1,210 @@
-// Asteralog Theme Enhancements
-// Custom styling для цифрового сада и блога
+/* =========================================================
+   Asteralog Theme Enhancements
+   Главный файл стилей
+   ========================================================= */
 
-// Используем @use вместо @import
-@use "variables";
-@use "overrides";
-@use "asteralog";
-@use "elements";
+/* Импортируем переменные */
+@import "./variables";
 
-.page-header {
-  header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+/* =========================================================
+   ГЛОБАЛЬНЫЕ СТИЛИ
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* =========================================================
+   ТИПОГРАФИЯ
+   ========================================================= */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+h1 { font-size: var(--font-size-4xl); }
+h2 { font-size: var(--font-size-3xl); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+h3 { font-size: var(--font-size-2xl); }
+h4 { font-size: var(--font-size-xl); }
+h5 { font-size: var(--font-size-lg); }
+h6 { font-size: var(--font-size-md); color: var(--text-secondary); }
+
+p {
+  margin: 1rem 0;
+}
+
+/* =========================================================
+   ССЫЛКИ
+   ========================================================= */
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  
+  &:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+  
+  &.internal {
+    border-bottom: 1px dashed var(--link-color);
+    
+    &:hover {
+      border-bottom-color: var(--link-hover);
+      text-decoration: none;
+    }
+  }
+  
+  &[href^="http"]:not(.internal):not(.no-external)::after {
+    content: " ↗";
+    font-size: 0.8em;
+    opacity: 0.7;
+  }
+}
+
+/* =========================================================
+   КОД
+   ========================================================= */
+
+code {
+  font-family: var(--code-font);
+  font-size: 0.9em;
+  background: var(--bg-secondary);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  color: var(--link-color);
+}
+
+pre {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  overflow-x: auto;
+  
+  code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+}
+
+/* =========================================================
+   ЦИТАТЫ
+   ========================================================= */
+
+blockquote {
+  border-left: 4px solid var(--link-color);
+  background: var(--highlight);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* =========================================================
+   ТАБЛИЦЫ
+   ========================================================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  
+  th {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 2px solid var(--link-color);
+  }
+  
+  td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  tr:hover {
+    background: var(--highlight);
+  }
+}
+
+/* =========================================================
+   ИЗОБРАЖЕНИЯ
+   ========================================================= */
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  
+  &.img-zoom {
+    cursor: zoom-in;
+    transition: transform var(--transition-fast);
+    
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+/* =========================================================
+   КНОПКИ И ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ
+   ========================================================= */
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+/* =========================================================
+   ВЫДЕЛЕНИЕ
+   ========================================================= */
+
+::selection {
+  background: var(--highlight);
+  color: var(--text-primary);
+}
+
+/* =========================================================
+   СКРОЛЛБАР
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-sm);
+  
+  &:hover {
+    background: var(--text-muted);
   }
 }

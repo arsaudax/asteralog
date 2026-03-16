@@ -1,7 +1,5 @@
-// quartz-custom/components/Head.tsx
-import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
+import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../../quartz/components/types"
 import { i18n } from "../../quartz/i18n"
-import { QuartzComponentProps } from "../../quartz/components/types"
 
 export default (() => {
   const Head: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) => {
@@ -12,25 +10,33 @@ export default (() => {
       <head>
         {/* ===== БАЗОВЫЕ META ===== */}
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="color-scheme" content="dark light" />
         <title>{title}</title>
         <meta name="description" content={fileData.frontmatter?.description ?? "Asteralog — цифровой сад и блог"} />
         <link rel="icon" href="/static/icon.png" />
 
-        {/* ===== ПРОСТОЙ СКРИПТ ТЕМЫ ===== */}
+        {/* ===== КРИТИЧЕСКИЙ СКРИПТ ДЛЯ ТЕМЫ (БЕЗ FOUC) ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 const html = document.documentElement;
-                const isBlog = window.location.hostname.includes('blog');
-                html.classList.add(isBlog ? 'site-blog' : 'site-garden');
+                const saved = localStorage.getItem('saved-theme');
                 
-                // Просто берём тему из localStorage или ставим dark
-                const theme = localStorage.getItem('theme') || 'dark';
-                html.setAttribute('data-theme', theme);
+                // Устанавливаем класс в зависимости от сохранённой темы
+                if (saved === 'dark') {
+                  html.classList.add('dark');
+                } else if (saved === 'light') {
+                  html.classList.add('light');
+                } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                  // Если нет сохранённой темы, но системная тёмная
+                  html.classList.add('dark');
+                } else {
+                  // По умолчанию тёмная тема (согласно дизайну)
+                  html.classList.add('dark');
+                }
               })();
             `
           }}
@@ -43,6 +49,7 @@ export default (() => {
 
         {/* ===== CSS ===== */}
         <link rel="stylesheet" href="/index.css" />
+        <link rel="stylesheet" href="/custom.css" />
       </head>
     )
   }

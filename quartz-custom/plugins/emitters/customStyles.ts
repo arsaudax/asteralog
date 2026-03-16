@@ -1,51 +1,46 @@
+import { FullSlug, joinSegments } from "../../../quartz/util/path"
 import { QuartzEmitterPlugin } from "../../../quartz/plugins/types"
-import { readFileSync } from "fs"
-import { join } from "path"
-import { fileURLToPath } from "url"
-import { dirname } from "path"
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+import customStyles from "../../styles/custom.scss"
+import { BuildCtx } from "../../../quartz/util/ctx"
+import { Features, transform } from "lightningcss"
+import { write } from "../../../quartz/plugins/emitters/helpers"
 
 export const CustomStyles: QuartzEmitterPlugin = () => {
   return {
     name: "CustomStyles",
-    async *emit(ctx) {
-      // ПРАВИЛЬНЫЙ ПУТЬ: поднимаемся на 3 уровня до quartz-custom/, затем в styles/
-      const customCssPath = join(__dirname, "../../../styles/custom.scss")
-      
-      console.log(`📁 Загрузка стилей из: ${customCssPath}`)
-      
-      try {
-        const customCss = readFileSync(customCssPath, "utf-8")
-        
-        yield {
-          slug: "custom",
-          content: customCss,
-          ext: ".css",
-        }
-      } catch (error) {
-        console.error(`❌ Не удалось загрузить custom.scss по пути: ${customCssPath}`)
-        console.error(`📁 Текущая директория: ${__dirname}`)
-        
-        // Попробуем найти файл для отладки
-        const fs = require('fs')
-        const findFile = (startPath: string) => {
-          console.log(`🔍 Поиск в: ${startPath}`)
-          if (fs.existsSync(startPath)) {
-            const files = fs.readdirSync(startPath)
-            console.log(`   Найдено: ${files.join(', ')}`)
-          }
-        }
-        
-        findFile(join(__dirname, "../../../"))
-        findFile(join(__dirname, "../../../styles/"))
-        
-        throw error
+    async *emit(ctx: BuildCtx, _content, _resources) {
+      // Transform and minify the custom SCSS
+      const transformedStyles = transform({
+        filename: "custom.css",
+        code: Buffer.from(customStyles),
+        minify: true,
+        targets: {
+          safari: (15 << 16) | (6 << 8),
+          ios_saf: (15 << 16) | (6 << 8),
+          edge: 115 << 16,
+          firefox: 102 << 16,
+          chrome: 109 << 16,
+        },
+        include: Features.MediaQueries,
+      })
+
+      // Emit the custom stylesheet
+      yield write({
+        ctx,
+        slug: "custom" as FullSlug,
+        ext: ".css",
+        content: transformedStyles.code.toString(),
+      })
+    },
+    async *partialEmit() {},
+    externalResources: () => {
+      return {
+        css: [
+          {
+            content: "/custom.css",
+          },
+        ],
       }
     },
-    externalResources: () => ({
-      css: [{ content: "/custom.css" }],
-    }),
   }
 }

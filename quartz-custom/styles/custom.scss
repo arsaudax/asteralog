@@ -208,3 +208,25 @@ button {
     background: var(--text-muted);
   }
 }
+
+/* =========================================================
+   ПОПОВЕРЫ (ДОЛЖНЫ НАСЛЕДОВАТЬ ТЕМУ)
+   ========================================================= */
+
+.popover {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  
+  .popover-inner {
+    background: var(--bg-primary) !important;
+  }
+  
+  h3, h4, p, a {
+    color: var(--text-primary);
+  }
+  
+  a:hover {
+    color: var(--link-hover);
+  }
+}

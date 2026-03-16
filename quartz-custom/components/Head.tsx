@@ -27,15 +27,13 @@ export default (() => {
                 
                 // Устанавливаем класс в зависимости от сохранённой темы
                 if (saved === 'dark') {
-                  html.classList.add('dark');
+                  html.setAttribute('saved-theme', 'dark');
                 } else if (saved === 'light') {
-                  html.classList.add('light');
+                  html.setAttribute('saved-theme', 'light');
                 } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                  // Если нет сохранённой темы, но системная тёмная
-                  html.classList.add('dark');
+                  html.setAttribute('saved-theme', 'dark');
                 } else {
-                  // По умолчанию тёмная тема (согласно дизайну)
-                  html.classList.add('dark');
+                  html.setAttribute('saved-theme', 'dark'); // По умолчанию тёмная
                 }
               })();
             `
@@ -50,6 +48,32 @@ export default (() => {
         {/* ===== CSS ===== */}
         <link rel="stylesheet" href="/index.css" />
         <link rel="stylesheet" href="/custom.css" />
+
+        {/* ===== РЕИНИЦИАЛИЗАЦИЯ КОМПОНЕНТОВ ПОСЛЕ SPA-ПЕРЕХОДОВ ===== */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              document.addEventListener('nav', () => {
+                // Принудительно перерисовываем компоненты
+                setTimeout(() => {
+                  window.dispatchEvent(new Event('resize'));
+                  
+                  // Реинициализация поиска
+                  const search = document.querySelector('.search');
+                  if (search && (search as any).__onNav) {
+                    (search as any).__onNav();
+                  }
+                  
+                  // Реинициализация графа
+                  const graph = document.querySelector('#graph-container');
+                  if (graph && (graph as any).__onNav) {
+                    (graph as any).__onNav();
+                  }
+                }, 100);
+              });
+            `
+          }}
+        />
       </head>
     )
   }

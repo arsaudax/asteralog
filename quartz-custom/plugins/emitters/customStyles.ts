@@ -11,16 +11,20 @@ export const CustomStyles: QuartzEmitterPlugin = () => {
   return {
     name: "CustomStyles",
     async *emit(ctx) {
+      // Правильный путь: поднимаемся на два уровня вверх, затем в styles/
       const customCssPath = join(__dirname, "../../styles/custom.scss")
-      const customCss = readFileSync(customCssPath, "utf-8")
       
-      // Преобразуем SCSS в CSS (упрощённо, в реальности используется lightningcss)
-      // В рабочей версии здесь трансформация, но для простоты оставим как есть
-      
-      yield {
-        slug: "custom",
-        content: customCss,
-        ext: ".css",
+      try {
+        const customCss = readFileSync(customCssPath, "utf-8")
+        
+        yield {
+          slug: "custom",
+          content: customCss,
+          ext: ".css",
+        }
+      } catch (error) {
+        console.error(`❌ Не удалось загрузить custom.scss по пути: ${customCssPath}`)
+        throw error
       }
     },
     externalResources: () => ({

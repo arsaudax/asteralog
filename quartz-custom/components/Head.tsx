@@ -16,7 +16,7 @@ export default (() => {
         <meta name="description" content={fileData.frontmatter?.description ?? "Asteralog — цифровой сад и блог"} />
         <link rel="icon" href="/static/icon.png" />
 
-        {/* ===== КРИТИЧЕСКИЙ СКРИПТ ДЛЯ ТЕМЫ (БЕЗ FOUC) ===== */}
+        {/* ===== КРИТИЧЕСКИЙ СКРИПТ ДЛЯ ТЕМЫ ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
@@ -25,7 +25,6 @@ export default (() => {
                 const html = document.documentElement;
                 const saved = localStorage.getItem('saved-theme');
                 
-                // Устанавливаем класс в зависимости от сохранённой темы
                 if (saved === 'dark') {
                   html.setAttribute('saved-theme', 'dark');
                 } else if (saved === 'light') {
@@ -33,7 +32,7 @@ export default (() => {
                 } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                   html.setAttribute('saved-theme', 'dark');
                 } else {
-                  html.setAttribute('saved-theme', 'dark'); // По умолчанию тёмная
+                  html.setAttribute('saved-theme', 'dark');
                 }
               })();
             `
@@ -46,64 +45,35 @@ export default (() => {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
         {/* ===== CSS ===== */}
-        <link rel="stylesheet" href="/index.css" />
-        <link rel="stylesheet" href="/custom.css" />
+        <link rel="stylesheet" href="/custom.css" />  {/* ← ПЕРВЫМ! */}
+        <link rel="stylesheet" href="/index.css" />    {/* ← ВТОРЫМ! */}
 
-        {/* ===== УСИЛЕННАЯ РЕИНИЦИАЛИЗАЦИЯ КОМПОНЕНТОВ ===== */}
+        {/* ===== РЕИНИЦИАЛИЗАЦИЯ КОМПОНЕНТОВ ===== */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Функция принудительной перезагрузки всех компонентов
               function forceReinitialize() {
-                console.log('🔄 Принудительная реинициализация компонентов...');
+                console.log('🔄 Принудительная реинициализация...');
                 
-                // 1. Перезапускаем поиск
+                // Принудительно вызываем событие resize
+                window.dispatchEvent(new Event('resize'));
+                
+                // Эмулируем клик для активации компонентов
                 const searchBtn = document.querySelector('.search-button');
                 if (searchBtn) {
-                  searchBtn.click();
-                  setTimeout(() => searchBtn.click(), 10);
+                  searchBtn.dispatchEvent(new Event('mouseover'));
                 }
-                
-                // 2. Обновляем граф
-                const graph = document.querySelector('#graph-container');
-                if (graph) {
-                  // Принудительно перерисовываем
-                  const event = new Event('resize');
-                  window.dispatchEvent(event);
-                }
-                
-                // 3. Перезапускаем переключатель темы
-                const darkmode = document.querySelector('.darkmode button');
-                if (darkmode) {
-                  // Эмулируем клик для переинициализации
-                  darkmode.dispatchEvent(new Event('mouseover'));
-                }
-                
-                // 4. Обновляем все интерактивные элементы
-                setTimeout(() => {
-                  window.dispatchEvent(new Event('resize'));
-                  document.querySelectorAll('*').forEach(el => {
-                    if (el.__reinitialize) el.__reinitialize();
-                  });
-                }, 50);
               }
               
-              // Слушаем все возможные события навигации
               document.addEventListener('nav', () => {
                 setTimeout(forceReinitialize, 100);
               });
               
-              // Также запускаем после загрузки страницы
               if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', forceReinitialize);
               } else {
                 setTimeout(forceReinitialize, 200);
               }
-              
-              // Дополнительная проверка после полной загрузки
-              window.addEventListener('load', () => {
-                setTimeout(forceReinitialize, 500);
-              });
             `
           }}
         />

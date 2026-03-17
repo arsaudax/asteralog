@@ -25,7 +25,7 @@ const baseLeftPanel = [
 // Конфигурация проводника
 const explorerConfig = {
   filterFn: (node: FileTrieNode) => {
-    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude")
+    const hasExcludedTag = node.data?.frontmatter?.tags?.includes("explorer-exclude") === true
     return !hasExcludedTag
   },
   mapFn: (node: FileTrieNode) => {
@@ -35,11 +35,7 @@ const explorerConfig = {
   },
   title: "Сад",
   folderDefaultState: "collapsed",
-  sort: (a, b) => {
-    if (a.isFolder && !b.isFolder) return -1
-    if (!a.isFolder && b.isFolder) return 1
-    return (a.displayName || '').localeCompare(b.displayName || '')
-  },
+  useSavedState: true,
 }
 
 // Конфигурация графа
@@ -52,19 +48,17 @@ const graphConfig = {
     showTags: false,
     excludeTags: ["graph-exclude"],
   },
-  title: "Граф",
 }
 
 // Конфигурация обратных ссылок
 const backlinksConfig = {
   hideWhenEmpty: true,
-  title: "Обратные ссылки",
 }
 
 // Общие компоненты
 export const sharedPageComponents: SharedLayout = {
-  head: CustomComponent.Head(),  // ← кастомный Head
-  header: [],
+  head: CustomComponent.Head(),
+  header: [CustomComponent.ScrollBehavior()],
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -99,23 +93,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.Backlinks(backlinksConfig),
     CustomTagList(),
   ],
-}
-
-export const gardenListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-    Component.ConditionalRender({
-      component: CustomComponent.ContentMeta({ showReadingTime: true }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index'
-      }
-    }),
-  ],
-  left: [
-    ...baseLeftPanel,
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
-  right: [],
+  afterBody: [], // пусто, без скриптов
 }
 
 // ==============================
@@ -148,7 +126,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    // Ссылка на архив в правой панели
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
@@ -191,32 +168,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'archive'
       }
     }),
-    // Скрипт восстановления темы для SPA-навигации
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-          (function() {
-            function restoreTheme() {
-              const theme = localStorage.getItem("saved-theme");
-              if (theme) {
-                document.documentElement.setAttribute("saved-theme", theme);
-              }
-            }
-            
-            // Восстанавливаем тему после SPA-переходов
-            document.addEventListener("nav", restoreTheme);
-            window.addEventListener("popstate", restoreTheme);
-            
-            // При загрузке страницы
-            if (document.readyState === "loading") {
-              document.addEventListener("DOMContentLoaded", restoreTheme);
-            } else {
-              restoreTheme();
-            }
-          })();
-        `
-      }}
-    />
   ],
 }
 
@@ -227,7 +178,6 @@ export const blogListPageLayout: PageLayout = {
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    // Ссылка на архив в списках тегов
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         sidebar: true,
@@ -238,31 +188,8 @@ export const blogListPageLayout: PageLayout = {
         return props.fileData.slug?.startsWith('tags/') || false
       }
     }),
-    // Скрипт восстановления темы для SPA-навигации (на всех страницах)
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-          (function() {
-            function restoreTheme() {
-              const theme = localStorage.getItem("saved-theme");
-              if (theme) {
-                document.documentElement.setAttribute("saved-theme", theme);
-              }
-            }
-            
-            document.addEventListener("nav", restoreTheme);
-            window.addEventListener("popstate", restoreTheme);
-            
-            if (document.readyState === "loading") {
-              document.addEventListener("DOMContentLoaded", restoreTheme);
-            } else {
-              restoreTheme();
-            }
-          })();
-        `
-      }}
-    />
   ],
+  afterBody: [], // пусто, без скриптов
 }
 
 // ==============================
@@ -278,3 +205,5 @@ export const defaultListPageLayout: PageLayout =
   siteType === 'garden'
     ? gardenListPageLayout
     : blogListPageLayout
+
+export default defaultContentPageLayout

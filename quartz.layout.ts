@@ -72,6 +72,19 @@ export const sharedPageComponents: SharedLayout = {
 // ==============================
 // GARDEN LAYOUTS
 // ==============================
+
+export const gardenListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.ArticleTitle(),
+  ],
+  left: [
+    ...baseLeftPanel,
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [],
+  afterBody: [],
+}
+
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
@@ -93,12 +106,34 @@ export const gardenContentPageLayout: PageLayout = {
     Component.Backlinks(backlinksConfig),
     CustomTagList(),
   ],
-  afterBody: [], // пусто, без скриптов
+  afterBody: [],
 }
 
 // ==============================
 // BLOG LAYOUTS
 // ==============================
+
+export const blogListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.ArticleTitle(),
+  ],
+  left: baseLeftPanel,
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    Component.ConditionalRender({
+      component: CustomComponent.ArchiveLink({ 
+        sidebar: true,
+        text: "Все записи →📚",
+        emoji: "none"
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug?.startsWith('tags/') || false
+      }
+    }),
+  ],
+  afterBody: [],
+}
+
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
@@ -169,27 +204,6 @@ export const blogContentPageLayout: PageLayout = {
       }
     }),
   ],
-}
-
-export const blogListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  left: baseLeftPanel,
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.ConditionalRender({
-      component: CustomComponent.ArchiveLink({ 
-        sidebar: true,
-        text: "Все записи →📚",
-        emoji: "none"
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug?.startsWith('tags/') || false
-      }
-    }),
-  ],
-  afterBody: [], // пусто, без скриптов
 }
 
 // ==============================

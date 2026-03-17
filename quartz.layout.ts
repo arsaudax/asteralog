@@ -1,19 +1,70 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-import * as CustomComponent from "./quartz-custom/components"
 import { gardenFilter, blogFilter } from "./quartz-custom/utils/filter"
+import * as CustomComponent from "./quartz-custom/components"
+import CustomTagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
+import { QuartzComponentProps } from "./quartz/components/types"
 
-const getSiteType = () => {
-  if (typeof process === 'undefined') return 'garden'
-  const baseUrl = process.env?.BASE_URL || ''
-  return baseUrl.includes('blog') ? 'blog' : 'garden'
+// Определяем тип сайта
+const siteType = typeof process !== 'undefined' 
+  ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
+  : 'garden'
+
+// Базовая левая панель (общая для всех layout)
+const baseLeftPanel = [
+  CustomComponent.PageTitle({ 
+    logo: "/static/thistle.png",
+    logoAlt: "Логотип"
+  }),
+  Component.MobileOnly(Component.Spacer()),
+  Component.Search(),
+  Component.Darkmode(),
+]
+
+// Конфигурация проводника
+const explorerConfig = {
+  filterFn: (node: FileTrieNode) => {
+    const hasExcludedTag = node.data?.tags?.includes("explorer-exclude")
+    return !hasExcludedTag
+  },
+  mapFn: (node: FileTrieNode) => {
+    if (!node.isFolder) {
+      node.displayName = "⊹ " + node.displayName
+    }
+  },
+  title: "Сад",
+  folderDefaultState: "collapsed",
+  sort: (a, b) => {
+    if (a.isFolder && !b.isFolder) return -1
+    if (!a.isFolder && b.isFolder) return 1
+    return (a.displayName || '').localeCompare(b.displayName || '')
+  },
 }
 
-// Общие компоненты для всех страниц
+// Конфигурация графа
+const graphConfig = {
+  localGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"],
+  },
+  globalGraph: {
+    showTags: false,
+    excludeTags: ["graph-exclude"],
+  },
+  title: "Граф",
+}
+
+// Конфигурация обратных ссылок
+const backlinksConfig = {
+  hideWhenEmpty: true,
+  title: "Обратные ссылки",
+}
+
+// Общие компоненты
 export const sharedPageComponents: SharedLayout = {
-  head: CustomComponent.Head(),
-  header: [CustomComponent.ScrollBehavior()],
+  head: CustomComponent.Head(),  // ← кастомный Head
+  header: [],
   afterBody: [],
   footer: CustomComponent.Footer({
     links: {
@@ -24,122 +75,206 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Единый макет для всех страниц
-export const defaultContentPageLayout: PageLayout = {
+// ==============================
+// GARDEN LAYOUTS
+// ==============================
+export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs({ rootName: "🏡" }),
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
-    Component.TagList(),
     Component.ConditionalRender({
-      component: CustomComponent.BlogIndex,
-      condition: (props) => getSiteType() === 'blog' && props.fileData.slug === 'index'
-    }),
-  ],
-  
-  left: [
-    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.ConditionalRender({
-      component: Component.DesktopOnly(Component.Explorer({
-        filterFn: (node: FileTrieNode) => {
-          const hasExcludedTag = node.data?.frontmatter?.tags?.includes("explorer-exclude") === true
-          return !hasExcludedTag
-        },
-        mapFn: (node: FileTrieNode) => {
-          if (!node.isFolder) {
-            node.displayName = "⊹ " + node.displayName
-          }
-        },
-        title: getSiteType() === 'garden' ? "Сад" : "Блог",
-        folderDefaultState: "collapsed",
-        useSavedState: true,
-      })),
-      condition: () => getSiteType() === 'garden'
-    }),
-  ],
-  
-  right: [
-    Component.ConditionalRender({
-      component: Component.DesktopOnly(Component.Graph({
-        localGraph: { 
-          showTags: false, 
-          excludeTags: ["graph-exclude"] 
-        },
-        globalGraph: { 
-          showTags: false, 
-          excludeTags: ["graph-exclude"] 
-        },
-      })),
-      condition: () => getSiteType() === 'garden'
-    }),
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.RecentNotes({
-      limit: 5,
-      showTags: true,
-      title: "Последние записи",
-      filter: (file) => {
-        const tags = file.frontmatter?.tags
-        return Array.isArray(tags) && tags.includes('blog')
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index'
       }
     }),
-    CustomComponent.TagList(),
+    Component.TagList(),
+  ],
+  left: [
+    ...baseLeftPanel,
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [
+    Component.DesktopOnly(Component.Graph(graphConfig)),
+    Component.DesktopOnly(Component.TableOfContents()),
+    Component.Backlinks(backlinksConfig),
+    CustomTagList(),
+  ],
+}
+
+export const gardenListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.ArticleTitle(),
+    Component.ConditionalRender({
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index'
+      }
+    }),
+  ],
+  left: [
+    ...baseLeftPanel,
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+  ],
+  right: [],
+}
+
+// ==============================
+// BLOG LAYOUTS
+// ==============================
+export const blogContentPageLayout: PageLayout = {
+  beforeBody: [
+    Component.ArticleTitle(),
+    Component.ConditionalRender({
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+      }
+    }),
+    Component.TagList(),
+  ],
+  left: baseLeftPanel,
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    Component.Backlinks(backlinksConfig),
+    CustomTagList(),
+    Component.ConditionalRender({
+      component: Component.RecentNotes({
+        limit: 5,
+        showTags: true,
+        filter: blogFilter,
+        title: "Недавние записи"
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+      }
+    }),
+    // Ссылка на архив в правой панели
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
-        sidebar: true, 
-        emoji: "after",
-        hideIfEmpty: true 
+        sidebar: true,
+        text: "Все записи →📚",
+        emoji: "none"
       }),
-      condition: () => getSiteType() === 'blog'
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+      }
     }),
-    Component.Backlinks({ hideWhenEmpty: true }),
+  ],
+  afterBody: [
+    // Главная страница - 5 последних постов
+    Component.ConditionalRender({
+      component: CustomComponent.BlogIndex({
+        limit: 5,
+        filter: blogFilter
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug === 'index'
+      }
+    }),
+    // Ссылка на архив под лентой на главной
+    Component.ConditionalRender({
+      component: CustomComponent.ArchiveLink({ 
+        text: "Все записи →📚",
+        emoji: "none"
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug === 'index'
+      }
+    }),
+    // Архив - все посты
+    Component.ConditionalRender({
+      component: CustomComponent.BlogIndex({
+        limit: 1000,
+        filter: () => true
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug === 'archive'
+      }
+    }),
+    // Скрипт восстановления темы для SPA-навигации
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            function restoreTheme() {
+              const theme = localStorage.getItem("saved-theme");
+              if (theme) {
+                document.documentElement.setAttribute("saved-theme", theme);
+              }
+            }
+            
+            // Восстанавливаем тему после SPA-переходов
+            document.addEventListener("nav", restoreTheme);
+            window.addEventListener("popstate", restoreTheme);
+            
+            // При загрузке страницы
+            if (document.readyState === "loading") {
+              document.addEventListener("DOMContentLoaded", restoreTheme);
+            } else {
+              restoreTheme();
+            }
+          })();
+        `
+      }}
+    />
   ],
 }
 
-// Макет для страниц-списков (теги, папки)
-export const defaultListPageLayout: PageLayout = {
+export const blogListPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs({ rootName: "🏡" }),
     Component.ArticleTitle(),
   ],
-  
-  left: [
-    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer({
-      filterFn: (node: FileTrieNode) => {
-        const hasExcludedTag = node.data?.frontmatter?.tags?.includes("explorer-exclude") === true
-        return !hasExcludedTag
-      },
-      mapFn: (node: FileTrieNode) => {
-        if (!node.isFolder) {
-          node.displayName = "⊹ " + node.displayName
-        }
-      },
-    })),
+  left: baseLeftPanel,
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    // Ссылка на архив в списках тегов
+    Component.ConditionalRender({
+      component: CustomComponent.ArchiveLink({ 
+        sidebar: true,
+        text: "Все записи →📚",
+        emoji: "none"
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug?.startsWith('tags/') || false
+      }
+    }),
+    // Скрипт восстановления темы для SPA-навигации (на всех страницах)
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            function restoreTheme() {
+              const theme = localStorage.getItem("saved-theme");
+              if (theme) {
+                document.documentElement.setAttribute("saved-theme", theme);
+              }
+            }
+            
+            document.addEventListener("nav", restoreTheme);
+            window.addEventListener("popstate", restoreTheme);
+            
+            if (document.readyState === "loading") {
+              document.addEventListener("DOMContentLoaded", restoreTheme);
+            } else {
+              restoreTheme();
+            }
+          })();
+        `
+      }}
+    />
   ],
-  
-  right: [],
 }
 
-// Макет для 404 страницы
-export const notFoundLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  
-  left: [
-    CustomComponent.PageTitle({ logo: "/static/thistle.png", title: "Asteralog" }),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Search(),
-    Component.Darkmode(),
-  ],
-  
-  right: [],
-}
+// ==============================
+// DEFAULT LAYOUT SELECTORS
+// ==============================
 
-export default defaultContentPageLayout
+export const defaultContentPageLayout: PageLayout =
+  siteType === 'garden' 
+    ? gardenContentPageLayout 
+    : blogContentPageLayout
+
+export const defaultListPageLayout: PageLayout =
+  siteType === 'garden'
+    ? gardenListPageLayout
+    : blogListPageLayout

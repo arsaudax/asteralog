@@ -3,7 +3,7 @@
    ========================================================= */
 
 :root {
-  // Привязываем кастомные переменные к переменным Quartz
+  /* ===== МАППИНГ ПЕРЕМЕННЫХ QUARTZ В КАСТОМНЫЕ ===== */
   --bg-primary: var(--light);
   --bg-secondary: var(--lightgray);
   --text-primary: var(--dark);
@@ -14,7 +14,9 @@
   --link-hover: var(--tertiary);
   --highlight: var(--highlight);
   
-  // Отступы и всё остальное
+  /* ===== КАСТОМНЫЕ ПЕРЕМЕННЫЕ (НЕ ТЕМА) ===== */
+  
+  /* Отступы */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -22,6 +24,7 @@
   --spacing-xl: 2rem;
   --spacing-xxl: 3rem;
   
+  /* Размеры шрифтов */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
@@ -31,38 +34,36 @@
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
   
+  /* Радиусы скругления */
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
   --radius-xl: 12px;
   
+  /* Анимации */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
   
+  /* Шрифты */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Служебные */
+  --search-height: 40px;
+  --search-radius: var(--radius-md);
+  --explorer-item-height: 32px;
+  --explorer-indent: 1.5rem;
+  --graph-node-size: 100px;
+  --graph-link-width: 1.5px;
+  --tag-padding: 0.25rem 0.75rem;
+  --tag-radius: var(--radius-sm);
+  --code-font: var(--font-mono);
+  --code-bg: var(--bg-secondary);
+  --code-border: var(--border-color);
 }
 
-/* Усиливаем приоритет для Quartz переменных */
-html[saved-theme="dark"] {
-  --light: #1a1c1e !important;
-  --lightgray: #2e3235 !important;
-  --gray: #4a4f54 !important;
-  --darkgray: #d4d4d4 !important;
-  --dark: #ffffff !important;
-  --secondary: #b5977a !important;
-  --tertiary: #d4b69b !important;
-  --highlight: rgba(181, 151, 122, 0.15) !important;
-}
-
-html[saved-theme="light"] {
-  --light: #f9f7f4 !important;
-  --lightgray: #e5e5e5 !important;
-  --gray: #b8b8b8 !important;
-  --darkgray: #4a4a49 !important;
-  --dark: #2b2b2b !important;
-  --secondary: #ab7d4c !important;
-  --tertiary: #7c5736 !important;
-  --highlight: rgba(162, 132, 94, 0.15) !important;
+/* ===== FALLBACK ДЛЯ ТЁМНОЙ ТЕМЫ (ТОЛЬКО ЕСЛИ QUARTZ НЕ СРАБОТАЛ) ===== */
+html {
+  color-scheme: dark;
 }

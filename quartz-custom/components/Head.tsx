@@ -38,20 +38,21 @@ export default (() => {
 
     return (
       <head>
-        {/* ===== КРИТИЧЕСКИЙ СКРИПТ ДЛЯ ТЕМЫ (ДО ЗАГРУЗКИ CSS) ===== */}
+        {/* ===== РАННИЙ JS (СТАВИТ ТЕМУ ДО РЕНДЕРА) ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                const theme = localStorage.getItem('saved-theme') || 'dark';
+                const saved = localStorage.getItem('saved-theme');
+                const theme = saved ? saved : 'dark';
                 document.documentElement.setAttribute('saved-theme', theme);
               })();
             `
           }}
         />
 
-        {/* ===== БАЗОВЫЕ META ===== */}
+        {/* ===== META ===== */}
         <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

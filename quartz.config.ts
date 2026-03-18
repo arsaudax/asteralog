@@ -28,8 +28,8 @@ const gardenColors = {
     gray: "#4a4f54",          // border-color
     darkgray: "#d4d4d4",      // text-secondary
     dark: "#ffffff",          // text-primary
-    secondary: "#b5977a",     // link-color
-    tertiary: "#d4b69b",      // link-hover
+    secondary: "#af7d4c",     // link-color
+    tertiary: "#7c5736",      // link-hover
     highlight: "rgba(181, 151, 122, 0.15)",
   },
   lightMode: {
@@ -38,7 +38,7 @@ const gardenColors = {
     gray: "#b8b8b8",
     darkgray: "#4a4a49",
     dark: "#2b2b2b",
-    secondary: "#ab7d4c",
+    secondary: "#af7d4c",
     tertiary: "#7c5736",
     highlight: "rgba(162, 132, 94, 0.15)",
   }
@@ -52,8 +52,8 @@ const blogColors = {
     gray: "#4a4f54",
     darkgray: "#d4d4d4",
     dark: "#ffffff",
-    secondary: "#b5977a",
-    tertiary: "#d4b69b",
+    secondary: "#af7d4c",
+    tertiary: "#7c5736",
     highlight: "rgba(181, 151, 122, 0.15)",
   },
   lightMode: {
@@ -62,7 +62,7 @@ const blogColors = {
     gray: "#9a9a9a",
     darkgray: "#666666",
     dark: "#333333",
-    secondary: "#ab7d4c",
+    secondary: "#af7d4c",
     tertiary: "#7c5736",
     highlight: "rgba(162, 132, 94, 0.1)",
   }

@@ -134,15 +134,17 @@ a[href^="http"] img {
 }
 
 /* =========================================================
-   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ (УСИЛЕННОЕ)
+   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ
    ========================================================= */
 
-html body .left.sidebar.hidden,
-body .left.sidebar.hidden,
+.left.sidebar {
+  transition: top 0.3s ease;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  will-change: top;
+}
+
 .left.sidebar.hidden {
-  transform: translateY(-100%) !important;
-  transition: transform 0.3s ease !important;
-  will-change: transform !important;
-  top: 0 !important;
-  position: sticky !important;
+  top: -100% !important;
 }

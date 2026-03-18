@@ -1,4 +1,3 @@
-// quartz-custom/components/ScrollBehavior.tsx
 import { QuartzComponent, QuartzComponentConstructor } from "../../quartz/components/types"
 
 const ScrollBehavior: QuartzComponent = () => {

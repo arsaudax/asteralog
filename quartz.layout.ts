@@ -11,7 +11,7 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// Базовая левая панель (общая для всех layout)
+// Базовая левая панель
 const baseLeftPanel = [
   CustomComponent.PageTitle({ 
     logo: "/static/thistle.png",
@@ -70,24 +70,12 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==============================
-// ЕДИНАЯ ФУНКЦИЯ ДЛЯ СОЗДАНИЯ PAGE-HEADER
-// ==============================
-const createPageHeader = (props: QuartzComponentProps) => (
-  <div class="page-header">
-    <header>
-      <Component.ArticleTitle />
-      <CustomComponent.ContentMeta showReadingTime={true} />
-    </header>
-  </div>
-)
-
-// ==============================
 // GARDEN LAYOUTS
 // ==============================
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
-    // Явный page-header (как в блоге)
-    (props: QuartzComponentProps) => createPageHeader(props),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
   left: [
@@ -105,7 +93,7 @@ export const gardenContentPageLayout: PageLayout = {
 
 export const gardenListPageLayout: PageLayout = {
   beforeBody: [
-    (props: QuartzComponentProps) => createPageHeader(props),
+    Component.ArticleTitle(),
   ],
   left: [
     ...baseLeftPanel,
@@ -120,7 +108,8 @@ export const gardenListPageLayout: PageLayout = {
 // ==============================
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
-    (props: QuartzComponentProps) => createPageHeader(props),
+    Component.ArticleTitle(),
+    CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
   left: baseLeftPanel,
@@ -183,7 +172,7 @@ export const blogContentPageLayout: PageLayout = {
 
 export const blogListPageLayout: PageLayout = {
   beforeBody: [
-    (props: QuartzComponentProps) => createPageHeader(props),
+    Component.ArticleTitle(),
   ],
   left: baseLeftPanel,
   right: [

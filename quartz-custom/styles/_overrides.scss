@@ -156,3 +156,66 @@ a[href^="http"] img {
     overflow: hidden !important;
   }
 }
+
+/* =========================================================
+   МОБИЛЬНАЯ ВЕРСИЯ — ПАНЕЛИ 
+   ========================================================= */
+
+@media (max-width: 800px) {
+  /* ===== САД: граф и обратные ссылки ===== */
+  [data-site-type="garden"] .right .graph,
+  [data-site-type="garden"] .right .backlinks {
+    display: block !important;
+  }
+  
+  [data-site-type="garden"] .right .toc,
+  [data-site-type="garden"] .right .tag-list,
+  [data-site-type="garden"] .right .recent-notes,
+  [data-site-type="garden"] .right .archive-link-container {
+    display: none !important;
+  }
+  
+  /* ===== БЛОГ: архив и все теги ===== */
+  [data-site-type="blog"] .right .archive-link-container,
+  [data-site-type="blog"] .right .tag-list {
+    display: block !important;
+  }
+  
+  [data-site-type="blog"] .right .graph,
+  [data-site-type="blog"] .right .backlinks,
+  [data-site-type="blog"] .right .toc,
+  [data-site-type="blog"] .right .recent-notes {
+    display: none !important;
+  }
+  
+  /* Общие стили для правой панели на мобильных */
+  .right {
+    padding: 12px;
+  }
+  
+  .right .graph,
+  .right .backlinks,
+  .right .tag-list,
+  .right .archive-link-container {
+    margin: 0 !important;
+    padding: 8px 0 !important;
+    border-top: none !important;
+    border-bottom: none !important;
+  }
+  
+  .right h3 {
+    margin-bottom: 4px !important;
+    border-bottom: none !important;
+    font-size: 0.9rem;
+  }
+  
+  /* Стили для архива */
+  .archive-link-container {
+    margin-top: auto;
+  }
+  
+  .archive-link {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+  }
+}

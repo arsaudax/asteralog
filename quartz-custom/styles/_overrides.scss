@@ -106,7 +106,7 @@ a[href^="http"] img {
   }
   
   &:hover {
-    color: #8a1012 !important;  /* темнее при наведении */
+    color: #8a1012 !important;
     transform: translateX(4px);
     
     &::after {
@@ -126,27 +126,20 @@ a[href^="http"] img {
   display: none !important;
 }
 
-/* Усиливаем скрытие на мобильных (уже должно быть, но на всякий случай) */
-@media (max-width: 800px) {
-  .explorer {
-    display: none !important;
-  }
-}
-
 /* =========================================================
-   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ (ФИКСИРОВАННОЕ ЗНАЧЕНИЕ)
+   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ (ИСПРАВЛЕНО)
    ========================================================= */
 
 .left.sidebar {
-  transition: top 0.3s ease;
+  transition: transform 0.3s ease;
   position: sticky;
   top: 0;
   z-index: 100;
-  will-change: top;
+  will-change: transform;
 }
 
 .left.sidebar.hidden {
-  top: -120px !important;  /* Фиксированная высота панели */
+  transform: translateY(-100%) !important;
 }
 
 /* =========================================================

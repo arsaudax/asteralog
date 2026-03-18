@@ -38,40 +38,27 @@ export default (() => {
 
     return (
       <head>
-        {/* ===== КРИТИЧЕСКИЙ CSS ДЛЯ ТЁМНОЙ ТЕМЫ ===== */}
-        <style>{`
-          /* Тёмная тема по умолчанию */
-          html {
-            background: #1a1c1e;
-            color: #ffffff;
-          }
-          
-          /* Переменные Quartz для тёмной темы (дефолт) */
-          :root {
-            --light: #1a1c1e;
-            --lightgray: #2e3235;
-            --gray: #4a4f54;
-            --darkgray: #d4d4d4;
-            --dark: #ffffff;
-            --secondary: #b5977a;
-            --tertiary: #d4b69b;
-            --highlight: rgba(181, 151, 122, 0.15);
-          }
-        `}</style>
-
-        {/* ===== СКРИПТ ТЕМЫ (ставит dark по умолчанию) ===== */}
+        {/* ===== ЕДИНСТВЕННЫЙ И ГЛАВНЫЙ СКРИПТ ТЕМЫ ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                const saved = localStorage.getItem('saved-theme');
-                const theme = saved ? saved : 'dark';
-                document.documentElement.setAttribute('saved-theme', theme);
-                
-                // Синхронизируем с localStorage
-                if (!saved) {
-                  localStorage.setItem('saved-theme', 'dark');
+                try {
+                  // 1. Получаем сохранённую тему или ставим 'dark'
+                  const savedTheme = localStorage.getItem('saved-theme');
+                  const theme = savedTheme || 'dark';
+                  
+                  // 2. Устанавливаем атрибут НА HTML ЭЛЕМЕНТ ДО ЗАГРУЗКИ СТРАНИЦЫ
+                  document.documentElement.setAttribute('saved-theme', theme);
+                  
+                  // 3. Синхронизируем localStorage, если тема не была сохранена
+                  if (!savedTheme) {
+                    localStorage.setItem('saved-theme', 'dark');
+                  }
+                } catch (e) {
+                  // На случай ошибок в инкогнито или строгом режиме — ставим 'dark'
+                  document.documentElement.setAttribute('saved-theme', 'dark');
                 }
               })();
             `

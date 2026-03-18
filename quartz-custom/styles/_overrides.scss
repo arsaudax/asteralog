@@ -3,6 +3,165 @@
    ========================================================= */
 
 /* =========================================================
+   БАЗОВЫЕ ПЕРЕМЕННЫЕ
+   ========================================================= */
+
+:root {
+  /* Dark mode colors */
+  --asteralog-bg-dark: #1a1c1e;
+  --asteralog-bg-dark-alt: #2e3235;
+  --asteralog-fg-dark: #ffffff;
+  --asteralog-comment-dark: #d4d4d4;
+  --asteralog-selection-dark: #4a4f54;
+
+  /* Light mode colors */
+  --asteralog-bg-light: #f9f7f4;
+  --asteralog-bg-light-alt: #e5e5e5;
+  --asteralog-fg-light: #2b2b2b;
+  --asteralog-comment-light: #4a4a49;
+  --asteralog-selection-light: #b8b8b8;
+
+  /* Accent colors */
+  --asteralog-accent: #ab7d4c;
+  --asteralog-accent-alt: #7c5736;
+}
+
+/* =========================================================
+   ТЕМЫ ЧЕРЕЗ КЛАССЫ
+   ========================================================= */
+
+html[saved-theme="dark"] {
+  --bg-primary: var(--asteralog-bg-dark);
+  --bg-secondary: var(--asteralog-bg-dark-alt);
+  --text-primary: var(--asteralog-fg-dark);
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --border-color: var(--asteralog-selection-dark);
+  --link-color: #b5977a;
+  --link-hover: #d4b69b;
+  --highlight: rgba(181, 151, 122, 0.15);
+  
+  /* Quartz переменные */
+  --secondary: #b5977a;
+  --tertiary: #d4b69b;
+  --dark: var(--text-primary);
+  --darkgray: var(--text-secondary);
+  --light: var(--bg-primary);
+  --lightgray: var(--bg-secondary);
+  --gray: var(--border-color);
+}
+
+html[saved-theme="light"] {
+  --bg-primary: var(--asteralog-bg-light);
+  --bg-secondary: var(--asteralog-bg-light-alt);
+  --text-primary: var(--asteralog-fg-light);
+  --text-secondary: var(--asteralog-comment-light);
+  --text-muted: color-mix(in srgb, var(--text-secondary) 80%, transparent);
+  --border-color: var(--asteralog-selection-light);
+  --link-color: #ab7d4c;
+  --link-hover: #7c5736;
+  --highlight: rgba(162, 132, 94, 0.15);
+  
+  /* Quartz переменные */
+  --secondary: #ab7d4c;
+  --tertiary: #7c5736;
+  --dark: var(--text-primary);
+  --darkgray: var(--text-secondary);
+  --light: var(--bg-primary);
+  --lightgray: var(--bg-secondary);
+  --gray: var(--border-color);
+}
+
+/* Значения по умолчанию */
+html {
+  --bg-primary: var(--asteralog-bg-dark);
+  --bg-secondary: var(--asteralog-bg-dark-alt);
+  --text-primary: var(--asteralog-fg-dark);
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --border-color: var(--asteralog-selection-dark);
+  --link-color: #b5977a;
+  --link-hover: #d4b69b;
+  --highlight: rgba(181, 151, 122, 0.15);
+  
+  /* Quartz переменные */
+  --secondary: #b5977a;
+  --tertiary: #d4b69b;
+  --dark: var(--text-primary);
+  --darkgray: var(--text-secondary);
+  --light: var(--bg-primary);
+  --lightgray: var(--bg-secondary);
+  --gray: var(--border-color);
+  
+  /* Отступы */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 3rem;
+  
+  /* Размеры шрифтов */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  
+  /* Радиусы скругления */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  
+  /* Анимации */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-base: var(--transition-normal);
+  
+  /* Тени */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Z-index */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 300;
+  --z-popover: 400;
+  --z-tooltip: 500;
+  
+  /* Search */
+  --search-height: 40px;
+  --search-radius: var(--radius-md);
+  
+  /* Explorer */
+  --explorer-item-height: 32px;
+  --explorer-indent: 1.5rem;
+  
+  /* Graph */
+  --graph-node-size: 100px;
+  --graph-link-width: 1.5px;
+  
+  /* Tags */
+  --tag-padding: 0.25rem 0.75rem;
+  --tag-radius: var(--radius-sm);
+  
+  /* Code */
+  --code-font: 'JetBrains Mono', monospace;
+  --code-bg: var(--bg-secondary);
+  --code-border: var(--border-color);
+  
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* =========================================================
    ССЫЛКИ — МАКСИМАЛЬНО АГРЕССИВНОЕ УБИВАНИЕ СИНИХ ЗНАЧКОВ
    ========================================================= */
 
@@ -81,6 +240,19 @@ a[href^="http"] img {
   display: flex;
   gap: var(--spacing-xs);
   align-items: center;
+  color: var(--callout-color);
+}
+
+.callout {
+  &[data-callout="note"],
+  &[data-callout="info"] {
+    --callout-color: var(--secondary);
+  }
+
+  &[data-callout="tip"],
+  &[data-callout="success"] {
+    --callout-color: var(--tertiary);
+  }
 }
 
 /* =========================================================
@@ -99,12 +271,21 @@ a[href^="http"] img {
   background: var(--bg-primary);
   color: var(--text-primary);
   font-size: var(--font-size-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 #search-container input:focus {
   border-color: var(--link-color);
   box-shadow: 0 0 0 3px var(--highlight);
   outline: none;
+}
+
+#search-container .search-result {
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background: var(--highlight);
+  }
 }
 
 /* =========================================================
@@ -119,18 +300,23 @@ a[href^="http"] img {
 }
 
 #graph-container .node {
-  fill: var(--link-color);
+  fill: var(--secondary);
   cursor: pointer;
-  transition: fill .15s ease;
-}
+  transition: fill var(--transition-fast);
 
-#graph-container .node:hover {
-  fill: var(--link-hover);
+  &:hover {
+    fill: var(--tertiary);
+  }
 }
 
 #graph-container .link {
-  stroke: var(--border-color);
+  stroke: var(--gray);
   stroke-width: 1.5;
+  transition: stroke var(--transition-fast);
+
+  &:hover {
+    stroke: var(--secondary);
+  }
 }
 
 /* =========================================================
@@ -152,25 +338,27 @@ a[href^="http"] img {
   color: var(--text-primary);
   width: 100%;
   text-align: left;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--secondary);
+  }
 }
 
-.folder-button:hover {
-  color: var(--link-color);
-}
-
+.folder-title,
 .explorer-link {
-  display: block;
-  padding: var(--spacing-xs) 0;
+  transition: color var(--transition-fast);
   color: var(--text-secondary);
   text-decoration: none;
 }
 
+.folder-title:hover,
 .explorer-link:hover {
-  color: var(--link-hover);
+  color: var(--tertiary);
 }
 
 .explorer-link.active {
-  color: var(--link-color);
+  color: var(--secondary);
   font-weight: 600;
 }
 
@@ -193,14 +381,18 @@ a[href^="http"] img {
   padding: var(--spacing-xs) 0;
   text-decoration: none;
   color: var(--text-secondary);
-}
+  transition: color var(--transition-fast), background-color var(--transition-fast);
 
-.toc a.active {
-  color: var(--link-color);
-}
+  &.active {
+    color: var(--secondary);
+    background: var(--highlight);
+    border-left: 3px solid var(--secondary);
+    padding-left: 0.75rem;
+  }
 
-.toc a:hover {
-  color: var(--link-hover);
+  &:hover {
+    color: var(--tertiary);
+  }
 }
 
 /* =========================================================
@@ -226,6 +418,7 @@ a[href^="http"] img {
 .backlinks a {
   color: var(--link-color);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .backlinks a:hover {
@@ -258,13 +451,13 @@ a[href^="http"] img {
 
 .darkmode button:hover {
   background: var(--highlight);
-  border-color: var(--link-color);
+  border-color: var(--secondary);
 }
 
 .darkmode svg {
   width: 1.2em;
   height: 1.2em;
-  color: var(--link-color);
+  color: var(--secondary);
 }
 
 /* =========================================================
@@ -279,7 +472,7 @@ a[href^="http"] img {
   font-weight: 600;
   margin-bottom: var(--spacing-md);
   color: var(--text-primary);
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: var(--spacing-xs);
 }
 
@@ -288,6 +481,7 @@ a[href^="http"] img {
   padding: var(--spacing-sm);
   border-radius: var(--radius-md);
   text-decoration: none;
+  transition: background-color var(--transition-fast);
 }
 
 .recent-note-item:hover {
@@ -326,6 +520,7 @@ a[href^="http"] img {
   text-decoration: none;
   min-width: 2.5rem;
   text-align: center;
+  transition: all var(--transition-fast);
 }
 
 .pagination a:hover {
@@ -358,6 +553,11 @@ a[href^="http"] img {
 
 .popover-inner a {
   color: var(--link-color);
+  transition: color var(--transition-fast);
+}
+
+.popover-inner a:hover {
+  color: var(--link-hover);
 }
 
 .popover-inner code {
@@ -391,9 +591,10 @@ a[href^="http"] img {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: .25em;
+  gap: 0.25em;
   font-size: var(--font-size-md);
   font-weight: 500;
+  transition: color var(--transition-fast);
 }
 
 .archive-link::after {
@@ -418,6 +619,11 @@ a[href^="http"] img {
   margin-bottom: 48px !important;
   padding-bottom: 48px !important;
   border-bottom: 1px solid var(--border-color);
+  transition: transform var(--transition-fast);
+}
+
+.blog-index-item:hover {
+  transform: translateX(4px);
 }
 
 .blog-index-item:last-child {
@@ -433,6 +639,16 @@ a[href^="http"] img {
   font-size: var(--font-size-xl);
 }
 
+.blog-index-title a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.blog-index-title a:hover {
+  color: var(--link-hover);
+}
+
 .blog-index-date {
   color: var(--text-muted);
   font-size: var(--font-size-sm);
@@ -442,34 +658,48 @@ a[href^="http"] img {
 .blog-index-description {
   color: var(--text-secondary);
   font-size: var(--font-size-md);
-  line-height: var(--line-height-base);
+  line-height: 1.6;
   margin-bottom: 8px;
+}
+
+.blog-index-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .blog-index-tag {
   display: inline-block;
   padding: 2px 8px;
-  margin-right: 4px;
-  margin-bottom: 4px;
   border-radius: var(--radius-sm);
   background: var(--highlight);
   color: var(--link-color);
   font-size: var(--font-size-xs);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.blog-index-tag:hover {
+  background: var(--link-color);
+  color: white;
 }
 
 /* =========================================================
-   МОБИЛЬНАЯ ВЕРСИЯ
+   МОБИЛЬНАЯ ВЕРСИЯ — ИСПРАВЛЕНО ПО ДОКУМЕНТАЦИИ QUARTZ
    ========================================================= */
 
 @media (max-width: 500px) {
   .left.sidebar {
     display: grid;
     grid-template-columns: 1fr 40px 40px;
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: 
+      auto  /* строка 1: логотип + кнопки */
+      auto  /* строка 2: поиск */
+      auto; /* строка 3: контент */
     column-gap: 8px;
-    row-gap: 8px;
+    row-gap: 4px;
     margin: 0;
-    padding: 10px 12px;
+    padding: 8px 12px;
     position: sticky;
     top: 0;
     z-index: 20;
@@ -478,52 +708,40 @@ a[href^="http"] img {
     border-bottom: 1px solid var(--border-color);
   }
 
+  /* ===== СТРОКА 1: Логотип и кнопки ===== */
   .left .page-title {
-    grid-column: 1 / -1;
+    grid-column: 1;
     grid-row: 1;
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    gap: 8px !important;
     margin: 0 !important;
+    min-width: 0;
   }
 
   .left .page-logo {
-    width: 64px !important;
-    height: 64px !important;
+    width: 40px !important;
+    height: 40px !important;
     flex-shrink: 0;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--border-color);
+    display: block !important;
   }
 
   .left .page-title-link {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--link-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .spacer.mobile-only {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    display: block !important;
-    height: 12px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .left .search {
-    display: contents !important;
+    text-decoration: none;
   }
 
   .left .search-button {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
+    grid-column: 2;
+    grid-row: 1;
     width: 40px;
     height: 40px;
     display: flex;
@@ -533,64 +751,81 @@ a[href^="http"] img {
     padding: 0;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    z-index: 2;
-    
-    p { display: none; }
-    svg { width: 20px; height: 20px; }
   }
 
   .left .darkmode {
-    grid-column: 3 !important;
-    grid-row: 1 !important;
+    grid-column: 3;
+    grid-row: 1;
     justify-self: end;
-    z-index: 2;
-    
-    button {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      padding: 0;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      
-      span { display: none; }
-      svg { width: 20px; height: 20px; }
-    }
+  }
+
+  .left .darkmode button {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  /* Скрываем текст кнопок */
+  .left .search-button p,
+  .left .darkmode span {
+    display: none;
+  }
+
+  /* Иконки */
+  .left .search-button svg,
+  .left .darkmode svg {
+    width: 20px;
+    height: 20px;
+    color: var(--link-color);
+  }
+
+  /* ===== СТРОКА 2: Поле поиска ===== */
+  .left .search {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
   }
 
   .left .search .search-container {
-    grid-column: 1 / -1;
-    grid-row: 3;
     width: 100%;
   }
 
   .left .search input {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    border-radius: 20px;
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);
     color: var(--text-primary);
-    font-size: 16px;
-    
-    &:focus {
-      border-color: var(--link-color);
-      outline: none;
-      box-shadow: 0 0 0 3px var(--highlight);
-    }
+    font-size: 14px;
   }
 
+  .left .search input:focus {
+    border-color: var(--link-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--highlight);
+  }
+
+  /* ===== УБИРАЕМ ЛИШНИЙ СПЕЙСЕР ===== */
+  .spacer.mobile-only {
+    display: none !important;
+  }
+
+  /* ===== ПРАВАЯ ПАНЕЛЬ ===== */
   .right {
-    padding: 12px;
+    padding: 8px 0;
   }
   
   .right .graph,
   .right .backlinks {
     display: block;
-    padding: 8px 0 !important;
+    padding: 4px 0 !important;
   }
   
   .right .toc,
@@ -601,7 +836,7 @@ a[href^="http"] img {
   [data-site-type="blog"] .right .tag-list,
   [data-site-type="blog"] .right .archive-link-container {
     display: block;
-    padding: 8px 0 !important;
+    padding: 4px 0 !important;
   }
   
   [data-site-type="blog"] .right .graph,
@@ -637,9 +872,21 @@ a[href^="http"] img {
   to { opacity: 1; }
 }
 
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .callout,
 .search-result,
-.recent-note-item {
+.recent-note-item,
+.blog-index-item {
   animation: fadeIn 0.25s ease-out;
   will-change: opacity;
 }

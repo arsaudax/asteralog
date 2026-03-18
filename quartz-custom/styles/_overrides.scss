@@ -16,3 +16,101 @@ a {
 }
 
 /* Все остальные компонентные стили используют var(--secondary) и т.д. */
+
+/* =========================================================
+   ССЫЛКИ — МАКСИМАЛЬНО АГРЕССИВНОЕ УБИВАНИЕ СИНИХ ЗНАЧКОВ
+   ========================================================= */
+
+/* Полностью отключаем все стандартные значки */
+.external::after,
+.external::before,
+.internal::after,
+.internal::before,
+a[href^="http"]::after,
+a[href^="http"]::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  background-image: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Убираем SVG и изображения в ссылках */
+.external svg,
+.external img,
+.internal svg,
+.internal img,
+a[href^="http"] svg,
+a[href^="http"] img {
+  display: none !important;
+}
+
+/* Добавляем свой значок */
+.external:not(.footer-link):not(.no-external-icon) {
+  position: relative;
+  
+  &::after {
+    content: "↗" !important;
+    display: inline-block !important;
+    margin-left: 0.25em;
+    font-size: 0.8em;
+    color: var(--text-muted) !important;
+    opacity: .6;
+    transition: opacity var(--transition-fast);
+    background: none !important;
+    width: auto !important;
+    height: auto !important;
+    visibility: visible !important;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+    color: var(--link-color) !important;
+  }
+}
+
+/* Для ссылок в подвале ничего */
+.footer-link::after,
+.footer-link::before {
+  display: none !important;
+}
+
+/* =========================================================
+   АРХИВ — ВЫДЕЛЕННАЯ КНОПКА
+   ========================================================= */
+
+.archive-link-container {
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-md) 0;
+}
+
+.archive-link {
+  color: #84a34 !important;  /* ← ЯРКИЙ ЗЕЛЁНЫЙ */
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: var(--font-size-lg);  /* ← УВЕЛИЧИЛ */
+  font-weight: 600;  /* ← ЖИРНЫЙ */
+  transition: all var(--transition-fast);
+  
+  &::after {
+    content: " →" !important;
+    opacity: 0.9 !important;
+    font-size: 1.2em !important;  /* ← СТРЕЛКА БОЛЬШЕ */
+    color: #84a34 !important;  /* ← ТОГО ЖЕ ЦВЕТА */
+  }
+  
+  &:hover {
+    color: #6a8234 !important;  /* ← ТЁМНЕЕ ПРИ НАВЕДЕНИИ */
+    transform: translateX(4px);
+    
+    &::after {
+      color: #6a8234 !important;
+    }
+  }
+}

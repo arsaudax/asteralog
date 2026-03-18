@@ -38,21 +38,91 @@ export default (() => {
 
     return (
       <head>
-        {/* ===== РАННИЙ JS (СТАВИТ ТЕМУ ДО РЕНДЕРА) ===== */}
+        {/* ===== КРИТИЧЕСКИЙ CSS ДЛЯ ТЁМНОЙ ТЕМЫ ===== */}
+        <style>{`
+          html, body {
+            background: #1a1c1e !important;
+            color: #ffffff !important;
+          }
+          
+          /* Принудительно устанавливаем переменные до загрузки Quartz */
+          :root {
+            --light: #1a1c1e !important;
+            --lightgray: #2e3235 !important;
+            --gray: #4a4f54 !important;
+            --darkgray: #d4d4d4 !important;
+            --dark: #ffffff !important;
+            --secondary: #b5977a !important;
+            --tertiary: #d4b69b !important;
+            --highlight: rgba(181, 151, 122, 0.15) !important;
+          }
+        `}</style>
+
+        {/* ===== МАКСИМАЛЬНО АГРЕССИВНЫЙ СКРИПТ ТЕМЫ ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                const saved = localStorage.getItem('saved-theme');
-                const theme = saved ? saved : 'dark';
-                document.documentElement.setAttribute('saved-theme', theme);
+                // 1. Мгновенно ставим dark
+                document.documentElement.setAttribute('saved-theme', 'dark');
+                localStorage.setItem('saved-theme', 'dark');
+                
+                // 2. На всякий случай дублируем в data-theme
+                document.documentElement.setAttribute('data-theme', 'dark');
+                
+                // 3. Принудительные стили через JS (самый жирный приоритет)
+                document.documentElement.style.backgroundColor = '#1a1c1e';
+                document.body.style.backgroundColor = '#1a1c1e';
+                document.body.style.color = '#ffffff';
+                
+                // 4. Объявляем переменные через JS (если CSS не сработал)
+                const root = document.documentElement;
+                root.style.setProperty('--light', '#1a1c1e');
+                root.style.setProperty('--lightgray', '#2e3235');
+                root.style.setProperty('--gray', '#4a4f54');
+                root.style.setProperty('--darkgray', '#d4d4d4');
+                root.style.setProperty('--dark', '#ffffff');
+                root.style.setProperty('--secondary', '#b5977a');
+                root.style.setProperty('--tertiary', '#d4b69b');
               })();
             `
           }}
         />
 
-        {/* ===== META ===== */}
+        {/* ===== ОТСЛЕЖИВАНИЕ ИЗМЕНЕНИЙ ТЕМЫ ===== */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Наблюдаем за изменениями атрибута
+              const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                  if (mutation.attributeName === 'saved-theme') {
+                    const theme = document.documentElement.getAttribute('saved-theme');
+                    if (theme === 'light') {
+                      // Если кто-то посмел поставить light — возвращаем dark
+                      document.documentElement.setAttribute('saved-theme', 'dark');
+                    }
+                  }
+                });
+              });
+              
+              observer.observe(document.documentElement, { attributes: true });
+              
+              // Перехватываем попытки изменить тему через localStorage
+              const originalSetItem = localStorage.setItem;
+              localStorage.setItem = function(key, value) {
+                if (key === 'saved-theme' && value === 'light') {
+                  // Игнорируем попытки поставить light
+                  return;
+                }
+                originalSetItem.call(this, key, value);
+              };
+            `
+          }}
+        />
+
+        {/* ===== БАЗОВЫЕ META ===== */}
         <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

@@ -132,3 +132,19 @@ a[href^="http"] img {
     display: none !important;
   }
 }
+
+/* =========================================================
+   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ
+   ========================================================= */
+
+.left.sidebar {
+  transition: transform 0.3s ease;
+  will-change: transform;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.left.sidebar.hidden {
+  transform: translateY(-100%);
+}

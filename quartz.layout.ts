@@ -11,7 +11,7 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// Базовая левая панель
+// Базовая левая панель (ЕДИНАЯ для всех)
 const baseLeftPanel = [
   CustomComponent.PageTitle({ 
     logo: "/static/thistle.png",
@@ -80,7 +80,11 @@ export const gardenContentPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+    // Эксплорер ТОЛЬКО на десктопе
+    Component.ConditionalRender({
+      component: Component.DesktopOnly(Component.Explorer(explorerConfig)),
+      condition: () => true  // всегда рендерим, DesktopOnly сам скроет на мобильных
+    }),
   ],
   right: [
     Component.DesktopOnly(Component.Graph(graphConfig)),
@@ -97,7 +101,10 @@ export const gardenListPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
+    Component.ConditionalRender({
+      component: Component.DesktopOnly(Component.Explorer(explorerConfig)),
+      condition: () => true
+    }),
   ],
   right: [],
   afterBody: [],
@@ -112,7 +119,7 @@ export const blogContentPageLayout: PageLayout = {
     CustomComponent.ContentMeta({ showReadingTime: true }),
     Component.TagList(),
   ],
-  left: baseLeftPanel,
+  left: baseLeftPanel,  // без эксплорера
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),

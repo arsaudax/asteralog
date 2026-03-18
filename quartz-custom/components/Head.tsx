@@ -38,27 +38,30 @@ export default (() => {
 
     return (
       <head>
-        {/* ===== ПРАВИЛЬНЫЙ СКРИПТ ТЕМЫ (data-theme + theme) ===== */}
+        {/* ===== ПРАВИЛЬНЫЙ СКРИПТ ТЕМЫ И ТИПА САЙТА ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  // Quartz использует 'theme' в localStorage и 'data-theme' на html
+                  // Тема
                   const saved = localStorage.getItem('theme');
                   const theme = saved || 'dark';
-                  
-                  // Ставим правильный атрибут
                   document.documentElement.setAttribute('data-theme', theme);
                   
-                  // Синхронизируем localStorage
+                  // Тип сайта (сад/блог)
+                  const isBlog = window.location.hostname.includes('blog');
+                  document.documentElement.setAttribute('data-site-type', isBlog ? 'blog' : 'garden');
+                  document.documentElement.classList.add(isBlog ? 'site-blog' : 'site-garden');
+                  
                   if (!saved) {
                     localStorage.setItem('theme', 'dark');
                   }
                 } catch (e) {
-                  // Fallback
                   document.documentElement.setAttribute('data-theme', 'dark');
+                  document.documentElement.setAttribute('data-site-type', 'garden');
+                  document.documentElement.classList.add('site-garden');
                 }
               })();
             `

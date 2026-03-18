@@ -158,16 +158,22 @@ a[href^="http"] img {
 }
 
 /* =========================================================
-   МОБИЛЬНАЯ ВЕРСИЯ — ПАНЕЛИ 
+   МОБИЛЬНАЯ ВЕРСИЯ — ПАНЕЛИ (С ФОЛБЭКАМИ ПО КЛАССАМ)
    ========================================================= */
 
 @media (max-width: 800px) {
   /* ===== САД: граф и обратные ссылки ===== */
+  .site-garden .right .graph,
+  .site-garden .right .backlinks,
   [data-site-type="garden"] .right .graph,
   [data-site-type="garden"] .right .backlinks {
     display: block !important;
   }
   
+  .site-garden .right .toc,
+  .site-garden .right .tag-list,
+  .site-garden .right .recent-notes,
+  .site-garden .right .archive-link-container,
   [data-site-type="garden"] .right .toc,
   [data-site-type="garden"] .right .tag-list,
   [data-site-type="garden"] .right .recent-notes,
@@ -176,11 +182,17 @@ a[href^="http"] img {
   }
   
   /* ===== БЛОГ: архив и все теги ===== */
+  .site-blog .right .archive-link-container,
+  .site-blog .right .tag-list,
   [data-site-type="blog"] .right .archive-link-container,
   [data-site-type="blog"] .right .tag-list {
     display: block !important;
   }
   
+  .site-blog .right .graph,
+  .site-blog .right .backlinks,
+  .site-blog .right .toc,
+  .site-blog .right .recent-notes,
   [data-site-type="blog"] .right .graph,
   [data-site-type="blog"] .right .backlinks,
   [data-site-type="blog"] .right .toc,

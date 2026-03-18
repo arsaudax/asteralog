@@ -70,30 +70,24 @@ export const sharedPageComponents: SharedLayout = {
 }
 
 // ==============================
+// ЕДИНАЯ ФУНКЦИЯ ДЛЯ СОЗДАНИЯ PAGE-HEADER
+// ==============================
+const createPageHeader = (props: QuartzComponentProps) => (
+  <div class="page-header">
+    <header>
+      <Component.ArticleTitle />
+      <CustomComponent.ContentMeta showReadingTime={true} />
+    </header>
+  </div>
+)
+
+// ==============================
 // GARDEN LAYOUTS
 // ==============================
-
-export const gardenListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  left: [
-    ...baseLeftPanel,
-    Component.DesktopOnly(Component.Explorer(explorerConfig)),
-  ],
-  right: [],
-  afterBody: [],
-}
-
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.ArticleTitle(),
-    Component.ConditionalRender({
-      component: CustomComponent.ContentMeta({ showReadingTime: true }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index'
-      }
-    }),
+    // Явный page-header (как в блоге)
+    (props: QuartzComponentProps) => createPageHeader(props),
     Component.TagList(),
   ],
   left: [
@@ -109,40 +103,24 @@ export const gardenContentPageLayout: PageLayout = {
   afterBody: [],
 }
 
-// ==============================
-// BLOG LAYOUTS
-// ==============================
-
-export const blogListPageLayout: PageLayout = {
+export const gardenListPageLayout: PageLayout = {
   beforeBody: [
-    Component.ArticleTitle(),
+    (props: QuartzComponentProps) => createPageHeader(props),
   ],
-  left: baseLeftPanel,
-  right: [
-    Component.DesktopOnly(Component.TableOfContents()),
-    Component.ConditionalRender({
-      component: CustomComponent.ArchiveLink({ 
-        sidebar: true,
-        text: "Все записи →📚",
-        emoji: "none"
-      }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug?.startsWith('tags/') || false
-      }
-    }),
+  left: [
+    ...baseLeftPanel,
+    Component.DesktopOnly(Component.Explorer(explorerConfig)),
   ],
+  right: [],
   afterBody: [],
 }
 
+// ==============================
+// BLOG LAYOUTS
+// ==============================
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.ArticleTitle(),
-    Component.ConditionalRender({
-      component: CustomComponent.ContentMeta({ showReadingTime: true }),
-      condition: (props: QuartzComponentProps) => {
-        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
-      }
-    }),
+    (props: QuartzComponentProps) => createPageHeader(props),
     Component.TagList(),
   ],
   left: baseLeftPanel,
@@ -173,7 +151,6 @@ export const blogContentPageLayout: PageLayout = {
     }),
   ],
   afterBody: [
-    // Главная страница - 5 последних постов
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 5,
@@ -183,7 +160,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
-    // Ссылка на архив под лентой на главной
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         text: "Все записи →📚",
@@ -193,7 +169,6 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
-    // Архив - все посты
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 1000,
@@ -204,6 +179,27 @@ export const blogContentPageLayout: PageLayout = {
       }
     }),
   ],
+}
+
+export const blogListPageLayout: PageLayout = {
+  beforeBody: [
+    (props: QuartzComponentProps) => createPageHeader(props),
+  ],
+  left: baseLeftPanel,
+  right: [
+    Component.DesktopOnly(Component.TableOfContents()),
+    Component.ConditionalRender({
+      component: CustomComponent.ArchiveLink({ 
+        sidebar: true,
+        text: "Все записи →📚",
+        emoji: "none"
+      }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug?.startsWith('tags/') || false
+      }
+    }),
+  ],
+  afterBody: [],
 }
 
 // ==============================

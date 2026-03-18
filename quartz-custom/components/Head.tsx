@@ -40,84 +40,40 @@ export default (() => {
       <head>
         {/* ===== КРИТИЧЕСКИЙ CSS ДЛЯ ТЁМНОЙ ТЕМЫ ===== */}
         <style>{`
-          html, body {
-            background: #1a1c1e !important;
-            color: #ffffff !important;
+          /* Тёмная тема по умолчанию */
+          html {
+            background: #1a1c1e;
+            color: #ffffff;
           }
           
-          /* Принудительно устанавливаем переменные до загрузки Quartz */
+          /* Переменные Quartz для тёмной темы (дефолт) */
           :root {
-            --light: #1a1c1e !important;
-            --lightgray: #2e3235 !important;
-            --gray: #4a4f54 !important;
-            --darkgray: #d4d4d4 !important;
-            --dark: #ffffff !important;
-            --secondary: #b5977a !important;
-            --tertiary: #d4b69b !important;
-            --highlight: rgba(181, 151, 122, 0.15) !important;
+            --light: #1a1c1e;
+            --lightgray: #2e3235;
+            --gray: #4a4f54;
+            --darkgray: #d4d4d4;
+            --dark: #ffffff;
+            --secondary: #b5977a;
+            --tertiary: #d4b69b;
+            --highlight: rgba(181, 151, 122, 0.15);
           }
         `}</style>
 
-        {/* ===== МАКСИМАЛЬНО АГРЕССИВНЫЙ СКРИПТ ТЕМЫ ===== */}
+        {/* ===== СКРИПТ ТЕМЫ (ставит dark по умолчанию) ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // 1. Мгновенно ставим dark
-                document.documentElement.setAttribute('saved-theme', 'dark');
-                localStorage.setItem('saved-theme', 'dark');
+                const saved = localStorage.getItem('saved-theme');
+                const theme = saved ? saved : 'dark';
+                document.documentElement.setAttribute('saved-theme', theme);
                 
-                // 2. На всякий случай дублируем в data-theme
-                document.documentElement.setAttribute('data-theme', 'dark');
-                
-                // 3. Принудительные стили через JS (самый жирный приоритет)
-                document.documentElement.style.backgroundColor = '#1a1c1e';
-                document.body.style.backgroundColor = '#1a1c1e';
-                document.body.style.color = '#ffffff';
-                
-                // 4. Объявляем переменные через JS (если CSS не сработал)
-                const root = document.documentElement;
-                root.style.setProperty('--light', '#1a1c1e');
-                root.style.setProperty('--lightgray', '#2e3235');
-                root.style.setProperty('--gray', '#4a4f54');
-                root.style.setProperty('--darkgray', '#d4d4d4');
-                root.style.setProperty('--dark', '#ffffff');
-                root.style.setProperty('--secondary', '#b5977a');
-                root.style.setProperty('--tertiary', '#d4b69b');
-              })();
-            `
-          }}
-        />
-
-        {/* ===== ОТСЛЕЖИВАНИЕ ИЗМЕНЕНИЙ ТЕМЫ ===== */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Наблюдаем за изменениями атрибута
-              const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                  if (mutation.attributeName === 'saved-theme') {
-                    const theme = document.documentElement.getAttribute('saved-theme');
-                    if (theme === 'light') {
-                      // Если кто-то посмел поставить light — возвращаем dark
-                      document.documentElement.setAttribute('saved-theme', 'dark');
-                    }
-                  }
-                });
-              });
-              
-              observer.observe(document.documentElement, { attributes: true });
-              
-              // Перехватываем попытки изменить тему через localStorage
-              const originalSetItem = localStorage.setItem;
-              localStorage.setItem = function(key, value) {
-                if (key === 'saved-theme' && value === 'light') {
-                  // Игнорируем попытки поставить light
-                  return;
+                // Синхронизируем с localStorage
+                if (!saved) {
+                  localStorage.setItem('saved-theme', 'dark');
                 }
-                originalSetItem.call(this, key, value);
-              };
+              })();
             `
           }}
         />

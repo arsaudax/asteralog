@@ -15,8 +15,6 @@ a {
   }
 }
 
-/* Все остальные компонентные стили используют var(--secondary) и т.д. */
-
 /* =========================================================
    ССЫЛКИ — МАКСИМАЛЬНО АГРЕССИВНОЕ УБИВАНИЕ СИНИХ ЗНАЧКОВ
    ========================================================= */
@@ -82,10 +80,22 @@ a[href^="http"] img {
    АРХИВ — ВЫДЕЛЕННАЯ КНОПКА (КРАСНЫЙ ЦВЕТ #ac1517)
    ========================================================= */
 
+.right {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
 .archive-link-container {
   margin-top: auto;
   border-top: 1px solid var(--border-color);
   padding: var(--spacing-md) 0;
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-primary);
+  z-index: 5;
 }
 
 .archive-link {
@@ -119,7 +129,6 @@ a[href^="http"] img {
    ПРИНУДИТЕЛЬНОЕ СКРЫТИЕ ЭКСПЛОРЕРА НА БЛОГЕ
    ========================================================= */
 
-/* Скрываем эксплорер на блоге на всех экранах */
 [data-site-type="blog"] .explorer,
 .blog .explorer,
 .page[data-slug*="blog"] .explorer {
@@ -162,6 +171,15 @@ a[href^="http"] img {
    ========================================================= */
 
 @media (max-width: 800px) {
+  /* Общие стили для правой панели на мобильных */
+  .right {
+    padding: 12px;
+    height: auto;
+    overflow-y: visible;
+    display: flex;
+    flex-direction: column;
+  }
+  
   /* ===== САД: граф и обратные ссылки ===== */
   .site-garden .right .graph,
   .site-garden .right .backlinks,
@@ -200,11 +218,7 @@ a[href^="http"] img {
     display: none !important;
   }
   
-  /* Общие стили для правой панели на мобильных */
-  .right {
-    padding: 12px;
-  }
-  
+  /* Единое выравнивание для всех элементов правой панели */
   .right .graph,
   .right .backlinks,
   .right .tag-list,
@@ -215,20 +229,23 @@ a[href^="http"] img {
     border-bottom: none !important;
   }
   
+  /* Все блоки начинаются с одного уровня */
+  .right > *:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
   .right h3 {
     margin-bottom: 4px !important;
     border-bottom: none !important;
     font-size: 0.9rem;
+    margin-top: 0 !important;
   }
   
-  /* Стили для архива */
+  /* Кнопка архива теперь тоже начинается сверху */
   .archive-link-container {
-    margin-top: auto;
-  }
-  
-  .archive-link {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
+    margin-top: 0 !important;
+    padding-top: 8px !important;
   }
 }
 
@@ -237,9 +254,9 @@ a[href^="http"] img {
    ========================================================= */
 
 .blog-index-item {
-  margin-bottom: 48px !important;      /* увеличенный отступ */
+  margin-bottom: 48px !important;
   padding-bottom: 48px !important;
-  border-bottom: 1px solid var(--border-color);  /* тонкий разделитель */
+  border-bottom: 1px solid var(--border-color);
 }
 
 .blog-index-item:last-child {
@@ -248,13 +265,11 @@ a[href^="http"] img {
   padding-bottom: 0 !important;
 }
 
-/* Убираем лишний разделитель между заголовком и информацией */
 .blog-index-item h2 {
   border-bottom: none !important;
   margin-bottom: 12px !important;
 }
 
-/* Дополнительные стили для читаемости */
 .blog-index-date {
   margin-bottom: 8px;
   color: var(--text-muted);
@@ -264,4 +279,61 @@ a[href^="http"] img {
 .blog-index-description {
   margin-bottom: 12px;
   line-height: 1.6;
+}
+
+/* =========================================================
+   ПОДПИСИ К ИЗОБРАЖЕНИЯМ 
+   ========================================================= */
+
+.image-with-caption {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.image-with-caption img {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+.image-with-caption img:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.image-with-caption figcaption {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  text-align: left;
+  padding: 1rem 1.5rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border-left: 4px solid var(--secondary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.image-with-caption figcaption strong {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.image-with-caption figcaption em {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.image-with-caption figcaption br + strong {
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+.image-with-caption[data-caption-type="short"] figcaption {
+  text-align: center;
+  background: transparent;
+  border-left: none;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 0.5rem;
 }

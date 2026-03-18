@@ -1,5 +1,10 @@
 ---
+date: 2026-03-12T15:30:00+03:00
 title: Вместо эпиграфа
+description: Колючий, словно чертополох
+permalink:
+cssclasses:
+  - img-zoom
 tags:
   - garden
   - blog

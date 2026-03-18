@@ -38,27 +38,27 @@ export default (() => {
 
     return (
       <head>
-        {/* ===== ЕДИНСТВЕННЫЙ И ГЛАВНЫЙ СКРИПТ ТЕМЫ ===== */}
+        {/* ===== ПРАВИЛЬНЫЙ СКРИПТ ТЕМЫ (data-theme + theme) ===== */}
         <script
           blocking="render"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  // 1. Получаем сохранённую тему или ставим 'dark'
-                  const savedTheme = localStorage.getItem('saved-theme');
-                  const theme = savedTheme || 'dark';
+                  // Quartz использует 'theme' в localStorage и 'data-theme' на html
+                  const saved = localStorage.getItem('theme');
+                  const theme = saved || 'dark';
                   
-                  // 2. Устанавливаем атрибут НА HTML ЭЛЕМЕНТ ДО ЗАГРУЗКИ СТРАНИЦЫ
-                  document.documentElement.setAttribute('saved-theme', theme);
+                  // Ставим правильный атрибут
+                  document.documentElement.setAttribute('data-theme', theme);
                   
-                  // 3. Синхронизируем localStorage, если тема не была сохранена
-                  if (!savedTheme) {
-                    localStorage.setItem('saved-theme', 'dark');
+                  // Синхронизируем localStorage
+                  if (!saved) {
+                    localStorage.setItem('theme', 'dark');
                   }
                 } catch (e) {
-                  // На случай ошибок в инкогнито или строгом режиме — ставим 'dark'
-                  document.documentElement.setAttribute('saved-theme', 'dark');
+                  // Fallback
+                  document.documentElement.setAttribute('data-theme', 'dark');
                 }
               })();
             `

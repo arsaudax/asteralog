@@ -79,7 +79,7 @@ a[href^="http"] img {
 }
 
 /* =========================================================
-   АРХИВ — ВЫДЕЛЕННАЯ КНОПКА
+   АРХИВ — ВЫДЕЛЕННАЯ КНОПКА (КРАСНЫЙ ЦВЕТ #ac1517)
    ========================================================= */
 
 .archive-link-container {
@@ -89,28 +89,28 @@ a[href^="http"] img {
 }
 
 .archive-link {
-  color: #84a34 !important;  /* ← ЯРКИЙ ЗЕЛЁНЫЙ */
+  color: #ac1517 !important;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 0.25em;
-  font-size: var(--font-size-lg);  /* ← УВЕЛИЧИЛ */
-  font-weight: 600;  /* ← ЖИРНЫЙ */
+  font-size: var(--font-size-lg);
+  font-weight: 600;
   transition: all var(--transition-fast);
   
   &::after {
     content: " →" !important;
     opacity: 0.9 !important;
-    font-size: 1.2em !important;  /* ← СТРЕЛКА БОЛЬШЕ */
-    color: #84a34 !important;  /* ← ТОГО ЖЕ ЦВЕТА */
+    font-size: 1.2em !important;
+    color: #ac1517 !important;
   }
   
   &:hover {
-    color: #6a8234 !important;  /* ← ТЁМНЕЕ ПРИ НАВЕДЕНИИ */
+    color: #8a1012 !important;  /* темнее при наведении */
     transform: translateX(4px);
     
     &::after {
-      color: #6a8234 !important;
+      color: #8a1012 !important;
     }
   }
 }

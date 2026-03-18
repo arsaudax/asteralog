@@ -75,7 +75,13 @@ export const sharedPageComponents: SharedLayout = {
 export const gardenContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
+    // ContentMeta только если это НЕ главная страница
+    Component.ConditionalRender({
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index'
+      }
+    }),
     Component.TagList(),
   ],
   left: [
@@ -123,7 +129,13 @@ export const gardenListPageLayout: PageLayout = {
 export const blogContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
-    CustomComponent.ContentMeta({ showReadingTime: true }),
+    // ContentMeta только если это НЕ главная и НЕ архив
+    Component.ConditionalRender({
+      component: CustomComponent.ContentMeta({ showReadingTime: true }),
+      condition: (props: QuartzComponentProps) => {
+        return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
+      }
+    }),
     Component.TagList(),
   ],
   left: baseLeftPanel,  // без эксплорера

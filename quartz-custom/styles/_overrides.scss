@@ -231,3 +231,37 @@ a[href^="http"] img {
     font-weight: 600;
   }
 }
+
+/* =========================================================
+   СТИЛИ ДЛЯ СПИСКА ЗАПИСЕЙ (БЛОГ И АРХИВ)
+   ========================================================= */
+
+.blog-index-item {
+  margin-bottom: 48px !important;      /* увеличенный отступ */
+  padding-bottom: 48px !important;
+  border-bottom: 1px solid var(--border-color);  /* тонкий разделитель */
+}
+
+.blog-index-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Убираем лишний разделитель между заголовком и информацией */
+.blog-index-item h2 {
+  border-bottom: none !important;
+  margin-bottom: 12px !important;
+}
+
+/* Дополнительные стили для читаемости */
+.blog-index-date {
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.blog-index-description {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}

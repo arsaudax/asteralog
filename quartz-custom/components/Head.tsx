@@ -38,75 +38,38 @@ export default (() => {
 
     return (
       <head>
-        {/* Критический CSS для принудительной тёмной темы */}
-        <style>{`
-          /* Всегда ставим dark как первичную тему */
-          html {
-            color-scheme: dark;
-            background-color: #1a1c1e !important;
-            --bg-primary: #1a1c1e;
-            --bg-secondary: #2e3235;
-            --text-primary: #d4d4d4;
-            --text-secondary: #b0b0b0;
-            --text-muted: #9a9a9a;
-            --border-color: #4a4f54;
-            --link-color: #b5977a;
-            --link-hover: #d4b69b;
-            --highlight: rgba(181, 151, 122, 0.15);
-          }
-          
-          body {
-            background-color: #1a1c1e !important;
-            color: #d4d4d4 !important;
-          }
-          
-          /* Если система явно светлая — игнорируем */
-          @media (prefers-color-scheme: light) {
-            html {
-              color-scheme: dark; /* всё равно используем dark */
-            }
-          }
-        `}</style>
+        {/* ===== КРИТИЧЕСКИЙ СКРИПТ ДЛЯ ТЕМЫ (ДО ЗАГРУЗКИ CSS) ===== */}
+        <script
+          blocking="render"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const theme = localStorage.getItem('saved-theme') || 'dark';
+                document.documentElement.setAttribute('saved-theme', theme);
+              })();
+            `
+          }}
+        />
 
-        {/* Резервный скрипт для синхронизации с localStorage */}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              const saved = localStorage.getItem('saved-theme');
-              if (saved === 'light') {
-                document.documentElement.style.backgroundColor = '#f9f7f4';
-                document.body.style.backgroundColor = '#f9f7f4';
-                document.body.style.color = '#2b2b2b';
-              }
-            })();
-          `
-        }} />
-        
+        {/* ===== БАЗОВЫЕ META ===== */}
         <title>{title}</title>
         <meta charSet="utf-8" />
-        
-        {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
-          <>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" />
-            <link rel="stylesheet" href={googleFontHref(cfg.theme)} />
-            {cfg.theme.typography.title && (
-              <link rel="stylesheet" href={googleFontSubsetHref(cfg.theme, cfg.pageTitle)} />
-            )}
-          </>
-        )}
-        
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="dark light" />
+        <meta name="description" content={description} />
+        <meta name="generator" content="Quartz" />
+        <link rel="icon" href={iconPath} />
 
+        {/* ===== Open Graph / Twitter ===== */}
         <meta name="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
+        <meta property="og:description" content={description} />
+        <meta property="og:image:alt" content={description} />
+        
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image:alt" content={description} />
 
         {!usesCustomOgImage && (
           <>
@@ -128,14 +91,27 @@ export default (() => {
           </>
         )}
 
-        <link rel="icon" href={iconPath} />
-        <meta name="description" content={description} />
-        <meta name="generator" content="Quartz" />
+        {/* ===== ШРИФТЫ ===== */}
+        {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
+          <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+            <link rel="stylesheet" href={googleFontHref(cfg.theme)} />
+            {cfg.theme.typography.title && (
+              <link rel="stylesheet" href={googleFontSubsetHref(cfg.theme, cfg.pageTitle)} />
+            )}
+          </>
+        )}
 
+        {/* ===== CSS ===== */}
         {css.map((resource) => CSSResourceToStyleElement(resource, true))}
+        
+        {/* ===== JS ===== */}
         {js
           .filter((resource) => resource.loadTime === "beforeDOMReady")
           .map((res) => JSResourceToScriptElement(res, true))}
+        
+        {/* ===== ДОПОЛНИТЕЛЬНЫЕ HEAD ЭЛЕМЕНТЫ ===== */}
         {additionalHead.map((resource) => {
           if (typeof resource === "function") {
             return resource(fileData)

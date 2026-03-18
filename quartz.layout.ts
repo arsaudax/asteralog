@@ -80,10 +80,14 @@ export const gardenContentPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    // Эксплорер ТОЛЬКО на десктопе
+    // Эксплорер только на десктопе (НЕ РЕНДЕРИТСЯ на мобильных)
     Component.ConditionalRender({
-      component: Component.DesktopOnly(Component.Explorer(explorerConfig)),
-      condition: () => true  // всегда рендерим, DesktopOnly сам скроет на мобильных
+      component: Component.Explorer(explorerConfig),
+      condition: () => {
+        // Проверяем ширину экрана (на сервере рендерим, на клиенте проверяем)
+        if (typeof window === 'undefined') return true; // SSR
+        return window.innerWidth > 800; // только на десктопе
+      }
     }),
   ],
   right: [
@@ -102,8 +106,11 @@ export const gardenListPageLayout: PageLayout = {
   left: [
     ...baseLeftPanel,
     Component.ConditionalRender({
-      component: Component.DesktopOnly(Component.Explorer(explorerConfig)),
-      condition: () => true
+      component: Component.Explorer(explorerConfig),
+      condition: () => {
+        if (typeof window === 'undefined') return true;
+        return window.innerWidth > 800;
+      }
     }),
   ],
   right: [],

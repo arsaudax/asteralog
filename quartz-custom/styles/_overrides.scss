@@ -134,7 +134,7 @@ a[href^="http"] img {
 }
 
 /* =========================================================
-   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ
+   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ (ФИКСИРОВАННОЕ ЗНАЧЕНИЕ)
    ========================================================= */
 
 .left.sidebar {
@@ -146,5 +146,20 @@ a[href^="http"] img {
 }
 
 .left.sidebar.hidden {
-  top: -100% !important;
+  top: -120px !important;  /* Фиксированная высота панели */
+}
+
+/* =========================================================
+   УСИЛЕННОЕ СКРЫТИЕ ЭКСПЛОРЕРА НА МОБИЛЬНЫХ
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .explorer {
+    display: none !important;
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
 }

@@ -10,15 +10,16 @@ const ScrollBehavior: QuartzComponent = () => {
             
             function initScrollBehavior() {
               if (initialized) return;
+              if (window.innerWidth > 800) return;  // Не применяем на десктопе
               
-              const header = document.querySelector('.page-header');
+              const header = document.querySelector('.left.sidebar');
               if (!header) return;
               
               initialized = true;
               
               let lastScroll = 0;
               const delta = 5;
-              const headerHeight = 70;
+              const headerHeight = 120;  // Высота панели
               
               function handleScroll() {
                 const current = window.scrollY;
@@ -39,16 +40,12 @@ const ScrollBehavior: QuartzComponent = () => {
             }
             
             // Только для мобильных устройств
-            if (window.innerWidth <= 800) {
-              initScrollBehavior();
-            }
+            initScrollBehavior();
             
             // Реинициализация после SPA-переходов
             document.addEventListener('nav', () => {
               initialized = false;
-              if (window.innerWidth <= 800) {
-                initScrollBehavior();
-              }
+              initScrollBehavior();
             });
           })();
         `

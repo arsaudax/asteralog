@@ -1,12 +1,12 @@
 ---
-title: Astera mea in verborum cavillatio habitat
+title: Carduus camporum
 tags:
   - garden
 ---
 
-# Carduus camporum
+*Astera mea in verborum cavillatio habitat*
 
 Эта страница — вход в сад, в котором растут мои мысли о ремесле, искусстве и внутренней эмиграции.
 
-[@asteralog](https://t.me/asteralog)
+Телеграм-канал [@asteralog](https://t.me/asteralog)
 

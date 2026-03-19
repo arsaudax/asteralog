@@ -90,7 +90,9 @@ const config: QuartzConfig = {
   plugins: {
     transformers: [
       Plugin.FrontMatter(),
-      Plugin.CreatedModifiedDate({ priority: ["filesystem"] }),
+      Plugin.CreatedModifiedDate({ 
+        priority: ["frontmatter", "filesystem"]  // сначала frontmatter, потом файловая система
+      }),
       Plugin.SyntaxHighlighting({
         theme: { light: "github-light", dark: "github-dark" },
         keepBackground: false,

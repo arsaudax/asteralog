@@ -1,4 +1,5 @@
 ---
+date: 2025-07-18T16:30:00+03:00
 title: Carduus camporum
 tags:
   - garden

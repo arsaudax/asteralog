@@ -11,8 +11,8 @@ tags:
 
 ![Lettering Intro](https://cdn.jsdelivr.net/gh/arsaudax/asteralog-images/images/Astera%20mea%20in%20verborum%20cavillatio%20habitat.webp)
 
-  
-{.caption} **Аль Богат** · Цифровая иллюстрация · 2026
+
+<p class="caption" data-caption>**Аль Богат** · Цифровая иллюстрация · 2026</p>
 
 >**Аль Богат**<br>
 Цифровая иллюстрация<br>

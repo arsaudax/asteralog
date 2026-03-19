@@ -36,6 +36,45 @@ export default (() => {
     )
     const ogImageDefaultPath = `https://${cfg.baseUrl}/static/og-image.png`
 
+    // Канонический URL
+    const canonicalUrl = `https://${cfg.baseUrl}${fileData.slug === "index" ? "" : fileData.slug}`
+
+    // Генерация Schema.org разметки
+    const generateSchema = () => {
+      const baseUrl = `https://${cfg.baseUrl}`
+      const slug = fileData.slug
+      const url = slug === "index" ? baseUrl : `${baseUrl}${slug}`
+      const isArticle = !!fileData.frontmatter?.date
+      const publishDate = fileData.frontmatter?.date || fileData.dates?.created
+      const modifiedDate = fileData.dates?.modified || publishDate
+
+      const schema: any = {
+        "@context": "https://schema.org",
+        "@type": isArticle ? "BlogPosting" : "WebPage",
+        "@id": url,
+        url: url,
+        name: fileData.frontmatter?.title || cfg.pageTitle,
+        description: description,
+        inLanguage: cfg.locale || "ru-RU",
+      }
+
+      if (isArticle) {
+        schema.headline = fileData.frontmatter?.title
+        schema.datePublished = publishDate
+        schema.dateModified = modifiedDate
+        schema.author = {
+          "@type": "Person",
+          "name": fileData.frontmatter?.author || "Александр",
+        }
+        
+        if (fileData.frontmatter?.cover || ogImageDefaultPath) {
+          schema.image = fileData.frontmatter?.cover || ogImageDefaultPath
+        }
+      }
+
+      return JSON.stringify(schema)
+    }
+
     return (
       <head>
         {/* ===== ПРАВИЛЬНЫЙ СКРИПТ ТЕМЫ И ТИПА САЙТА ===== */}
@@ -77,26 +116,52 @@ export default (() => {
         <meta name="generator" content="Quartz" />
         <link rel="icon" href={iconPath} />
 
+        {/* ===== ДОБАВЛЕНО: SEO-УЛУЧШЕНИЯ ===== */}
+        {/* Каноническая ссылка */}
+        <link rel="canonical" href={canonicalUrl} />
+
+        {/* Индексация */}
+        <meta name="robots" content="index, follow" />
+        
+        {/* Автор */}
+        <meta name="author" content={fileData.frontmatter?.author || "Александр"} />
+        
+        {/* Ключевые слова из тегов */}
+        {fileData.frontmatter?.tags && (
+          <meta name="keywords" content={fileData.frontmatter.tags.join(', ')} />
+        )}
+
+        {/* Подтверждение для поисковых систем (раскомментировать при необходимости) */}
+        <meta name="google-site-verification" content="jI4JENr6uPnov8nCuV2R1NzWDomZHyK_kcVVGpFuTeg" />
+        <meta name="yandex-verification" content="acdb3af63d06f102" />
+        <meta name="google-site-verification" content="jI4JENr6uPnov8nCuV2R1NzWDomZHyK_kcVVGpFuTeg" />
+        <meta name="yandex-verification" content="5c0a66c333cdc745" />
+
         {/* ===== Open Graph / Twitter ===== */}
         <meta name="og:site_name" content={cfg.pageTitle} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
         <meta property="og:description" content={description} />
         <meta property="og:image:alt" content={description} />
+        <meta property="og:locale" content={cfg.locale || "ru_RU"} />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
+        <meta name="twitter:site" content="@ваш_аккаунт" /> {/* добавить при наличии */}
 
         {!usesCustomOgImage && (
           <>
             <meta property="og:image" content={ogImageDefaultPath} />
             <meta property="og:image:url" content={ogImageDefaultPath} />
+            <meta property="og:image:secure_url" content={ogImageDefaultPath} />
             <meta name="twitter:image" content={ogImageDefaultPath} />
             <meta
               property="og:image:type"
               content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}
             />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
           </>
         )}
 
@@ -107,6 +172,14 @@ export default (() => {
             <meta property="twitter:url" content={socialUrl} />
           </>
         )}
+
+        {/* ===== ДОБАВЛЕНО: Структурированные данные (Schema.org) ===== */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: generateSchema()
+          }}
+        />
 
         {/* ===== ШРИФТЫ ===== */}
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /templates/
+
+Sitemap: https://garden.asteralog.ru/sitemap.xml
+Sitemap: https://blog.asteralog.ru/sitemap.xml

@@ -351,17 +351,18 @@ p.caption strong,
 .recent-notes time,
 .recent-notes .note-date {
   font-size: 0.75rem !important;   /* меньше основного текста */
-  color: var(--text-muted) !important;
-  opacity: 0.8;
+  color: var(--text-primary) !important;
+  opacity: 0.9;
   line-height: 1.2 !important;
-  margin-top: 0.1rem !important;
+  margin-top: 0.3rem !important;
   display: block !important;
+  letter-spacing: 0.02em !important;
 }
 
 /* Если дата идёт в одной строке с заголовком */
 .recent-notes .recent-note-item time,
 .recent-notes .recent-note-item .note-date {
-  margin-left: 0 !important;
+  margin-left: 0.25rem !important;
   font-size: 0.7rem !important;
 }
 

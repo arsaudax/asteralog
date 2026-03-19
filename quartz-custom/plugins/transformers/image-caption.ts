@@ -8,65 +8,36 @@ export const ImageCaption: QuartzTransformerPlugin = () => {
     markdownPlugins() {
       return [
         () => (tree: Root) => {
-          const images: any[] = []
-          
-          // Находим все параграфы с изображениями
+          // Ищем параграфы, где есть изображение и другой текст
           visit(tree, "paragraph", (node: any, index: number) => {
-            const hasImage = node.children?.some(
+            const imageIndex = node.children.findIndex(
               (child: any) => child.type === "image"
             )
             
-            if (hasImage) {
-              images.push({
-                node,
-                index
-              })
-            }
-          })
-
-          // Обрабатываем каждое изображение справа налево (чтобы не сбивать индексы)
-          images.reverse().forEach(({ node, index }) => {
-            const image = node.children.find((c: any) => c.type === "image")
-            if (!image) return
-            
-            const altText = image.alt || ""
-            
-            // Смотрим, что идёт после этого параграфа
-            const nextNode = tree.children[index + 1]
-            
-            // Если следующий узел существует и это параграф (и нет пустой строки)
-            if (nextNode?.type === "paragraph") {
-              // Проверяем, нет ли пустой строки между ними
-              // В MDAST пустая строка создаёт отдельный параграф с одним символом
-              const isWhitespace = nextNode.children?.length === 1 && 
-                                   nextNode.children[0].value === ''
+            // Если есть изображение и после него есть текст
+            if (imageIndex !== -1 && node.children.length > imageIndex + 1) {
+              const image = node.children[imageIndex]
+              const altText = image.alt || ""
               
-              if (!isWhitespace) {
-                // Собираем текст подписи из следующего параграфа
-                const captionLines: string[] = []
-                
-                nextNode.children.forEach((child: any) => {
-                  if (child.type === "text") {
-                    captionLines.push(child.value)
-                  } else if (child.type === "break") {
-                    captionLines.push("<br>")
-                  }
-                })
-                
-                const captionHtml = captionLines.join('')
-                
-                // Создаём figure
-                const figure = {
-                  type: "html",
-                  value: `<figure class="image-with-caption">
+              // Собираем текст после изображения
+              const captionParts = node.children.slice(imageIndex + 1)
+              const captionHtml = captionParts.map((part: any) => {
+                if (part.type === "text") return part.value
+                if (part.type === "break") return "<br>"
+                return ""
+              }).join('')
+              
+              // Создаём figure с подписью
+              const figure = {
+                type: "html",
+                value: `<figure class="image-with-caption">
   <img src="${image.url}" alt="${altText}" class="img-zoom">
   <figcaption>${captionHtml}</figcaption>
 </figure>`
-                }
-                
-                // Заменяем оба параграфа (изображение и подпись) на figure
-                tree.children.splice(index, 2, figure)
               }
+              
+              // Заменяем весь параграф на figure
+              tree.children.splice(index, 1, figure)
             }
           })
         }

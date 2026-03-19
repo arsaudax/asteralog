@@ -104,8 +104,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
       CustomPlugins.RemoveTags({ tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] }),
-      CustomPlugins.ImageCaption(),  // ← ДОБАВИТЬ СЮДА (после RemoveTags)
-      CustomPlugins.Img(),           // ← ДОЛЖЕН БЫТЬ ПОСЛЕ ImageCaption
+      CustomPlugins.Img(),
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [

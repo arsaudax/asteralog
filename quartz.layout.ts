@@ -63,7 +63,7 @@ export const sharedPageComponents: SharedLayout = {
   footer: CustomComponent.Footer({
     links: {
       Telegram: "https://t.me/asteralog",
-      Instagram: "https://www.instagram.com/al.bogat",
+      Asteragram: "https://www.instagram.com/al.bogat",
       Behance: "https://www.behance.net/arsaudax",
     },
   }),

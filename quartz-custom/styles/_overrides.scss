@@ -282,60 +282,34 @@ a[href^="http"] img {
 }
 
 /* =========================================================
-   ПОДПИСИ К ИЗОБРАЖЕНИЯМ 
+   ПОДПИСИ К ИЗОБРАЖЕНИЯМ (ПРОСТЫЕ)
    ========================================================= */
 
-.image-with-caption {
-  margin: 2rem 0;
-  text-align: center;
-}
-
-.image-with-caption img {
-  max-width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.3s ease;
-}
-
-.image-with-caption img:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.image-with-caption figcaption {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--text-secondary);
-  text-align: left;
-  padding: 1rem 1.5rem;
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  border-left: 4px solid var(--secondary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.image-with-caption figcaption strong {
-  color: var(--secondary);
-  font-weight: 600;
-}
-
-.image-with-caption figcaption em {
+.caption {
+  font-size: 0.9rem;
+  line-height: 1.5;
   color: var(--text-muted);
-  font-style: italic;
+  margin-top: -0.5rem;      /* подтягиваем к картинке */
+  margin-bottom: 2rem;       /* отступ после подписи */
+  font-style: italic;        /* курсив для элегантности */
+  text-align: left;          /* или center, если хотите по центру */
+  padding-left: 0.5rem;      /* небольшой отступ слева */
+  border-left: 2px solid var(--secondary);  /* тонкая линия для акцента */
 }
 
-.image-with-caption figcaption br + strong {
-  margin-top: 0.5rem;
-  display: inline-block;
-}
-
-.image-with-caption[data-caption-type="short"] figcaption {
-  text-align: center;
-  background: transparent;
+/* Альтернатива без линии, если нужна минималистичность */
+.caption.minimal {
   border-left: none;
-  color: var(--text-muted);
-  font-style: italic;
-  padding: 0.5rem;
+  padding-left: 0;
+  color: var(--text-secondary);
+  font-style: normal;
+}
+
+/* Для подписей в центре */
+.caption.center {
+  text-align: center;
+  border-left: none;
+  padding-left: 0;
 }
 
 /* =========================================================

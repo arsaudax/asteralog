@@ -6,11 +6,10 @@ cssclasses:
   - img-zoom
 tags:
   - garden
-  - graphic
+  - blog
 ---
 
 ![Lettering Intro](https://cdn.jsdelivr.net/gh/arsaudax/asteralog-images/images/Astera%20mea%20in%20verborum%20cavillatio%20habitat.webp)
-**Аль Богат** <br>
-Цифровая иллюстрация
+**Аль Богат**<br>Цифровая иллюстрация
 
 Эта страница создана для тестирования

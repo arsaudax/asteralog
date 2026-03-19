@@ -345,6 +345,26 @@ p.caption strong,
   padding: 0.25rem 0 !important;
 }
 
+/* Даты в боковой панели */
+.recent-notes .recent-note-meta,
+.recent-notes .recent-note-date,
+.recent-notes time,
+.recent-notes .note-date {
+  font-size: 0.75rem !important;   /* меньше основного текста */
+  color: var(--text-muted) !important;
+  opacity: 0.8;
+  line-height: 1.2 !important;
+  margin-top: 0.1rem !important;
+  display: block !important;
+}
+
+/* Если дата идёт в одной строке с заголовком */
+.recent-notes .recent-note-item time,
+.recent-notes .recent-note-item .note-date {
+  margin-left: 0 !important;
+  font-size: 0.7rem !important;
+}
+
 /* Убираем лишние отступы в боковой панели */
 .recent-notes ul {
   margin: 0 !important;

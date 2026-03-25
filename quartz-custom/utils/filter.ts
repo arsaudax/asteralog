@@ -30,7 +30,6 @@ export const blogFilter = (file: QuartzPluginData): boolean => {
 
 /**
  * Проверка наличия тега в frontmatter
- * (теги типа explorer-exclude, graph-exclude остаются)
  */
 export const hasTag = (file: QuartzPluginData, tag: string): boolean => {
   const tags = file.frontmatter?.tags
@@ -38,40 +37,95 @@ export const hasTag = (file: QuartzPluginData, tag: string): boolean => {
 }
 
 // ==================================================
-// ФИЛЬТРЫ ИСКЛЮЧЕНИЯ (ИСПОЛЬЗУЮТ СЛУЖЕБНЫЕ ТЕГИ)
+// ФИЛЬТРЫ ДЛЯ САДА (garden-*)
 // ==================================================
 
 /**
- * Исключение из проводника
- * Использует тег 'explorer-exclude'
+ * Фильтр для проводника (Explorer) в саду
+ * Использует тег 'garden-explorer-exclude'
  */
-export const excludeFromExplorer = (file: QuartzPluginData): boolean => {
-  return hasTag(file, 'explorer-exclude')
-}
-
-/**
- * Фильтр для проводника (обратный от excludeFromExplorer)
- * Используется в компоненте Explorer
- */
-export const explorerFilter = (node: FileTrieNode): boolean => {
-  const hasExcludedTag = node.data?.frontmatter?.tags?.includes("explorer-exclude") === true
+export const gardenExplorerFilter = (node: FileTrieNode): boolean => {
+  const tags = node.data?.frontmatter?.tags || []
+  const hasExcludedTag = tags.includes("garden-explorer-exclude")
   return !hasExcludedTag
 }
 
 /**
- * Исключение из графа
- * Использует тег 'graph-exclude'
+ * Фильтр для графа (Graph) в саду
+ * Использует тег 'garden-graph-exclude'
  */
-export const excludeFromGraph = (file: QuartzPluginData): boolean => {
-  return hasTag(file, 'graph-exclude')
+export const gardenGraphFilter = (file: QuartzPluginData): boolean => {
+  return !hasTag(file, "garden-graph-exclude")
+}
+
+// ==================================================
+// ФИЛЬТРЫ ДЛЯ БЛОГА (blog-*)
+// ==================================================
+
+/**
+ * Фильтр для недавних записей (RecentNotes) в блоге
+ * Использует тег 'blog-recents-exclude'
+ * Также проверяет, что файл имеет тег blog (через путь)
+ */
+export const blogRecentsFilter = (file: QuartzPluginData): boolean => {
+  // Сначала проверяем, что это вообще файл блога
+  const isBlogFile = file.slug && (
+    file.slug.startsWith('blog/') || 
+    file.slug === 'index' || 
+    file.slug === 'archive'
+  )
+  
+  if (!isBlogFile) return false
+  
+  // Проверяем тег исключения
+  return !hasTag(file, "blog-recents-exclude")
 }
 
 /**
- * Фильтр для графа (обратный от excludeFromGraph)
- * Используется в компоненте Graph
+ * Фильтр для архива в блоге
+ * Использует тег 'blog-archive-exclude'
+ * Применяется на странице /archive
  */
-export const graphFilter = (file: QuartzPluginData): boolean => {
-  return !hasTag(file, 'graph-exclude')
+export const blogArchiveFilter = (file: QuartzPluginData): boolean => {
+  const isBlogFile = file.slug && (
+    file.slug.startsWith('blog/') || 
+    file.slug === 'index' || 
+    file.slug === 'archive'
+  )
+  
+  if (!isBlogFile) return false
+  if (file.slug === 'archive') return false
+  if (file.slug === 'index') return false
+  
+  return !hasTag(file, "blog-archive-exclude")
+}
+
+/**
+ * Фильтр для обратных ссылок (Backlinks) в блоге
+ * Использует тег 'blog-backlinks-exclude'
+ */
+export const blogBacklinksFilter = (file: QuartzPluginData): boolean => {
+  const isBlogFile = file.slug && (
+    file.slug.startsWith('blog/') || 
+    file.slug === 'index' || 
+    file.slug === 'archive'
+  )
+  
+  if (!isBlogFile) return true
+  
+  return !hasTag(file, "blog-backlinks-exclude")
+}
+
+// ==================================================
+// ФИЛЬТРЫ ДЛЯ ОБОИХ САЙТОВ
+// ==================================================
+
+/**
+ * Фильтр для поиска
+ * Использует тег 'search-exclude'
+ */
+export const searchFilter = (file: QuartzPluginData): boolean => {
+  return !hasTag(file, "search-exclude")
 }
 
 // ==================================================
@@ -94,21 +148,60 @@ export const topicFilter = (fileNode: FileTrieNode): boolean => {
 }
 
 // ==================================================
-// ДОПОЛНИТЕЛЬНЫЕ ФИЛЬТРЫ (ПРИ НЕОБХОДИМОСТИ)
+// УНИВЕРСАЛЬНЫЕ ФИЛЬТРЫ (С УЧЁТОМ ТИПА САЙТА)
 // ==================================================
 
 /**
- * Исключение из недавних записей
- * Использует тег 'recents-exclude'
+ * Универсальный фильтр для недавних записей
+ * Автоматически выбирает правильный фильтр в зависимости от типа сайта
  */
-export const excludeFromRecents = (file: QuartzPluginData): boolean => {
-  return hasTag(file, 'recents-exclude')
+export const recentNotesFilter = (file: QuartzPluginData, siteType: 'garden' | 'blog'): boolean => {
+  if (siteType === 'blog') {
+    return blogRecentsFilter(file)
+  }
+  // Для сада — все файлы сада показываются
+  const isGardenFile = file.slug && (
+    file.slug.startsWith('garden/') || 
+    file.slug === 'index-garden'
+  )
+  return isGardenFile
 }
 
 /**
- * Исключение из поиска
- * Использует тег 'search-exclude'
+ * Универсальный фильтр для обратных ссылок
  */
-export const excludeFromSearch = (file: QuartzPluginData): boolean => {
-  return hasTag(file, 'search-exclude')
+export const backlinksFilter = (file: QuartzPluginData, siteType: 'garden' | 'blog'): boolean => {
+  if (siteType === 'blog') {
+    return blogBacklinksFilter(file)
+  }
+  // Для сада — показываем всё
+  return true
+}
+
+// ==================================================
+// ДЛЯ ОБРАТНОЙ СОВМЕСТИМОСТИ (СТАРЫЕ ТЕГИ)
+// ==================================================
+
+/**
+ * @deprecated Используйте gardenExplorerFilter
+ */
+export const explorerFilter = gardenExplorerFilter
+
+/**
+ * @deprecated Используйте gardenGraphFilter
+ */
+export const graphFilter = gardenGraphFilter
+
+/**
+ * @deprecated Используйте blogRecentsFilter
+ */
+export const excludeFromRecents = (file: QuartzPluginData): boolean => {
+  return hasTag(file, 'blog-recents-exclude') || hasTag(file, 'recents-exclude')
+}
+
+/**
+ * @deprecated Используйте blogBacklinksFilter
+ */
+export const excludeFromBacklinks = (file: QuartzPluginData): boolean => {
+  return hasTag(file, 'blog-backlinks-exclude') || hasTag(file, 'backlinks-exclude')
 }

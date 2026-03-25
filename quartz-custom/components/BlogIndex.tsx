@@ -3,6 +3,7 @@ import { QuartzPluginData } from "../../quartz/plugins/vfile"
 import { Date, getDate } from "../../quartz/components/Date"
 import { classNames } from "../../quartz/util/lang"
 import { resolveRelative } from "../../quartz/util/path"
+import { hasTag } from "../../quartz-custom/utils/filter"
 
 interface Options {
   limit?: number
@@ -20,11 +21,28 @@ export default ((opts?: Options) => {
     const showTags = opts?.showTags ?? true
     const showDate = opts?.showDate ?? true
 
-    // Фильтруем файлы - исключаем только index
+    // Определяем тип сайта (для правильного применения фильтров)
+    const siteType = typeof process !== 'undefined' 
+      ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
+      : 'garden'
+
+    // Фильтруем файлы
     let files = allFiles.filter(file => {
-      const passed = filter(file)
+      // Исключаем служебные страницы
       if (file.slug === 'index') return false
-      return passed
+      if (file.slug === 'archive') return false
+      
+      // Применяем переданный фильтр
+      const passed = filter(file)
+      if (!passed) return false
+      
+      // Для блога дополнительно проверяем blog-recents-exclude
+      // (это дублирование на случай, если фильтр не проверяет)
+      if (siteType === 'blog') {
+        if (hasTag(file, 'blog-recents-exclude')) return false
+      }
+      
+      return true
     })
 
     // Сортируем по дате (новые сверху)
@@ -75,9 +93,17 @@ export default ((opts?: Options) => {
                 
                 {showTags && tags.length > 0 && (
                   <div class="blog-index-tags">
-                    {tags.map(tag => (
-                      <span key={tag} class="blog-index-tag">{tag}</span>
-                    ))}
+                    {tags.map(tag => {
+                      // Скрываем служебные теги в отображении
+                      const hiddenTags = [
+                        'garden', 'blog', 
+                        'garden-explorer-exclude', 'garden-graph-exclude',
+                        'blog-recents-exclude', 'blog-archive-exclude', 'blog-backlinks-exclude',
+                        'search-exclude', 'draft'
+                      ]
+                      if (hiddenTags.includes(tag)) return null
+                      return <span key={tag} class="blog-index-tag">{tag}</span>
+                    }).filter(Boolean)}
                   </div>
                 )}
               </article>

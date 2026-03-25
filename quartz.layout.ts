@@ -5,6 +5,14 @@ import * as CustomComponent from "./quartz-custom/components"
 import CustomTagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
+import {
+  gardenExplorerFilter,
+  gardenGraphFilter,
+  blogRecentsFilter,
+  blogBacklinksFilter,
+  blogArchiveFilter,
+  searchFilter
+} from "./quartz-custom/utils/filter"
 
 // Определяем тип сайта
 const siteType = typeof process !== 'undefined' 
@@ -22,12 +30,9 @@ const baseLeftPanel = [
   Component.Darkmode(),
 ]
 
-// Конфигурация проводника
+// Конфигурация проводника (для сада)
 const explorerConfig = {
-  filterFn: (node: FileTrieNode) => {
-    const hasExcludedTag = node.data?.frontmatter?.tags?.includes("explorer-exclude") === true
-    return !hasExcludedTag
-  },
+  filterFn: gardenExplorerFilter,  // ← ИСПРАВЛЕНО: использует garden-explorer-exclude
   mapFn: (node: FileTrieNode) => {
     if (!node.isFolder) {
       node.displayName = "⊹ " + node.displayName
@@ -38,21 +43,27 @@ const explorerConfig = {
   useSavedState: true,
 }
 
-// Конфигурация графа
+// Конфигурация графа (для сада)
 const graphConfig = {
   localGraph: {
     showTags: false,
-    excludeTags: ["graph-exclude"],
+    filterFn: gardenGraphFilter,  // ← ИСПРАВЛЕНО: использует garden-graph-exclude
   },
   globalGraph: {
     showTags: false,
-    excludeTags: ["graph-exclude"],
+    filterFn: gardenGraphFilter,  // ← ИСПРАВЛЕНО: использует garden-graph-exclude
   },
 }
 
-// Конфигурация обратных ссылок
+// Конфигурация обратных ссылок (с учётом типа сайта)
 const backlinksConfig = {
   hideWhenEmpty: true,
+  filter: (file: any) => {
+    if (siteType === 'blog') {
+      return blogBacklinksFilter(file)  // ← ИСПРАВЛЕНО: использует blog-backlinks-exclude
+    }
+    return true
+  }
 }
 
 // Общие компоненты
@@ -86,13 +97,12 @@ export const gardenContentPageLayout: PageLayout = {
   ],
   left: [
     ...baseLeftPanel,
-    // Эксплорер только на десктопе (НЕ РЕНДЕРИТСЯ на мобильных)
+    // Эксплорер только на десктопе
     Component.ConditionalRender({
       component: Component.Explorer(explorerConfig),
       condition: () => {
-        // Проверяем ширину экрана (на сервере рендерим, на клиенте проверяем)
-        if (typeof window === 'undefined') return true; // SSR
-        return window.innerWidth > 800; // только на десктопе
+        if (typeof window === 'undefined') return true;
+        return window.innerWidth > 800;
       }
     }),
   ],
@@ -138,7 +148,7 @@ export const blogContentPageLayout: PageLayout = {
     }),
     Component.TagList(),
   ],
-  left: baseLeftPanel,  // без эксплорера
+  left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
@@ -147,7 +157,7 @@ export const blogContentPageLayout: PageLayout = {
       component: Component.RecentNotes({
         limit: 5,
         showTags: true,
-        filter: blogFilter,
+        filter: (file) => blogRecentsFilter(file),  // ← ИСПРАВЛЕНО: использует blog-recents-exclude
         title: "Недавние записи"
       }),
       condition: (props: QuartzComponentProps) => {
@@ -166,15 +176,17 @@ export const blogContentPageLayout: PageLayout = {
     }),
   ],
   afterBody: [
+    // Главная страница - последние записи (с фильтром blog-recents-exclude)
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 5,
-        filter: blogFilter
+        filter: (file) => blogRecentsFilter(file)  // ← ИСПРАВЛЕНО: исключает blog-recents-exclude
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'index'
       }
     }),
+    // Ссылка на архив под лентой на главной
     Component.ConditionalRender({
       component: CustomComponent.ArchiveLink({ 
         text: "Все записи →📚",
@@ -184,10 +196,11 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug === 'index'
       }
     }),
+    // Архив - все посты (с фильтром blog-archive-exclude)
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 1000,
-        filter: () => true
+        filter: (file) => blogArchiveFilter(file)  // ← НОВЫЙ ФИЛЬТР: исключает blog-archive-exclude
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'archive'

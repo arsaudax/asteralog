@@ -19,7 +19,7 @@ const config = {
     sourceDir: path.join(__dirname, '../../content'),
     gardenDir: path.join(__dirname, '../../content-garden'),
     blogDir: path.join(__dirname, '../../content-blog'),
-    useCache: process.env.NODE_ENV === 'development',
+    useCache: false,
     cacheFile: path.join(__dirname, '../../.sync-cache.json')
 }
 

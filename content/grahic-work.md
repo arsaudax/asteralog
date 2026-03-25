@@ -4,9 +4,7 @@ title: Графическая работа с глубокими тенями
 description: В этой заметки будет отчётливо видно что работы лучше смотрятся на тёмном фоне сайта
 cssclasses:
   - img-zoom
-type:
-  - garden
-  - blog
+type: both
 tags:
 ---
 

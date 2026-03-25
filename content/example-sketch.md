@@ -2,9 +2,7 @@
 date: 2026-02-18T15:30:00+03:00
 title: Мой скетч на белой бумаге
 theme: light
-type:
-  - garden
-  - blog
+type: both
 tags:
 ---
 

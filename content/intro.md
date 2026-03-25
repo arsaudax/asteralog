@@ -5,9 +5,7 @@ description: Этот блог колючий, словно чертополох
 permalink:
 cssclasses:
   - img-zoom
-type:
-  - garden
-  - blog
+type: both
 tags:
 ---
 

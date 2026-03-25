@@ -19,7 +19,6 @@ const config = {
     sourceDir: path.join(__dirname, '../../content'),
     gardenDir: path.join(__dirname, '../../content-garden'),
     blogDir: path.join(__dirname, '../../content-blog'),
-    // Опционально: кэширование для ускорения
     useCache: process.env.NODE_ENV === 'development',
     cacheFile: path.join(__dirname, '../../.sync-cache.json')
 }
@@ -31,6 +30,7 @@ class AsteralogSync {
         this.stats = {
             garden: 0,
             blog: 0,
+            both: 0,
             none: 0,
             assets: 0
         }
@@ -41,15 +41,11 @@ class AsteralogSync {
             .use(remarkFrontmatter, ['yaml'])
             .use(remarkStringify)
         
-        // Загружаем кэш если нужно
         if (config.useCache) {
             this.loadCache()
         }
     }
 
-    /**
-     * Загрузка кэша
-     */
     async loadCache() {
         try {
             const cacheContent = await fs.readFile(this.config.cacheFile, 'utf8')
@@ -60,9 +56,6 @@ class AsteralogSync {
         }
     }
 
-    /**
-     * Сохранение кэша
-     */
     async saveCache() {
         if (!this.config.useCache) return
         try {
@@ -72,66 +65,42 @@ class AsteralogSync {
         }
     }
 
-    /**
-     * Вычисление хеша файла
-     */
     async getFileHash(filePath) {
         const content = await fs.readFile(filePath, 'utf8')
         return createHash('md5').update(content).digest('hex')
     }
 
-    /**
-     * Проверка, изменился ли файл
-     */
     async hasFileChanged(filePath) {
         if (!this.config.useCache) return true
-        
         const hash = await this.getFileHash(filePath)
         const cached = this.cache[filePath]
-        
-        if (cached === hash) {
-            return false
-        }
-        
+        if (cached === hash) return false
         this.cache[filePath] = hash
         return true
     }
 
-    /**
-     * Транслитерация строки (русские символы -> латиница)
-     */
     transliteratePath(input) {
         if (!input) return input
-        
         let result = slugify(input, {
             lowercase: true,
             separator: '-',
             allowedChars: 'a-zA-Z0-9\\-\\.'
         })
-        
         result = result.replace(/-+/g, '-')
         result = result.replace(/^-|-$/g, '')
-        
         return result || 'unnamed'
     }
 
-    /**
-     * Извлечение и парсинг YAML frontmatter
-     */
     extractFrontmatter(tree) {
         let frontmatterNode = null
         visit(tree, 'yaml', (node) => {
             frontmatterNode = node
             return false
         })
-
         if (!frontmatterNode) return null
         return YAML.parse(frontmatterNode.value)
     }
 
-    /**
-     * Получение полного frontmatter из файла
-     */
     async getFrontmatter(filePath) {
         try {
             const content = await fs.readFile(filePath, 'utf-8')
@@ -144,18 +113,12 @@ class AsteralogSync {
         }
     }
 
-    /**
-     * Получение всех markdown файлов рекурсивно
-     */
     async getMarkdownFiles(dir) {
         const files = []
-
         async function scan(directory) {
             const entries = await fs.readdir(directory, { withFileTypes: true })
-
             for (const entry of entries) {
                 const fullPath = path.join(directory, entry.name)
-
                 if (entry.isDirectory()) {
                     if (!['.git', 'node_modules', '.obsidian', 'templates'].includes(entry.name)) {
                         await scan(fullPath)
@@ -165,18 +128,13 @@ class AsteralogSync {
                 }
             }
         }
-
         await scan(dir)
         return files
     }
 
-    /**
-     * Очистка директории кроме .git
-     */
     async clearDirectory(dir) {
         try {
             const items = await fs.readdir(dir, { withFileTypes: true })
-            
             let deletedCount = 0
             for (const item of items) {
                 if (item.name !== '.git') {
@@ -185,7 +143,6 @@ class AsteralogSync {
                     deletedCount++
                 }
             }
-            
             if (deletedCount > 0) {
                 console.log(chalk.gray(`  🗑️  Удалено ${deletedCount} элементов`))
             }
@@ -194,12 +151,8 @@ class AsteralogSync {
         }
     }
 
-    /**
-     * Копирование файла с сохранением структуры
-     */
     async copyFileWithStructure(sourceFile, targetDir, sourceBase) {
         const relativePath = path.relative(sourceBase, sourceFile)
-        
         const changed = await this.hasFileChanged(sourceFile)
         if (!changed) {
             console.log(chalk.gray(`      🔄 Не изменился (кэш)`))
@@ -224,16 +177,12 @@ class AsteralogSync {
         console.log(chalk.gray(`      Транслит: ${newRelativePath}`))
         
         await fs.mkdir(targetFileDir, { recursive: true })
-        
         const content = await fs.readFile(sourceFile, 'utf8')
         await fs.writeFile(targetPath, content, 'utf8')
         
         return newRelativePath
     }
 
-    /**
-     * Копирование ассетов для файла
-     */
     async copyAssets(sourceFilePath, targetFilePath) {
         const sourceDir = path.dirname(sourceFilePath)
         const targetDir = path.dirname(targetFilePath)
@@ -258,7 +207,6 @@ class AsteralogSync {
                 const ext = path.extname(fileName)
                 const baseName = path.basename(fileName, ext)
                 const transliteratedName = this.transliteratePath(baseName) + ext
-                
                 const destPath = path.join(targetAssetsDir, transliteratedName)
                 
                 try {
@@ -276,9 +224,6 @@ class AsteralogSync {
         }
     }
 
-    /**
-     * Специальная обработка для index-файлов
-     */
     async processIndexFiles(file) {
         const fileName = path.basename(file)
         const frontmatter = await this.getFrontmatter(file)
@@ -296,7 +241,6 @@ class AsteralogSync {
             await fs.mkdir(targetFileDir, { recursive: true })
             const content = await fs.readFile(file, 'utf8')
             await fs.writeFile(targetPath, content, 'utf8')
-
             await this.copyAssets(file, targetPath)
 
             console.log(chalk.green(`  ✓ → garden: index-garden.md → index.md`))
@@ -316,7 +260,6 @@ class AsteralogSync {
             await fs.mkdir(targetFileDir, { recursive: true })
             const content = await fs.readFile(file, 'utf8')
             await fs.writeFile(targetPath, content, 'utf8')
-
             await this.copyAssets(file, targetPath)
 
             console.log(chalk.green(`  ✓ → blog: index.md → index.md`))
@@ -327,9 +270,6 @@ class AsteralogSync {
         return false
     }
 
-    /**
-     * Обработка файла для целевого сайта
-     */
     async processFileForTarget(file, targetDir, targetType, sourceBase) {
         const frontmatter = await this.getFrontmatter(file)
         const type = frontmatter?.type
@@ -348,25 +288,20 @@ class AsteralogSync {
         return false
     }
 
-    /**
-     * Основная функция синхронизации
-     */
     async sync() {
         const startTime = Date.now()
         console.log(chalk.blue('\n🔄 Запуск синхронизации Asteralog...\n'))
 
-        // Очистка целевых директорий
         console.log(chalk.blue('🧹 Очистка целевых директорий...'))
         await this.clearDirectory(this.config.gardenDir)
         await this.clearDirectory(this.config.blogDir)
         console.log(chalk.green('  ✓ Директория сада очищена'))
         console.log(chalk.green('  ✓ Директория блога очищена\n'))
 
-        // Получение всех исходных файлов
         const files = await this.getMarkdownFiles(this.config.sourceDir)
         console.log(chalk.blue(`📊 Найдено ${files.length} markdown файлов в источнике\n`))
 
-        // Сначала обрабатываем index-файлы специальным образом
+        // Обрабатываем index-файлы
         for (const file of files) {
             const processed = await this.processIndexFiles(file)
             if (processed) {
@@ -386,7 +321,23 @@ class AsteralogSync {
             
             console.log(chalk.gray(`   type: ${type || 'не указан'}`))
 
-            if (type === 'garden') {
+            // ========== ОБРАБОТКА type: both ==========
+            if (type === 'both') {
+                // Копируем в сад
+                const gardenProcessed = await this.processFileForTarget(file, this.config.gardenDir, 'garden', this.config.sourceDir)
+                if (gardenProcessed) this.stats.garden++
+                
+                // Копируем в блог
+                const blogProcessed = await this.processFileForTarget(file, this.config.blogDir, 'blog', this.config.sourceDir)
+                if (blogProcessed) this.stats.blog++
+                
+                if (gardenProcessed || blogProcessed) {
+                    this.stats.both++
+                } else {
+                    this.stats.none++
+                    console.log(chalk.gray(`  - приватно (type: both, но не изменился)`))
+                }
+            } else if (type === 'garden') {
                 const processed = await this.processFileForTarget(file, this.config.gardenDir, 'garden', this.config.sourceDir)
                 if (processed) this.stats.garden++
             } else if (type === 'blog') {
@@ -398,14 +349,13 @@ class AsteralogSync {
             }
         }
 
-        // Сохраняем кэш
         await this.saveCache()
 
-        // Итоги
         const duration = ((Date.now() - startTime) / 1000).toFixed(2)
         console.log(chalk.green('\n✅ Синхронизация завершена!'))
         console.log(chalk.blue(`   Сад: ${this.stats.garden} файлов`))
         console.log(chalk.blue(`   Блог: ${this.stats.blog} файлов`))
+        console.log(chalk.blue(`   Везде: ${this.stats.both} файлов`))
         console.log(chalk.gray(`   Приватно: ${this.stats.none} файлов`))
         if (this.stats.assets > 0) {
             console.log(chalk.gray(`   Ассеты: ${this.stats.assets} файлов`))
@@ -414,7 +364,6 @@ class AsteralogSync {
     }
 }
 
-// Запуск синхронизации
 const syncer = new AsteralogSync(config)
 syncer.sync().catch(error => {
     console.error(chalk.red('\n❌ Синхронизация не удалась:'), error)

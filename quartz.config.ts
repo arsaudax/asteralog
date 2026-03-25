@@ -104,17 +104,17 @@ const config: QuartzConfig = {
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
       // ← ОБНОВЛЕНО: добавляем все служебные теги
-      CustomPlugins.RemoveTags({ 
-        tags: [
-          "garden", "blog",                    // старые теги (для обратной совместимости)
-          "garden-explorer-exclude", 
-          "garden-graph-exclude",
-          "blog-recents-exclude", 
-          "blog-archive-exclude", 
-          "blog-backlinks-exclude",
-          "search-exclude"
-        ] 
-      }),
+      // CustomPlugins.RemoveTags({   // ← ЗАКОММЕНТИРОВАНО
+  //   tags: [
+  //     "garden", "blog",
+  //     "garden-explorer-exclude", 
+  //     "garden-graph-exclude",
+  //     "blog-recents-exclude", 
+  //     "blog-archive-exclude", 
+  //     "blog-backlinks-exclude",
+  //     "search-exclude"
+  //   ] 
+  // }),
       CustomPlugins.Img(),
     ],
     filters: [Plugin.RemoveDrafts()],

@@ -51,9 +51,11 @@ export const gardenGraphFilter = (file: QuartzPluginData): boolean => {
 // ==================================================
 
 export const blogRecentsFilter = (file: QuartzPluginData): boolean => {
-  // Проверяем тип (поле не удаляется)
+  // Проверяем тип: blog ИЛИ both
   const type = file.frontmatter?.type
-  if (type !== 'blog') return false
+  if (type !== 'blog' && type !== 'both') {
+    return false
+  }
   
   if (file.slug === 'index') return false
   if (file.slug === 'archive') return false
@@ -63,8 +65,11 @@ export const blogRecentsFilter = (file: QuartzPluginData): boolean => {
 }
 
 export const blogArchiveFilter = (file: QuartzPluginData): boolean => {
+  // Проверяем тип: blog ИЛИ both
   const type = file.frontmatter?.type
-  if (type !== 'blog') return false
+  if (type !== 'blog' && type !== 'both') {
+    return false
+  }
   
   if (file.slug === 'index') return false
   if (file.slug === 'archive') return false
@@ -75,7 +80,7 @@ export const blogArchiveFilter = (file: QuartzPluginData): boolean => {
 
 export const blogBacklinksFilter = (file: QuartzPluginData): boolean => {
   const type = file.frontmatter?.type
-  if (type !== 'blog') return true
+  if (type !== 'blog' && type !== 'both') return true
   
   return !hasTag(file, "blog-backlinks-exclude")
 }

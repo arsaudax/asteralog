@@ -34,6 +34,9 @@ jobs:
           npm ci
           cd utils/content-sync && npm install --no-package-lock
 
+      - name: Remove old cache
+        run: rm -f .sync-cache.json
+
       - name: Clone or update garden content
         run: |
           if [ -d "content-garden" ]; then

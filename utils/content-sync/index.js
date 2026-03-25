@@ -19,7 +19,7 @@ const config = {
     sourceDir: path.join(__dirname, '../../content'),
     gardenDir: path.join(__dirname, '../../content-garden'),
     blogDir: path.join(__dirname, '../../content-blog'),
-    useCache: false,
+    useCache: false,  // отключаем кэш
     cacheFile: path.join(__dirname, '../../.sync-cache.json')
 }
 
@@ -270,10 +270,44 @@ class AsteralogSync {
         return false
     }
 
+    /**
+     * Обработка файла для целевого сайта
+     * Теперь корректно обрабатывает type: both
+     */
     async processFileForTarget(file, targetDir, targetType, sourceBase) {
         const frontmatter = await this.getFrontmatter(file)
         const type = frontmatter?.type
         
+        // Для type: both — копируем в оба места
+        if (type === 'both') {
+            let gardenCopied = false
+            let blogCopied = false
+            
+            // Копируем в сад
+            const gardenPath = await this.copyFileWithStructure(file, this.config.gardenDir, sourceBase)
+            if (gardenPath) {
+                await this.copyAssets(file, path.join(this.config.gardenDir, gardenPath))
+                console.log(chalk.green(`  ✓ → garden: ${gardenPath}`))
+                gardenCopied = true
+            }
+            
+            // Копируем в блог
+            const blogPath = await this.copyFileWithStructure(file, this.config.blogDir, sourceBase)
+            if (blogPath) {
+                await this.copyAssets(file, path.join(this.config.blogDir, blogPath))
+                console.log(chalk.green(`  ✓ → blog: ${blogPath}`))
+                blogCopied = true
+            }
+            
+            if (gardenCopied || blogCopied) {
+                return true
+            } else {
+                console.log(chalk.gray(`  - приватно (type: both, но не изменился)`))
+                return false
+            }
+        }
+        
+        // Для обычных типов
         if (type === targetType) {
             const relativePath = await this.copyFileWithStructure(file, targetDir, sourceBase)
             if (relativePath) {
@@ -321,21 +355,13 @@ class AsteralogSync {
             
             console.log(chalk.gray(`   type: ${type || 'не указан'}`))
 
-            // ========== ОБРАБОТКА type: both ==========
             if (type === 'both') {
-                // Копируем в сад
-                const gardenProcessed = await this.processFileForTarget(file, this.config.gardenDir, 'garden', this.config.sourceDir)
-                if (gardenProcessed) this.stats.garden++
-                
-                // Копируем в блог
-                const blogProcessed = await this.processFileForTarget(file, this.config.blogDir, 'blog', this.config.sourceDir)
-                if (blogProcessed) this.stats.blog++
-                
-                if (gardenProcessed || blogProcessed) {
+                // Для both используем специальный метод
+                const processed = await this.processFileForTarget(file, null, 'both', this.config.sourceDir)
+                if (processed) {
                     this.stats.both++
                 } else {
                     this.stats.none++
-                    console.log(chalk.gray(`  - приватно (type: both, но не изменился)`))
                 }
             } else if (type === 'garden') {
                 const processed = await this.processFileForTarget(file, this.config.gardenDir, 'garden', this.config.sourceDir)

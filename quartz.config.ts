@@ -23,13 +23,13 @@ const baseConfig = {
 // Цвета для сада
 const gardenColors = {
   darkMode: {
-    light: "#1a1c1e",        // bg-primary
-    lightgray: "#2e3235",     // bg-secondary
-    gray: "#4a4f54",          // border-color
-    darkgray: "#d4d4d4",      // text-secondary
-    dark: "#ffffff",          // text-primary
-    secondary: "#af7d4c",     // link-color
-    tertiary: "#7c5736",      // link-hover
+    light: "#1a1c1e",
+    lightgray: "#2e3235",
+    gray: "#4a4f54",
+    darkgray: "#d4d4d4",
+    dark: "#ffffff",
+    secondary: "#af7d4c",
+    tertiary: "#7c5736",
     highlight: "rgba(181, 151, 122, 0.15)",
   },
   lightMode: {
@@ -76,7 +76,7 @@ const config: QuartzConfig = {
     ...baseConfig,
     baseUrl: process.env.BASE_URL || '',
     theme: {
-      defaultTheme: "dark",  // принудительно тёмная тема
+      defaultTheme: "dark",
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
@@ -91,7 +91,7 @@ const config: QuartzConfig = {
     transformers: [
       Plugin.FrontMatter(),
       Plugin.CreatedModifiedDate({ 
-        priority: ["frontmatter", "filesystem"]  // сначала frontmatter, потом файловая система
+        priority: ["frontmatter", "filesystem"]
       }),
       Plugin.SyntaxHighlighting({
         theme: { light: "github-light", dark: "github-dark" },
@@ -103,7 +103,18 @@ const config: QuartzConfig = {
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest", openLinksInNewTab: true }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
-      CustomPlugins.RemoveTags({ tags: ["garden", "blog", "explorer-exclude", "graph-exclude"] }),
+      // ← ОБНОВЛЕНО: добавляем все служебные теги
+      CustomPlugins.RemoveTags({ 
+        tags: [
+          "garden", "blog",                    // старые теги (для обратной совместимости)
+          "garden-explorer-exclude", 
+          "garden-graph-exclude",
+          "blog-recents-exclude", 
+          "blog-archive-exclude", 
+          "blog-backlinks-exclude",
+          "search-exclude"
+        ] 
+      }),
       CustomPlugins.Img(),
     ],
     filters: [Plugin.RemoveDrafts()],

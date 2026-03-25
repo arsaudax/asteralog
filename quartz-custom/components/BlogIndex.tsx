@@ -21,11 +21,6 @@ export default ((opts?: Options) => {
     const showTags = opts?.showTags ?? true
     const showDate = opts?.showDate ?? true
 
-    // Определяем тип сайта (для правильного применения фильтров)
-    const siteType = typeof process !== 'undefined' 
-      ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
-      : 'garden'
-
     // Фильтруем файлы
     let files = allFiles.filter(file => {
       // Исключаем служебные страницы
@@ -35,12 +30,6 @@ export default ((opts?: Options) => {
       // Применяем переданный фильтр
       const passed = filter(file)
       if (!passed) return false
-      
-      // Для блога дополнительно проверяем blog-recents-exclude
-      // (это дублирование на случай, если фильтр не проверяет)
-      if (siteType === 'blog') {
-        if (hasTag(file, 'blog-recents-exclude')) return false
-      }
       
       return true
     })
@@ -73,6 +62,15 @@ export default ((opts?: Options) => {
             const tags = file.frontmatter?.tags || []
             const url = resolveRelative(file.slug!, file.slug!)
 
+            // Служебные теги для скрытия
+            const hiddenTags = [
+              'garden', 'blog',
+              'garden-explorer-exclude', 'garden-graph-exclude',
+              'blog-recents-exclude', 'blog-archive-exclude', 'blog-backlinks-exclude',
+              'search-exclude', 'draft',
+              'explorer-exclude', 'graph-exclude', 'recents-exclude', 'backlinks-exclude'
+            ]
+
             return (
               <article class="blog-index-item" key={file.slug}>
                 <h2 class="blog-index-title">
@@ -94,13 +92,6 @@ export default ((opts?: Options) => {
                 {showTags && tags.length > 0 && (
                   <div class="blog-index-tags">
                     {tags.map(tag => {
-                      // Скрываем служебные теги в отображении
-                      const hiddenTags = [
-                        'garden', 'blog', 
-                        'garden-explorer-exclude', 'garden-graph-exclude',
-                        'blog-recents-exclude', 'blog-archive-exclude', 'blog-backlinks-exclude',
-                        'search-exclude', 'draft'
-                      ]
                       if (hiddenTags.includes(tag)) return null
                       return <span key={tag} class="blog-index-tag">{tag}</span>
                     }).filter(Boolean)}

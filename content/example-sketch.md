@@ -2,7 +2,7 @@
 date: 2026-02-18T15:30:00+03:00
 title: Мой скетч на белой бумаге
 theme: light
-type: both
+type: draft
 tags:
 ---
 
@@ -11,4 +11,4 @@ tags:
 Этот скетч лучше смотрится на светлом фоне, потому что он сделан на белой бумаге.
 
 [[intro]]
-[[grahic-work]]
+[[ritual stone in a resort project]]

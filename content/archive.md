@@ -1,8 +1,9 @@
 ---
 date: 2025-07-18T12:30:00+03:00
 title: Архив блога
-tags:
+type:
   - blog
+tags:
 layout: list
 ---
 

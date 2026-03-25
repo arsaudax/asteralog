@@ -19,8 +19,6 @@ const config = {
     sourceDir: path.join(__dirname, '../../content'),
     gardenDir: path.join(__dirname, '../../content-garden'),
     blogDir: path.join(__dirname, '../../content-blog'),
-    gardenTag: 'garden',
-    blogTag: 'blog',
     // Опционально: кэширование для ускорения
     useCache: process.env.NODE_ENV === 'development',
     cacheFile: path.join(__dirname, '../../.sync-cache.json')
@@ -33,7 +31,6 @@ class AsteralogSync {
         this.stats = {
             garden: 0,
             blog: 0,
-            both: 0,
             none: 0,
             assets: 0
         }
@@ -106,19 +103,16 @@ class AsteralogSync {
     transliteratePath(input) {
         if (!input) return input
         
-        // Сначала транслитерируем
         let result = slugify(input, {
             lowercase: true,
             separator: '-',
             allowedChars: 'a-zA-Z0-9\\-\\.'
         })
         
-        // Убираем множественные дефисы
         result = result.replace(/-+/g, '-')
-        // Убираем дефисы в начале и конце
         result = result.replace(/^-|-$/g, '')
         
-        return result || 'unnamed' // Защита от пустого результата
+        return result || 'unnamed'
     }
 
     /**
@@ -136,22 +130,17 @@ class AsteralogSync {
     }
 
     /**
-     * Получение тегов из frontmatter
+     * Получение полного frontmatter из файла
      */
-    async getTags(filePath) {
+    async getFrontmatter(filePath) {
         try {
             const content = await fs.readFile(filePath, 'utf-8')
             const tree = this.processor.parse(content)
             const frontmatter = this.extractFrontmatter(tree)
-
-            if (!frontmatter?.tags) return []
-            
-            return Array.isArray(frontmatter.tags) 
-                ? frontmatter.tags 
-                : frontmatter.tags.split(',').map(tag => tag.trim())
+            return frontmatter || {}
         } catch (error) {
-            console.error(chalk.red(`Error reading tags from ${filePath}:`), error.message)
-            return []
+            console.error(chalk.red(`Error reading frontmatter from ${filePath}:`), error.message)
+            return {}
         }
     }
 
@@ -168,8 +157,7 @@ class AsteralogSync {
                 const fullPath = path.join(directory, entry.name)
 
                 if (entry.isDirectory()) {
-                    // Пропускаем служебные директории
-                    if (!['.git', 'node_modules', '.obsidian'].includes(entry.name)) {
+                    if (!['.git', 'node_modules', '.obsidian', 'templates'].includes(entry.name)) {
                         await scan(fullPath)
                     }
                 } else if (entry.name.endsWith('.md')) {
@@ -202,38 +190,32 @@ class AsteralogSync {
                 console.log(chalk.gray(`  🗑️  Удалено ${deletedCount} элементов`))
             }
         } catch (error) {
-            // Directory might not exist yet
             await fs.mkdir(dir, { recursive: true })
         }
     }
 
     /**
-     * Копирование файла с сохранением структуры (с транслитерацией и UTF-8)
+     * Копирование файла с сохранением структуры
      */
     async copyFileWithStructure(sourceFile, targetDir, sourceBase) {
         const relativePath = path.relative(sourceBase, sourceFile)
         
-        // Проверяем, изменился ли файл
         const changed = await this.hasFileChanged(sourceFile)
         if (!changed) {
             console.log(chalk.gray(`      🔄 Не изменился (кэш)`))
             return null
         }
         
-        // Разбиваем путь на компоненты и транслитерируем каждый
         const pathComponents = relativePath.split(path.sep)
         const transliteratedComponents = pathComponents.map(comp => {
-            // Если это файл .md, обрабатываем отдельно
             if (comp.endsWith('.md')) {
                 const fileName = comp.slice(0, -3)
                 const transliterated = this.transliteratePath(fileName)
                 return transliterated + '.md'
             }
-            // Для папок просто транслитерируем
             return this.transliteratePath(comp)
         })
         
-        // Собираем новый путь
         const newRelativePath = transliteratedComponents.join(path.sep)
         const targetPath = path.join(targetDir, newRelativePath)
         const targetFileDir = path.dirname(targetPath)
@@ -243,7 +225,6 @@ class AsteralogSync {
         
         await fs.mkdir(targetFileDir, { recursive: true })
         
-        // ВАЖНО: читаем с UTF-8 и пишем с UTF-8
         const content = await fs.readFile(sourceFile, 'utf8')
         await fs.writeFile(targetPath, content, 'utf8')
         
@@ -261,7 +242,7 @@ class AsteralogSync {
         try {
             await fs.access(assetsDir)
         } catch {
-            return // No assets directory
+            return
         }
 
         const targetAssetsDir = path.join(targetDir, 'assets')
@@ -273,7 +254,6 @@ class AsteralogSync {
         for (const file of assetFiles) {
             if (file.isFile()) {
                 const sourcePath = path.join(assetsDir, file.name)
-                // Транслитерируем имена файлов ассетов
                 const fileName = file.name
                 const ext = path.extname(fileName)
                 const baseName = path.basename(fileName, ext)
@@ -281,12 +261,9 @@ class AsteralogSync {
                 
                 const destPath = path.join(targetAssetsDir, transliteratedName)
                 
-                // Копируем только если файл изменился или не существует
                 try {
                     await fs.access(destPath)
-                    // Файл существует, пропускаем
                 } catch {
-                    // Файла нет, копируем
                     await fs.copyFile(sourcePath, destPath)
                     assetCount++
                     console.log(chalk.gray(`      📎 asset: ${fileName} -> ${transliteratedName}`))
@@ -304,15 +281,16 @@ class AsteralogSync {
      */
     async processIndexFiles(file) {
         const fileName = path.basename(file)
-        const tags = await this.getTags(file)
-        
+        const frontmatter = await this.getFrontmatter(file)
+        const type = frontmatter?.type
+
         // index-garden.md → только в сад
-        if (fileName === 'index-garden.md' && tags.includes(this.config.gardenTag)) {
+        if (fileName === 'index-garden.md' && type === 'garden') {
             const targetPath = path.join(this.config.gardenDir, 'index.md')
             const targetFileDir = path.dirname(targetPath)
 
             console.log(chalk.cyan(`\n📄 Специальная обработка: index-garden.md`))
-            console.log(chalk.gray(`   Теги: ${tags.join(', ')}`))
+            console.log(chalk.gray(`   type: ${type}`))
             console.log(chalk.gray(`      Цель: сад → index.md`))
 
             await fs.mkdir(targetFileDir, { recursive: true })
@@ -326,13 +304,13 @@ class AsteralogSync {
             return true
         }
         
-        // index.md с тегом blog → только в блог
-        if (fileName === 'index.md' && tags.includes(this.config.blogTag)) {
+        // index.md с type: blog → только в блог
+        if (fileName === 'index.md' && type === 'blog') {
             const targetPath = path.join(this.config.blogDir, 'index.md')
             const targetFileDir = path.dirname(targetPath)
 
             console.log(chalk.cyan(`\n📄 Специальная обработка: index.md`))
-            console.log(chalk.gray(`   Теги: ${tags.join(', ')}`))
+            console.log(chalk.gray(`   type: ${type}`))
             console.log(chalk.gray(`      Цель: блог → index.md`))
 
             await fs.mkdir(targetFileDir, { recursive: true })
@@ -350,47 +328,20 @@ class AsteralogSync {
     }
 
     /**
-     * Специальная обработка для blog-index.md (для обратной совместимости)
-     */
-    async processBlogIndex(file) {
-        const fileName = path.basename(file)
-        if (fileName !== 'blog-index.md') return false
-
-        const tags = await this.getTags(file)
-        if (!tags.includes(this.config.blogTag)) return false
-
-        const targetPath = path.join(this.config.blogDir, 'index.md')
-        const targetFileDir = path.dirname(targetPath)
-
-        console.log(chalk.cyan(`\n📄 Специальная обработка: blog-index.md (устаревший)`))
-        console.log(chalk.gray(`   Теги: ${tags.join(', ')}`))
-        console.log(chalk.gray(`      Цель: блог → index.md`))
-
-        await fs.mkdir(targetFileDir, { recursive: true })
-        const content = await fs.readFile(file, 'utf8')
-        await fs.writeFile(targetPath, content, 'utf8')
-
-        await this.copyAssets(file, targetPath)
-
-        console.log(chalk.green(`  ✓ → blog: blog-index.md → index.md`))
-        this.stats.blog++
-        return true
-    }
-
-    /**
      * Обработка файла для целевого сайта
      */
-    async processFileForTarget(file, targetDir, targetTag, sourceBase) {
-        const tags = await this.getTags(file)
+    async processFileForTarget(file, targetDir, targetType, sourceBase) {
+        const frontmatter = await this.getFrontmatter(file)
+        const type = frontmatter?.type
         
-        if (tags.includes(targetTag)) {
+        if (type === targetType) {
             const relativePath = await this.copyFileWithStructure(file, targetDir, sourceBase)
-            if (relativePath) { // null если файл не изменился
+            if (relativePath) {
                 await this.copyAssets(file, path.join(targetDir, relativePath))
-                console.log(chalk.green(`  ✓ → ${targetTag}: ${relativePath}`))
+                console.log(chalk.green(`  ✓ → ${targetType}: ${relativePath}`))
                 return true
             } else {
-                console.log(chalk.gray(`  - → ${targetTag}: не изменился`))
+                console.log(chalk.gray(`  - → ${targetType}: не изменился`))
                 return false
             }
         }
@@ -423,44 +374,27 @@ class AsteralogSync {
             }
         }
 
-        // Для обратной совместимости обрабатываем blog-index.md
-        for (const file of files) {
-            if (this.processedFiles.has(file)) continue
-            const processed = await this.processBlogIndex(file)
-            if (processed) {
-                this.processedFiles.add(file)
-            }
-        }
-
         // Обработка остальных файлов
         for (const file of files) {
-            // Пропускаем уже обработанные файлы
             if (this.processedFiles.has(file)) continue
 
             const relativePath = path.relative(this.config.sourceDir, file)
             console.log(chalk.cyan(`\n📄 Обработка: ${relativePath}`))
 
-            const tags = await this.getTags(file)
-            console.log(chalk.gray(`   Теги: ${tags.length ? tags.join(', ') : 'нет'}`))
+            const frontmatter = await this.getFrontmatter(file)
+            const type = frontmatter?.type
+            
+            console.log(chalk.gray(`   type: ${type || 'не указан'}`))
 
-            const isGarden = tags.includes(this.config.gardenTag)
-            const isBlog = tags.includes(this.config.blogTag)
-
-            if (isGarden) {
-                const processed = await this.processFileForTarget(file, this.config.gardenDir, this.config.gardenTag, this.config.sourceDir)
+            if (type === 'garden') {
+                const processed = await this.processFileForTarget(file, this.config.gardenDir, 'garden', this.config.sourceDir)
                 if (processed) this.stats.garden++
-            }
-
-            if (isBlog) {
-                const processed = await this.processFileForTarget(file, this.config.blogDir, this.config.blogTag, this.config.sourceDir)
+            } else if (type === 'blog') {
+                const processed = await this.processFileForTarget(file, this.config.blogDir, 'blog', this.config.sourceDir)
                 if (processed) this.stats.blog++
-            }
-
-            if (isGarden && isBlog) {
-                this.stats.both++
-            } else if (!isGarden && !isBlog) {
+            } else {
                 this.stats.none++
-                console.log(chalk.gray(`  - приватно (нет тегов публикации)`))
+                console.log(chalk.gray(`  - приватно (type: ${type || 'не указан'})`))
             }
         }
 
@@ -472,7 +406,6 @@ class AsteralogSync {
         console.log(chalk.green('\n✅ Синхронизация завершена!'))
         console.log(chalk.blue(`   Сад: ${this.stats.garden} файлов`))
         console.log(chalk.blue(`   Блог: ${this.stats.blog} файлов`))
-        console.log(chalk.blue(`   Везде: ${this.stats.both} файлов`))
         console.log(chalk.gray(`   Приватно: ${this.stats.none} файлов`))
         if (this.stats.assets > 0) {
             console.log(chalk.gray(`   Ассеты: ${this.stats.assets} файлов`))

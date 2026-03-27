@@ -19,14 +19,6 @@ const siteType = typeof process !== 'undefined'
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
 
-// Список тегов для исключения из TagList
-const excludeTagsList = [
-  "garden", "blog",
-  "garden-explorer-exclude", "garden-graph-exclude",
-  "blog-recents-exclude", "blog-archive-exclude", "blog-backlinks-exclude",
-  "search-exclude", "draft"
-]
-
 // Базовая левая панель
 const baseLeftPanel = [
   CustomComponent.PageTitle({ 
@@ -95,7 +87,7 @@ export const gardenContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index'
       }
     }),
-    Component.TagList({ excludeTags: excludeTagsList }),  // ← стандартный TagList с excludeTags
+    CustomComponent.TagList(),  // ← кастомный TagList
   ],
   left: [
     ...baseLeftPanel,
@@ -111,7 +103,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    Component.TagList({ excludeTags: excludeTagsList }),  // ← в правой панели
+    CustomComponent.TagList(),  // ← кастомный TagList
   ],
   afterBody: [],
 }
@@ -146,13 +138,13 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    Component.TagList({ excludeTags: excludeTagsList }),  // ← стандартный TagList с excludeTags
+    CustomComponent.TagList(),  // ← кастомный TagList
   ],
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    Component.TagList({ excludeTags: excludeTagsList }),
+    CustomComponent.TagList(),
     Component.ConditionalRender({
       component: Component.RecentNotes({
         limit: 5,

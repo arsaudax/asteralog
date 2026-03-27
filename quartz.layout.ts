@@ -89,7 +89,7 @@ export const gardenContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index'
       }
     }),
-    Component.TagList(),
+    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО
   ],
   left: [
     ...baseLeftPanel,
@@ -105,26 +105,8 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    CustomTagList(),
+    CustomTagList(),  // ← этот уже правильный
   ],
-  afterBody: [],
-}
-
-export const gardenListPageLayout: PageLayout = {
-  beforeBody: [
-    Component.ArticleTitle(),
-  ],
-  left: [
-    ...baseLeftPanel,
-    Component.ConditionalRender({
-      component: Component.Explorer(explorerConfig),
-      condition: () => {
-        if (typeof window === 'undefined') return true;
-        return window.innerWidth > 800;
-      }
-    }),
-  ],
-  right: [],
   afterBody: [],
 }
 
@@ -140,7 +122,7 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    Component.TagList(),
+    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО
   ],
   left: baseLeftPanel,
   right: [
@@ -151,7 +133,7 @@ export const blogContentPageLayout: PageLayout = {
       component: Component.RecentNotes({
         limit: 5,
         showTags: true,
-        filter: blogRecentsFilter,  // ← использует blog-recents-exclude
+        filter: blogRecentsFilter,
         title: "Недавние записи"
       }),
       condition: (props: QuartzComponentProps) => {
@@ -173,7 +155,7 @@ export const blogContentPageLayout: PageLayout = {
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 5,
-        filter: blogRecentsFilter  // ← главная страница: исключает blog-recents-exclude
+        filter: blogRecentsFilter
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'index'
@@ -191,7 +173,7 @@ export const blogContentPageLayout: PageLayout = {
     Component.ConditionalRender({
       component: CustomComponent.BlogIndex({
         limit: 1000,
-        filter: blogArchiveFilter  // ← архив: исключает blog-archive-exclude
+        filter: blogArchiveFilter
       }),
       condition: (props: QuartzComponentProps) => {
         return props.fileData.slug === 'archive'

@@ -43,21 +43,17 @@ const explorerConfig = {
   useSavedState: true,
 }
 
-// Конфигурация графа (используем filterFn для надёжности)
+// Конфигурация графа 
 const graphConfig = {
   localGraph: {
     showTags: false,
-    filterFn: (node: any) => {
-      const tags = node.tags || []
-      return !tags.includes("garden-graph-exclude")
-    },
+    removeTags: ["garden-graph-exclude"],
+    excludeTags: ["garden-graph-exclude"],
   },
   globalGraph: {
     showTags: false,
-    filterFn: (node: any) => {
-      const tags = node.tags || []
-      return !tags.includes("garden-graph-exclude")
-    },
+    removeTags: ["garden-graph-exclude"],
+    excludeTags: ["garden-graph-exclude"],
   },
 }
 

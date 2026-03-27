@@ -43,15 +43,21 @@ const explorerConfig = {
   useSavedState: true,
 }
 
-// Конфигурация графа (используем родной excludeTags)
+// Конфигурация графа (используем filterFn для надёжности)
 const graphConfig = {
   localGraph: {
     showTags: false,
-    excludeTags: ["garden-graph-exclude"],
+    filterFn: (node: any) => {
+      const tags = node.tags || []
+      return !tags.includes("garden-graph-exclude")
+    },
   },
   globalGraph: {
     showTags: false,
-    excludeTags: ["garden-graph-exclude"],
+    filterFn: (node: any) => {
+      const tags = node.tags || []
+      return !tags.includes("garden-graph-exclude")
+    },
   },
 }
 
@@ -87,7 +93,7 @@ export const gardenContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index'
       }
     }),
-    CustomComponent.TagList(),  // ← кастомный TagList
+    CustomComponent.TagList(),
   ],
   left: [
     ...baseLeftPanel,
@@ -103,7 +109,7 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    CustomComponent.TagList(),  // ← кастомный TagList
+    CustomComponent.TagList(),
   ],
   afterBody: [],
 }
@@ -138,7 +144,7 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    CustomComponent.TagList(),  // ← кастомный TagList
+    CustomComponent.TagList(),
   ],
   left: baseLeftPanel,
   right: [

@@ -43,15 +43,22 @@ const explorerConfig = {
   useSavedState: true,
 }
 
-// Конфигурация графа 
+// Конфигурация графа (используем filterFn, как в проводнике)
 const graphConfig = {
   localGraph: {
     showTags: false,
-    removeTags: ["garden-graph-exclude"],
+    filterFn: (node: any) => {
+      // Проверяем теги узла (аналогично gardenExplorerFilter)
+      const tags = node.tags || []
+      return !tags.includes("garden-graph-exclude")
+    },
   },
   globalGraph: {
     showTags: false,
-    removeTags: ["garden-graph-exclude"],
+    filterFn: (node: any) => {
+      const tags = node.tags || []
+      return !tags.includes("garden-graph-exclude")
+    },
   },
 }
 

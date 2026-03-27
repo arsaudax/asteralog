@@ -34,7 +34,7 @@ const baseLeftPanel = [
 
 // Конфигурация проводника (для сада)
 const explorerConfig = {
-  filterFn: gardenExplorerFilter,  // ← использует garden-explorer-exclude
+  filterFn: gardenExplorerFilter,
   mapFn: (node: FileTrieNode) => {
     if (!node.isFolder) {
       node.displayName = "⊹ " + node.displayName
@@ -49,7 +49,7 @@ const explorerConfig = {
 const graphConfig = {
   localGraph: {
     showTags: false,
-    filterFn: gardenGraphFilter,  // ← использует garden-graph-exclude
+    filterFn: gardenGraphFilter,
   },
   globalGraph: {
     showTags: false,
@@ -60,7 +60,7 @@ const graphConfig = {
 // Конфигурация обратных ссылок
 const backlinksConfig = {
   hideWhenEmpty: true,
-  filter: (file: any) => backlinksFilter(file, siteType),  // ← использует blog-backlinks-exclude
+  filter: (file: any) => backlinksFilter(file, siteType),
 }
 
 // Общие компоненты
@@ -89,7 +89,7 @@ export const gardenContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index'
       }
     }),
-    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО
+    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО: кастомный TagList
   ],
   left: [
     ...baseLeftPanel,
@@ -105,8 +105,27 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    CustomTagList(),  // ← этот уже правильный
+    CustomTagList(),
   ],
+  afterBody: [],
+}
+
+// ✅ ДОБАВЛЯЕМ НЕДОСТАЮЩИЙ gardenListPageLayout
+export const gardenListPageLayout: PageLayout = {
+  beforeBody: [
+    Component.ArticleTitle(),
+  ],
+  left: [
+    ...baseLeftPanel,
+    Component.ConditionalRender({
+      component: Component.Explorer(explorerConfig),
+      condition: () => {
+        if (typeof window === 'undefined') return true;
+        return window.innerWidth > 800;
+      }
+    }),
+  ],
+  right: [],
   afterBody: [],
 }
 
@@ -122,7 +141,7 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО
+    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО: кастомный TagList
   ],
   left: baseLeftPanel,
   right: [
@@ -214,7 +233,7 @@ export const defaultContentPageLayout: PageLayout =
 
 export const defaultListPageLayout: PageLayout =
   siteType === 'garden'
-    ? gardenListPageLayout
+    ? gardenListPageLayout  // ← теперь gardenListPageLayout определён
     : blogListPageLayout
 
 export default defaultContentPageLayout

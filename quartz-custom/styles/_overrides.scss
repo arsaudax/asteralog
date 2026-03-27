@@ -376,3 +376,62 @@ p.caption strong,
   margin: 0 !important;
   list-style: none !important;
 }
+
+/* =========================================================
+   ПОЛЕЗНЫЕ ДОБАВЛЕНИЯ
+   ========================================================= */
+
+/* 1. Стили для битых ссылок */
+a.internal.broken-link {
+  background-color: rgba(218, 89, 89, 0.15);
+  
+  &:hover {
+    text-decoration: line-through;
+    background-color: rgba(207, 143, 70, 0.15);
+  }
+  
+  .popover {
+    display: none !important;
+  }
+}
+
+/* 2. Спойлеры */
+.spoiler-text {
+  transition: filter 0.3s ease;
+  filter: blur(0.5rem);
+  cursor: pointer;
+}
+
+.revealed {
+  filter: initial;
+}
+
+/* 3. Декоративный разделитель */
+.page-sparkle-divider {
+  text-align: center;
+  color: var(--text-muted);
+  margin: 2rem 0;
+}
+
+/* 4. Гибкие контейнеры */
+.forced-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.forced-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+/* 5. Inline иконки */
+img.inline-icons {
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
+}

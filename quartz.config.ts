@@ -103,16 +103,11 @@ const config: QuartzConfig = {
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest", openLinksInNewTab: true }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
-      // ← ОБНОВЛЕНО: добавляем все служебные теги
+      // ✅ ПРАВИЛЬНО: удаляем только старые теги garden/blog
+      // Теги исключения НЕ УДАЛЯЕМ — они нужны для фильтрации!
       CustomPlugins.RemoveTags({ 
         tags: [
-          "garden", "blog",                    // старые теги (для обратной совместимости)
-          "garden-explorer-exclude", 
-          "garden-graph-exclude",
-          "blog-recents-exclude", 
-          "blog-archive-exclude", 
-          "blog-backlinks-exclude",
-          "search-exclude"
+          "garden", "blog"  // только эти два!
         ] 
       }),
       CustomPlugins.Img(),

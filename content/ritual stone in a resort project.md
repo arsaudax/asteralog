@@ -3,7 +3,7 @@ date: 2025-08-29T12:30:00+03:00
 title: Первая публикация
 description: Ритуальный камень в основание проекта
 Номер публикации: 1
-permalink:
+permalink: https://blog.asteralog.ru/ritual-stone-in-a-resort-project
 cssclasses:
   - img-zoom
 type: both

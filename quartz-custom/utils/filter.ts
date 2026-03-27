@@ -39,11 +39,27 @@ export const hasTag = (file: QuartzPluginData, tag: string): boolean => {
 export const gardenExplorerFilter = (node: FileTrieNode): boolean => {
   const tags = node.data?.frontmatter?.tags || []
   const hasExcludedTag = tags.includes("garden-explorer-exclude")
+  
+  // ОТЛАДКА: выводим информацию для всех узлов
+  console.log(`🔍 Explorer filter for: ${node.data?.slug || node.displayName}`);
+  console.log(`   tags:`, tags);
+  console.log(`   hasExcludedTag: ${hasExcludedTag}`);
+  console.log(`   result: ${!hasExcludedTag}`);
+  
   return !hasExcludedTag
 }
 
 export const gardenGraphFilter = (file: QuartzPluginData): boolean => {
-  return !hasTag(file, "garden-graph-exclude")
+  const hasExcludedTag = hasTag(file, "garden-graph-exclude")
+  
+  // ОТЛАДКА: для конкретной заметки
+  if (file.slug?.includes('ritual-stone')) {
+    console.log(`🔍 Graph filter for: ${file.slug}`);
+    console.log(`   hasExcludedTag: ${hasExcludedTag}`);
+    console.log(`   result: ${!hasExcludedTag}`);
+  }
+  
+  return !hasExcludedTag
 }
 
 // ==================================================

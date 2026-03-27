@@ -5,13 +5,117 @@
 body {
   background: var(--light) !important;
   color: var(--dark) !important;
+  letter-spacing: 0.018em;           /* ← добавлено: лёгкая разрядка */
+  line-height: 1.65;                  /* ← добавлено: комфортная высота строки */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: var(--secondary);
+  transition: color var(--transition-fast);
   
   &:hover {
     color: var(--tertiary);
+  }
+}
+
+/* =========================================================
+   ТИПОГРАФИКА — ОСНОВНЫЕ ЭЛЕМЕНТЫ
+   ========================================================= */
+
+/* Основной текст статей */
+article p,
+article li,
+article blockquote {
+  letter-spacing: 0.018em;
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.article-title {
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
+/* Мета-информация (дата, время чтения) */
+.content-meta {
+  letter-spacing: 0.01em;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+/* Теги — компактно, без лишней разрядки */
+.tag-list-item {
+  letter-spacing: normal;
+  font-size: 0.85rem;
+}
+
+/* Цитаты — с чуть большей разрядкой для акцента */
+blockquote {
+  letter-spacing: 0.02em;
+  font-style: italic;
+  border-left: 4px solid var(--secondary);
+  background: var(--highlight);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* Коллауты — улучшенные отступы и типографика */
+.callout {
+  border-left: 4px solid var(--callout-color, var(--link-color));
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  
+  .callout-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--callout-color);
+    letter-spacing: 0.02em;
+  }
+  
+  .callout-content {
+    margin-top: 0.25rem;
+    letter-spacing: 0.018em;
+    line-height: 1.65;
+    
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.callout[data-callout="note"],
+.callout[data-callout="info"] {
+  --callout-color: var(--secondary);
+}
+
+.callout[data-callout="tip"],
+.callout[data-callout="success"] {
+  --callout-color: var(--tertiary);
+}
+
+.callout[data-callout="quote"] {
+  --callout-color: var(--link-color);
+  font-style: italic;
+  
+  .callout-title {
+    font-style: normal;
   }
 }
 
@@ -107,6 +211,7 @@ a[href^="http"] img {
   font-size: var(--font-size-lg);
   font-weight: 600;
   transition: all var(--transition-fast);
+  letter-spacing: normal;
   
   &::after {
     content: " →" !important;
@@ -136,7 +241,7 @@ a[href^="http"] img {
 }
 
 /* =========================================================
-   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ (ИСПРАВЛЕНО)
+   СКРЫТИЕ ПАНЕЛИ ПРИ СКРОЛЛЕ
    ========================================================= */
 
 .left.sidebar {
@@ -167,11 +272,10 @@ a[href^="http"] img {
 }
 
 /* =========================================================
-   МОБИЛЬНАЯ ВЕРСИЯ — ПАНЕЛИ (С ФОЛБЭКАМИ ПО КЛАССАМ)
+   МОБИЛЬНАЯ ВЕРСИЯ — ПАНЕЛИ
    ========================================================= */
 
 @media (max-width: 800px) {
-  /* Общие стили для правой панели на мобильных */
   .right {
     padding: 12px;
     height: auto;
@@ -180,7 +284,6 @@ a[href^="http"] img {
     flex-direction: column;
   }
   
-  /* ===== САД: граф и обратные ссылки ===== */
   .site-garden .right .graph,
   .site-garden .right .backlinks,
   [data-site-type="garden"] .right .graph,
@@ -199,7 +302,6 @@ a[href^="http"] img {
     display: none !important;
   }
   
-  /* ===== БЛОГ: архив и все теги ===== */
   .site-blog .right .archive-link-container,
   .site-blog .right .tag-list,
   [data-site-type="blog"] .right .archive-link-container,
@@ -218,7 +320,6 @@ a[href^="http"] img {
     display: none !important;
   }
   
-  /* Единое выравнивание для всех элементов правой панели */
   .right .graph,
   .right .backlinks,
   .right .tag-list,
@@ -229,7 +330,6 @@ a[href^="http"] img {
     border-bottom: none !important;
   }
   
-  /* Все блоки начинаются с одного уровня */
   .right > *:first-child {
     margin-top: 0 !important;
     padding-top: 0 !important;
@@ -242,7 +342,6 @@ a[href^="http"] img {
     margin-top: 0 !important;
   }
   
-  /* Кнопка архива теперь тоже начинается сверху */
   .archive-link-container {
     margin-top: 0 !important;
     padding-top: 8px !important;
@@ -268,37 +367,39 @@ a[href^="http"] img {
 .blog-index-item h2 {
   border-bottom: none !important;
   margin-bottom: 12px !important;
+  letter-spacing: 0.01em;
 }
 
 .blog-index-date {
   margin-bottom: 8px;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
 }
 
 .blog-index-description {
   margin-bottom: 12px;
   line-height: 1.6;
+  letter-spacing: 0.015em;
 }
 
 /* =========================================================
    ПОДПИСИ К ИЗОБРАЖЕНИЯМ
    ========================================================= */
 
-/* Стили для параграфа-подписи */
 p.caption,
 [data-caption] {
   font-size: 0.9rem;
   line-height: 1.5;
   color: var(--text-muted);
-  margin-top: -0.5rem;      /* подтягиваем к изображению */
-  margin-bottom: 2rem;       /* отступ после подписи */
-  padding-left: 1rem;        /* отступ слева для визуального отделения */
-  border-left: 2px solid var(--secondary);  /* акцентная линия */
-  font-style: italic;        /* курсив для элегантности */
+  margin-top: -0.5rem;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--secondary);
+  font-style: italic;
+  letter-spacing: 0.01em;
 }
 
-/* Добавляем маркер × через псевдоэлемент */
 p.caption::before,
 [data-caption]::before {
   content: "× ";
@@ -307,13 +408,11 @@ p.caption::before,
   margin-right: 0.25rem;
 }
 
-/* Убираем лишние отступы у Markdown-элементов внутри */
 p.caption strong,
 [data-caption] strong {
-  color: var(--text-primary);  /* чуть темнее для акцента */
+  color: var(--text-primary);
 }
 
-/* Адаптив для мобильных */
 @media (max-width: 500px) {
   p.caption,
   [data-caption] {
@@ -328,29 +427,26 @@ p.caption strong,
    ЗАГОЛОВКИ: ГЛАВНАЯ vs БОКОВАЯ ПАНЕЛЬ
    ========================================================= */
 
-/* Главная страница и архив — крупные заголовки */
 .blog-index-item h2 {
-  font-size: 1.5rem !important;  /* крупнее */
+  font-size: 1.5rem !important;
   font-weight: 600 !important;
   margin-bottom: 0.5rem !important;
   line-height: 1.3 !important;
 }
 
-/* Боковая панель — компактные заголовки */
 .recent-notes .recent-note-item,
 .recent-notes .recent-note-title,
 .recent-notes a {
-  font-size: 0.9rem !important;  /* мельче */
+  font-size: 0.9rem !important;
   line-height: 1.4 !important;
   padding: 0.25rem 0 !important;
 }
 
-/* Даты в боковой панели */
 .recent-notes .recent-note-meta,
 .recent-notes .recent-note-date,
 .recent-notes time,
 .recent-notes .note-date {
-  font-size: 0.75rem !important;   /* меньше основного текста */
+  font-size: 0.75rem !important;
   color: var(--text-primary) !important;
   opacity: 0.9;
   line-height: 1.2 !important;
@@ -359,14 +455,12 @@ p.caption strong,
   letter-spacing: 0.02em !important;
 }
 
-/* Если дата идёт в одной строке с заголовком */
 .recent-notes .recent-note-item time,
 .recent-notes .recent-note-item .note-date {
   margin-left: 0.25rem !important;
   font-size: 0.7rem !important;
 }
 
-/* Убираем лишние отступы в боковой панели */
 .recent-notes ul {
   margin: 0 !important;
   padding: 0 !important;
@@ -381,7 +475,6 @@ p.caption strong,
    ПОЛЕЗНЫЕ ДОБАВЛЕНИЯ
    ========================================================= */
 
-/* 1. Стили для битых ссылок */
 a.internal.broken-link {
   background-color: rgba(218, 89, 89, 0.15);
   
@@ -395,7 +488,6 @@ a.internal.broken-link {
   }
 }
 
-/* 2. Спойлеры */
 .spoiler-text {
   transition: filter 0.3s ease;
   filter: blur(0.5rem);
@@ -406,14 +498,13 @@ a.internal.broken-link {
   filter: initial;
 }
 
-/* 3. Декоративный разделитель */
 .page-sparkle-divider {
   text-align: center;
   color: var(--text-muted);
   margin: 2rem 0;
+  letter-spacing: 0.1em;
 }
 
-/* 4. Гибкие контейнеры */
 .forced-row {
   display: flex;
   flex-direction: row;
@@ -429,9 +520,32 @@ a.internal.broken-link {
   gap: 0.5rem;
 }
 
-/* 5. Inline иконки */
 img.inline-icons {
   margin: 0;
   display: inline-block;
   vertical-align: middle;
+}
+
+/* =========================================================
+   АДАПТАЦИЯ ДЛЯ ПЕЧАТИ
+   ========================================================= */
+
+@media print {
+  body {
+    letter-spacing: normal;
+    line-height: 1.4;
+    background: white !important;
+    color: black !important;
+  }
+  
+  a {
+    color: black !important;
+    text-decoration: underline;
+  }
+  
+  .callout {
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    break-inside: avoid;
+  }
 }

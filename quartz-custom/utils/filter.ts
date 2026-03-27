@@ -36,30 +36,22 @@ export const hasTag = (file: QuartzPluginData, tag: string): boolean => {
 // ФИЛЬТРЫ ДЛЯ САДА (garden-*)
 // ==================================================
 
+/**
+ * Фильтр для проводника (Explorer)
+ * Использует node.data.tags — родной способ Quartz
+ */
 export const gardenExplorerFilter = (node: FileTrieNode): boolean => {
-  const tags = node.data?.frontmatter?.tags || []
+  const tags = node.data?.tags || []
   const hasExcludedTag = tags.includes("garden-explorer-exclude")
-  
-  // ОТЛАДКА: выводим информацию для всех узлов
-  console.log(`🔍 Explorer filter for: ${node.data?.slug || node.displayName}`);
-  console.log(`   tags:`, tags);
-  console.log(`   hasExcludedTag: ${hasExcludedTag}`);
-  console.log(`   result: ${!hasExcludedTag}`);
-  
   return !hasExcludedTag
 }
 
+/**
+ * Фильтр для графа (Graph) — больше не нужен, используем excludeTags в конфиге
+ * @deprecated Используйте excludeTags в graphConfig
+ */
 export const gardenGraphFilter = (file: QuartzPluginData): boolean => {
-  const hasExcludedTag = hasTag(file, "garden-graph-exclude")
-  
-  // ОТЛАДКА: для конкретной заметки
-  if (file.slug?.includes('ritual-stone')) {
-    console.log(`🔍 Graph filter for: ${file.slug}`);
-    console.log(`   hasExcludedTag: ${hasExcludedTag}`);
-    console.log(`   result: ${!hasExcludedTag}`);
-  }
-  
-  return !hasExcludedTag
+  return !hasTag(file, "garden-graph-exclude")
 }
 
 // ==================================================
@@ -139,7 +131,7 @@ export const backlinksFilter = (file: QuartzPluginData, siteType: 'garden' | 'bl
 /** @deprecated Используйте gardenExplorerFilter */
 export const explorerFilter = gardenExplorerFilter
 
-/** @deprecated Используйте gardenGraphFilter */
+/** @deprecated Используйте gardenGraphFilter (но лучше использовать excludeTags) */
 export const graphFilter = gardenGraphFilter
 
 /** @deprecated Используйте blogRecentsFilter */

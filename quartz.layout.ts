@@ -1,14 +1,12 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import * as CustomComponent from "./quartz-custom/components"
-import CustomTagList from "./quartz-custom/components/TagList"
 import { FileTrieNode } from "./quartz/components/scripts/spa"
 import { QuartzComponentProps } from "./quartz/components/types"
 import {
   gardenFilter,
   blogFilter,
   gardenExplorerFilter,
-  gardenGraphFilter,
   blogRecentsFilter,
   blogArchiveFilter,
   blogBacklinksFilter,
@@ -20,6 +18,14 @@ import {
 const siteType = typeof process !== 'undefined' 
   ? (process.env?.BASE_URL?.includes('blog') ? 'blog' : 'garden')
   : 'garden'
+
+// Список тегов для исключения из TagList
+const excludeTagsList = [
+  "garden", "blog",
+  "garden-explorer-exclude", "garden-graph-exclude",
+  "blog-recents-exclude", "blog-archive-exclude", "blog-backlinks-exclude",
+  "search-exclude", "draft"
+]
 
 // Базовая левая панель
 const baseLeftPanel = [
@@ -45,15 +51,15 @@ const explorerConfig = {
   useSavedState: true,
 }
 
-// Конфигурация графа (для сада)
+// Конфигурация графа (используем родной excludeTags)
 const graphConfig = {
   localGraph: {
     showTags: false,
-    filterFn: gardenGraphFilter,
+    excludeTags: ["garden-graph-exclude"],
   },
   globalGraph: {
     showTags: false,
-    filterFn: gardenGraphFilter,
+    excludeTags: ["garden-graph-exclude"],
   },
 }
 
@@ -89,7 +95,7 @@ export const gardenContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index'
       }
     }),
-    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО: кастомный TagList
+    Component.TagList({ excludeTags: excludeTagsList }),  // ← стандартный TagList с excludeTags
   ],
   left: [
     ...baseLeftPanel,
@@ -105,12 +111,11 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    CustomTagList(),
+    Component.TagList({ excludeTags: excludeTagsList }),  // ← в правой панели
   ],
   afterBody: [],
 }
 
-// ✅ ДОБАВЛЯЕМ НЕДОСТАЮЩИЙ gardenListPageLayout
 export const gardenListPageLayout: PageLayout = {
   beforeBody: [
     Component.ArticleTitle(),
@@ -141,13 +146,13 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    CustomComponent.TagList(),  // ← ИСПРАВЛЕНО: кастомный TagList
+    Component.TagList({ excludeTags: excludeTagsList }),  // ← стандартный TagList с excludeTags
   ],
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    CustomTagList(),
+    Component.TagList({ excludeTags: excludeTagsList }),
     Component.ConditionalRender({
       component: Component.RecentNotes({
         limit: 5,
@@ -233,7 +238,7 @@ export const defaultContentPageLayout: PageLayout =
 
 export const defaultListPageLayout: PageLayout =
   siteType === 'garden'
-    ? gardenListPageLayout  // ← теперь gardenListPageLayout определён
+    ? gardenListPageLayout
     : blogListPageLayout
 
 export default defaultContentPageLayout

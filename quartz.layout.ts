@@ -48,12 +48,10 @@ const graphConfig = {
   localGraph: {
     showTags: false,
     removeTags: ["garden-graph-exclude"],
-    excludeTags: ["garden-graph-exclude"],
   },
   globalGraph: {
     showTags: false,
     removeTags: ["garden-graph-exclude"],
-    excludeTags: ["garden-graph-exclude"],
   },
 }
 

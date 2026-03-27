@@ -43,12 +43,11 @@ const explorerConfig = {
   useSavedState: true,
 }
 
-// Конфигурация графа (используем filterFn, как в проводнике)
+// Конфигурация графа
 const graphConfig = {
   localGraph: {
     showTags: false,
     filterFn: (node: any) => {
-      // Проверяем теги узла (аналогично gardenExplorerFilter)
       const tags = node.tags || []
       return !tags.includes("garden-graph-exclude")
     },
@@ -94,7 +93,8 @@ export const gardenContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index'
       }
     }),
-    CustomComponent.TagList(),
+    // Только теги текущей страницы
+    CustomComponent.TagList({ currentPageOnly: true, title: "Теги этой заметки" }),
   ],
   left: [
     ...baseLeftPanel,
@@ -110,7 +110,8 @@ export const gardenContentPageLayout: PageLayout = {
     Component.DesktopOnly(Component.Graph(graphConfig)),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    CustomComponent.TagList(),
+    // Все теги (глобальный список)
+    CustomComponent.TagList({ title: "Все теги" }),
   ],
   afterBody: [],
 }
@@ -145,13 +146,15 @@ export const blogContentPageLayout: PageLayout = {
         return props.fileData.slug !== 'index' && props.fileData.slug !== 'archive'
       }
     }),
-    CustomComponent.TagList(),
+    // Только теги текущей страницы
+    CustomComponent.TagList({ currentPageOnly: true, title: "Теги этой заметки" }),
   ],
   left: baseLeftPanel,
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(backlinksConfig),
-    CustomComponent.TagList(),
+    // Все теги (глобальный список)
+    CustomComponent.TagList({ title: "Все теги" }),
     Component.ConditionalRender({
       component: Component.RecentNotes({
         limit: 5,
